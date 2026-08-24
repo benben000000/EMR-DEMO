@@ -2,7 +2,15 @@
 """
 G1 Health EMR - macOS Full-Feature Interactive Application & Demo Runner
 Powered by Global 1 OneTech (https://global1onetech.com/)
-All modules clickable with live interactive state, modals, data tables, and print previews.
+
+UX Overhaul Features:
+- Universal Active Patient Bar in Header + Instant Patient Switcher in Clinical EMR & Header
+- Interactive OPD Patient Queue in Doctor Desk (Click any patient to load their chart)
+- Back to Dashboard button + Breadcrumbs on EVERY module view
+- Global Patient Quick Search in Top Navbar
+- Dynamic Prescription Builder (Add & Remove medications with live calculation)
+- ESC key & Backdrop Click to close all modals
+- Live White-Label configuration with instant UI updates
 """
 
 import http.server
@@ -315,7 +323,6 @@ LOGIN_HTML = """<!DOCTYPE html>
 </html>
 """
 
-# Load complete single-page application with all modules working
 APP_HTML = """<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -363,7 +370,7 @@ APP_HTML = """<!DOCTYPE html>
         }
 
         .sidebar-brand {
-            padding: 18px 20px;
+            padding: 16px 20px;
             background: rgba(0, 0, 0, 0.25);
             display: flex;
             align-items: center;
@@ -372,7 +379,7 @@ APP_HTML = """<!DOCTYPE html>
         }
 
         .sidebar-brand img {
-            max-height: 38px;
+            max-height: 36px;
             width: auto;
             filter: brightness(0) invert(1);
         }
@@ -380,7 +387,7 @@ APP_HTML = """<!DOCTYPE html>
         .nav-menu-wrapper {
             flex: 1;
             overflow-y: auto;
-            padding: 12px 0;
+            padding: 10px 0;
         }
 
         .nav-menu {
@@ -391,11 +398,11 @@ APP_HTML = """<!DOCTYPE html>
         }
 
         .nav-section-title {
-            font-size: 11px;
+            font-size: 10.5px;
             text-transform: uppercase;
             letter-spacing: 1px;
             color: #64748b;
-            padding: 14px 24px 6px;
+            padding: 12px 24px 4px;
             font-weight: 800;
         }
 
@@ -403,7 +410,7 @@ APP_HTML = """<!DOCTYPE html>
             display: flex;
             align-items: center;
             gap: 14px;
-            padding: 11px 24px;
+            padding: 10px 24px;
             color: #cbd5e1;
             text-decoration: none;
             font-size: 13.5px;
@@ -454,41 +461,126 @@ APP_HTML = """<!DOCTYPE html>
             overflow: hidden;
         }
 
+        /* Top Header Navbar with Active Patient Info */
         .top-navbar {
-            height: 64px;
+            min-height: 64px;
             background: var(--brand-primary);
             color: #ffffff;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 28px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 0 24px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
             border-bottom: 2px solid var(--brand-cyan);
             flex-shrink: 0;
+            gap: 16px;
+            flex-wrap: wrap;
         }
 
-        .top-navbar .facility-title {
-            font-size: 15px;
+        .navbar-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .facility-title {
+            font-size: 14px;
             font-weight: 700;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             letter-spacing: 0.2px;
         }
 
-        .top-navbar .facility-title span {
+        .facility-title span {
             color: var(--brand-cyan);
+        }
+
+        /* Global Active Patient Banner */
+        .active-patient-badge {
+            background: rgba(0, 0, 0, 0.35);
+            border: 1px solid rgba(0, 255, 161, 0.3);
+            border-radius: 8px;
+            padding: 6px 14px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 12.5px;
+            color: #f1f5f9;
+        }
+
+        .active-patient-badge .pat-name {
+            font-weight: 800;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .active-patient-badge .pat-name i {
+            color: var(--brand-cyan);
+        }
+
+        .btn-switch-pat {
+            background: var(--brand-cyan);
+            color: #0f172a;
+            border: none;
+            padding: 3px 8px;
+            border-radius: 5px;
+            font-size: 11px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-switch-pat:hover {
+            background: #ffffff;
+        }
+
+        /* Header Patient Search */
+        .global-search-wrapper {
+            position: relative;
+            width: 220px;
+        }
+
+        .global-search-wrapper i {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            font-size: 12px;
+        }
+
+        .global-search-input {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            padding: 6px 10px 6px 30px;
+            color: #ffffff;
+            font-size: 12.5px;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .global-search-input::placeholder { color: #94a3b8; }
+        .global-search-input:focus {
+            background: rgba(255, 255, 255, 0.18);
+            border-color: var(--brand-cyan);
+            width: 260px;
         }
 
         .user-profile {
             display: flex;
             align-items: center;
-            gap: 14px;
+            gap: 12px;
+            margin-left: auto;
         }
 
         .user-avatar {
-            width: 36px;
-            height: 36px;
+            width: 34px;
+            height: 34px;
             background: rgba(255, 255, 255, 0.1);
             border: 1.5px solid var(--brand-cyan);
             border-radius: 50%;
@@ -496,14 +588,14 @@ APP_HTML = """<!DOCTYPE html>
             align-items: center;
             justify-content: center;
             font-weight: 800;
-            font-size: 13px;
+            font-size: 12px;
             color: var(--brand-cyan);
         }
 
         .btn-logout {
             color: #cbd5e1;
             text-decoration: none;
-            font-size: 12.5px;
+            font-size: 12px;
             font-weight: 700;
             display: flex;
             align-items: center;
@@ -522,13 +614,13 @@ APP_HTML = """<!DOCTYPE html>
         .content-area {
             flex: 1;
             overflow-y: auto;
-            padding: 28px;
+            padding: 24px 28px;
         }
 
         /* Modules Views */
         .module-view {
             display: none;
-            animation: fadeIn 0.25s ease-in-out;
+            animation: fadeIn 0.2s ease-in-out;
         }
 
         .module-view.active {
@@ -540,14 +632,70 @@ APP_HTML = """<!DOCTYPE html>
             to { opacity: 1; transform: translateY(0); }
         }
 
+        /* Universal UX Breadcrumbs & Back Button */
+        .ux-navigation-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 18px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .breadcrumbs {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .breadcrumbs a {
+            color: var(--brand-primary);
+            text-decoration: none;
+            cursor: pointer;
+            font-weight: 700;
+        }
+
+        .breadcrumbs a:hover {
+            text-decoration: underline;
+        }
+
+        .breadcrumbs span.current {
+            color: var(--text-dark);
+            font-weight: 800;
+        }
+
+        .btn-back-dashboard {
+            background: #ffffff;
+            border: 1.5px solid var(--border-color);
+            color: #334155;
+            padding: 7px 14px;
+            border-radius: 8px;
+            font-size: 12.5px;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+
+        .btn-back-dashboard:hover {
+            background: #f1f5f9;
+            border-color: #cbd5e1;
+            color: #0f172a;
+            transform: translateX(-2px);
+        }
+
         /* Section Headings */
         .view-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 24px;
-            padding-bottom: 16px;
-            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 20px;
         }
 
         .view-header h1 {
@@ -617,7 +765,7 @@ APP_HTML = """<!DOCTYPE html>
         }
 
         .table-toolbar {
-            padding: 16px 20px;
+            padding: 14px 20px;
             background: #ffffff;
             border-bottom: 1px solid var(--border-color);
             display: flex;
@@ -674,7 +822,7 @@ APP_HTML = """<!DOCTYPE html>
         }
 
         .emr-table td {
-            padding: 13px 18px;
+            padding: 12px 18px;
             border-bottom: 1px solid var(--border-color);
             color: #1e293b;
         }
@@ -704,13 +852,13 @@ APP_HTML = """<!DOCTYPE html>
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
             gap: 20px;
-            margin-bottom: 28px;
+            margin-bottom: 24px;
         }
 
         .stat-card {
             background: #ffffff;
             border-radius: 12px;
-            padding: 22px;
+            padding: 20px;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
             border: 1px solid var(--border-color);
             display: flex;
@@ -779,10 +927,61 @@ APP_HTML = """<!DOCTYPE html>
             gap: 8px;
         }
 
+        /* Clinical EMR Layout with Left Queue */
+        .clinical-layout {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 20px;
+            align-items: start;
+        }
+
+        .patient-queue-card {
+            background: #ffffff;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            padding: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        .queue-item {
+            padding: 12px;
+            border-radius: 8px;
+            border: 1.5px solid var(--border-color);
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: #ffffff;
+        }
+
+        .queue-item:hover {
+            border-color: var(--brand-primary);
+            background: #f8fafc;
+        }
+
+        .queue-item.active {
+            border-color: var(--brand-cyan);
+            background: #f0fdf4;
+            box-shadow: 0 2px 6px rgba(0, 255, 161, 0.15);
+        }
+
+        .queue-item .q-name {
+            font-weight: 800;
+            font-size: 14px;
+            color: #0f172a;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .queue-item .q-sub {
+            font-size: 12px;
+            color: #64748b;
+            margin-top: 4px;
+        }
+
         /* Form Inputs */
         .form-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 16px;
             margin-bottom: 20px;
         }
@@ -833,7 +1032,7 @@ APP_HTML = """<!DOCTYPE html>
         .modal-box {
             background: #ffffff;
             border-radius: 16px;
-            width: 700px;
+            width: 720px;
             max-width: 95vw;
             max-height: 90vh;
             overflow-y: auto;
@@ -939,6 +1138,18 @@ APP_HTML = """<!DOCTYPE html>
             transform: translateY(0);
             opacity: 1;
         }
+
+        .btn-del-rx {
+            background: #fee2e2;
+            color: #b91c1c;
+            border: none;
+            border-radius: 4px;
+            padding: 3px 8px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: 700;
+        }
+        .btn-del-rx:hover { background: #fca5a5; }
     </style>
 </head>
 <body>
@@ -998,11 +1209,37 @@ APP_HTML = """<!DOCTYPE html>
 
     <!-- Main Wrapper -->
     <div class="main-wrapper">
+        <!-- Top Navbar with Global Active Patient Bar & Universal Search -->
         <header class="top-navbar">
-            <div class="facility-title">
-                <i class="fa-solid fa-hospital" style="color: var(--brand-cyan);"></i>
-                <span id="header-facility-name">Global 1 OneTech Medical & Health Center</span>
+            <div class="navbar-left">
+                <div class="facility-title">
+                    <i class="fa-solid fa-hospital" style="color: var(--brand-cyan);"></i>
+                    <span id="header-facility-name">Global 1 OneTech Medical & Health Center</span>
+                </div>
             </div>
+
+            <!-- Active Patient Context Pill -->
+            <div class="active-patient-badge" id="global-active-patient-bar">
+                <div class="pat-name">
+                    <i class="fa-solid fa-user-circle"></i>
+                    <span id="global-pat-name">Juan Dela Cruz</span>
+                </div>
+                <span style="color:#94a3b8;">|</span>
+                <span id="global-pat-code">G1-2026-0090</span>
+                <span style="color:#94a3b8;">|</span>
+                <span id="global-pat-meta">45 Y / Male &bull; PhilHealth</span>
+                <button class="btn-switch-pat" onclick="openModal('modal-select-patient')">
+                    <i class="fa-solid fa-arrows-rotate"></i> Switch Patient
+                </button>
+            </div>
+
+            <!-- Global Quick Search -->
+            <div class="global-search-wrapper">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" class="global-search-input" placeholder="Quick Search Patient..." onkeyup="handleGlobalPatientSearch(this)" />
+            </div>
+
+            <!-- User Profile -->
             <div class="user-profile">
                 <div class="user-avatar">AD</div>
                 <div>
@@ -1016,6 +1253,7 @@ APP_HTML = """<!DOCTYPE html>
             </div>
         </header>
 
+        <!-- Main Workspace Area -->
         <main class="content-area">
             
             <!-- 1. DASHBOARD VIEW -->
@@ -1025,7 +1263,10 @@ APP_HTML = """<!DOCTYPE html>
                         <h1>Executive Healthcare Dashboard</h1>
                         <p>Welcome to G1 Health EMR &bull; Powered by Global 1 OneTech</p>
                     </div>
-                    <div>
+                    <div style="display:flex; gap:10px;">
+                        <button class="btn-primary-action" onclick="openModal('modal-new-patient')">
+                            <i class="fa-solid fa-user-plus"></i> + Quick Register
+                        </button>
                         <button class="btn-accent-action" onclick="switchTab('view-aicrm', document.querySelector('[data-target=view-aicrm]'))">
                             <i class="fa-solid fa-robot"></i> Open AI CRM Assistant
                         </button>
@@ -1066,7 +1307,7 @@ APP_HTML = """<!DOCTYPE html>
                 <div class="grid-2col">
                     <div class="card-box">
                         <div class="card-box-header">
-                            <h3><i class="fa-solid fa-user-clock" style="color: var(--brand-primary);"></i> Recent Patient Registrations</h3>
+                            <h3><i class="fa-solid fa-user-clock" style="color: var(--brand-primary);"></i> Today's Patient Registrations</h3>
                             <a href="javascript:void(0)" onclick="switchTab('view-patient-reg', document.querySelector('[data-target=view-patient-reg]'))" style="font-size: 12px; font-weight:700; color:var(--brand-primary); text-decoration:none;">View All &rarr;</a>
                         </div>
                         <table class="emr-table">
@@ -1075,8 +1316,8 @@ APP_HTML = """<!DOCTYPE html>
                                     <th>Hospital No</th>
                                     <th>Patient Name</th>
                                     <th>Age/Sex</th>
-                                    <th>Contact</th>
                                     <th>Status</th>
+                                    <th>Select</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -1084,22 +1325,22 @@ APP_HTML = """<!DOCTYPE html>
                                     <td><strong>G1-2026-0089</strong></td>
                                     <td>Maria Santos</td>
                                     <td>34 Y / F</td>
-                                    <td>+63 917 555 1234</td>
                                     <td><span class="status-badge status-active">Registered</span></td>
+                                    <td><button class="btn-primary-action" style="padding:4px 8px; font-size:11px;" onclick="setActivePatient('Maria Santos')">Set Active</button></td>
                                 </tr>
                                 <tr>
                                     <td><strong>G1-2026-0090</strong></td>
                                     <td>Juan Dela Cruz</td>
                                     <td>45 Y / M</td>
-                                    <td>+63 920 444 8901</td>
                                     <td><span class="status-badge status-completed">In Consultation</span></td>
+                                    <td><button class="btn-primary-action" style="padding:4px 8px; font-size:11px;" onclick="setActivePatient('Juan Dela Cruz')">Set Active</button></td>
                                 </tr>
                                 <tr>
                                     <td><strong>G1-2026-0091</strong></td>
                                     <td>Elena Reyes</td>
                                     <td>28 Y / F</td>
-                                    <td>+63 918 333 7654</td>
                                     <td><span class="status-badge status-pending">In Triage</span></td>
+                                    <td><button class="btn-primary-action" style="padding:4px 8px; font-size:11px;" onclick="setActivePatient('Elena Reyes')">Set Active</button></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -1124,7 +1365,7 @@ APP_HTML = """<!DOCTYPE html>
                                     <td><i class="fa-brands fa-whatsapp" style="color:#25d366; font-size:16px;"></i> WhatsApp</td>
                                     <td>Severe headache & blurry vision</td>
                                     <td><span class="status-badge status-urgent">Urgent Neurologist</span></td>
-                                    <td><button class="btn-primary-action" style="padding:4px 10px; font-size:11px;" onclick="showToast('AI Auto-Booked with Dr. Lim (Neurology)')">Auto-Book</button></td>
+                                    <td><button class="btn-primary-action" style="padding:4px 10px; font-size:11px;" onclick="showToast('AI Auto-Booked with Dr. Vincent Lim (Neurology)')">Auto-Book</button></td>
                                 </tr>
                                 <tr>
                                     <td><i class="fa-solid fa-globe" style="color:#0284c7; font-size:16px;"></i> Web Chat</td>
@@ -1140,6 +1381,17 @@ APP_HTML = """<!DOCTYPE html>
 
             <!-- 2. PATIENT REGISTRATION VIEW -->
             <section id="view-patient-reg" class="module-view">
+                <div class="ux-navigation-bar">
+                    <div class="breadcrumbs">
+                        <a onclick="switchTab('view-dashboard', document.querySelector('[data-target=view-dashboard]'))"><i class="fa-solid fa-house"></i> Home</a>
+                        <i class="fa-solid fa-chevron-right" style="font-size:10px;"></i>
+                        <span class="current">Patient Registration</span>
+                    </div>
+                    <button class="btn-back-dashboard" onclick="switchTab('view-dashboard', document.querySelector('[data-target=view-dashboard]'))">
+                        <i class="fa-solid fa-arrow-left"></i> Back to Dashboard
+                    </button>
+                </div>
+
                 <div class="view-header">
                     <div>
                         <h1>Patient Registration & Demographics</h1>
@@ -1183,7 +1435,10 @@ APP_HTML = """<!DOCTYPE html>
                                 <td>Makati, Metro Manila</td>
                                 <td><span class="status-badge status-completed">HMO Gold</span></td>
                                 <td>
-                                    <button class="btn-primary-action" style="padding: 5px 10px; font-size: 12px;" onclick="viewPatient360('Maria Santos', 'G1-2026-0089')">
+                                    <button class="btn-primary-action" style="padding: 5px 10px; font-size: 12px; margin-right:4px;" onclick="setActivePatient('Maria Santos')">
+                                        <i class="fa-solid fa-check"></i> Set Active
+                                    </button>
+                                    <button class="btn-secondary" style="padding: 5px 10px; font-size: 12px;" onclick="viewPatient360('Maria Santos', 'G1-2026-0089')">
                                         <i class="fa-solid fa-id-card"></i> 360° View
                                     </button>
                                 </td>
@@ -1196,7 +1451,10 @@ APP_HTML = """<!DOCTYPE html>
                                 <td>Quezon City, Manila</td>
                                 <td><span class="status-badge status-active">PhilHealth</span></td>
                                 <td>
-                                    <button class="btn-primary-action" style="padding: 5px 10px; font-size: 12px;" onclick="viewPatient360('Juan Dela Cruz', 'G1-2026-0090')">
+                                    <button class="btn-primary-action" style="padding: 5px 10px; font-size: 12px; margin-right:4px;" onclick="setActivePatient('Juan Dela Cruz')">
+                                        <i class="fa-solid fa-check"></i> Set Active
+                                    </button>
+                                    <button class="btn-secondary" style="padding: 5px 10px; font-size: 12px;" onclick="viewPatient360('Juan Dela Cruz', 'G1-2026-0090')">
                                         <i class="fa-solid fa-id-card"></i> 360° View
                                     </button>
                                 </td>
@@ -1209,7 +1467,10 @@ APP_HTML = """<!DOCTYPE html>
                                 <td>Taguig, Metro Manila</td>
                                 <td><span class="status-badge status-pending">Self-Pay</span></td>
                                 <td>
-                                    <button class="btn-primary-action" style="padding: 5px 10px; font-size: 12px;" onclick="viewPatient360('Elena Reyes', 'G1-2026-0091')">
+                                    <button class="btn-primary-action" style="padding: 5px 10px; font-size: 12px; margin-right:4px;" onclick="setActivePatient('Elena Reyes')">
+                                        <i class="fa-solid fa-check"></i> Set Active
+                                    </button>
+                                    <button class="btn-secondary" style="padding: 5px 10px; font-size: 12px;" onclick="viewPatient360('Elena Reyes', 'G1-2026-0091')">
                                         <i class="fa-solid fa-id-card"></i> 360° View
                                     </button>
                                 </td>
@@ -1222,7 +1483,10 @@ APP_HTML = """<!DOCTYPE html>
                                 <td>Pasig City, Manila</td>
                                 <td><span class="status-badge status-completed">Corporate EHS</span></td>
                                 <td>
-                                    <button class="btn-primary-action" style="padding: 5px 10px; font-size: 12px;" onclick="viewPatient360('Antonio Gonzales', 'G1-2026-0092')">
+                                    <button class="btn-primary-action" style="padding: 5px 10px; font-size: 12px; margin-right:4px;" onclick="setActivePatient('Antonio Gonzales')">
+                                        <i class="fa-solid fa-check"></i> Set Active
+                                    </button>
+                                    <button class="btn-secondary" style="padding: 5px 10px; font-size: 12px;" onclick="viewPatient360('Antonio Gonzales', 'G1-2026-0092')">
                                         <i class="fa-solid fa-id-card"></i> 360° View
                                     </button>
                                 </td>
@@ -1234,6 +1498,17 @@ APP_HTML = """<!DOCTYPE html>
 
             <!-- 3. APPOINTMENTS VIEW -->
             <section id="view-appointments" class="module-view">
+                <div class="ux-navigation-bar">
+                    <div class="breadcrumbs">
+                        <a onclick="switchTab('view-dashboard', document.querySelector('[data-target=view-dashboard]'))"><i class="fa-solid fa-house"></i> Home</a>
+                        <i class="fa-solid fa-chevron-right" style="font-size:10px;"></i>
+                        <span class="current">Appointments & Scheduling</span>
+                    </div>
+                    <button class="btn-back-dashboard" onclick="switchTab('view-dashboard', document.querySelector('[data-target=view-dashboard]'))">
+                        <i class="fa-solid fa-arrow-left"></i> Back to Dashboard
+                    </button>
+                </div>
+
                 <div class="view-header">
                     <div>
                         <h1>Doctor Appointment & Scheduling</h1>
@@ -1301,7 +1576,7 @@ APP_HTML = """<!DOCTYPE html>
                                 <td>Dr. Alicia Gomez, MD</td>
                                 <td>Internal Medicine</td>
                                 <td><span class="status-badge status-active">In Consultation</span></td>
-                                <td><button class="btn-primary-action" style="padding:4px 8px; font-size:12px;" onclick="switchTab('view-clinical', document.querySelector('[data-target=view-clinical]'))">Open Desk</button></td>
+                                <td><button class="btn-primary-action" style="padding:4px 8px; font-size:12px;" onclick="setActivePatient('Juan Dela Cruz'); switchTab('view-clinical', document.querySelector('[data-target=view-clinical]'));">Open Desk</button></td>
                             </tr>
                             <tr>
                                 <td>11:15 AM</td>
@@ -1309,7 +1584,7 @@ APP_HTML = """<!DOCTYPE html>
                                 <td>Dr. Vincent Lim, MD</td>
                                 <td>Neurology</td>
                                 <td><span class="status-badge status-pending">Waiting in Room 204</span></td>
-                                <td><button class="btn-primary-action" style="padding:4px 8px; font-size:12px;" onclick="showToast('Calling Patient to Doctor Chamber...')">Call Patient</button></td>
+                                <td><button class="btn-primary-action" style="padding:4px 8px; font-size:12px;" onclick="setActivePatient('Elena Reyes'); switchTab('view-clinical', document.querySelector('[data-target=view-clinical]'));">Call Patient</button></td>
                             </tr>
                         </tbody>
                     </table>
@@ -1318,6 +1593,17 @@ APP_HTML = """<!DOCTYPE html>
 
             <!-- 4. BILLING & INVOICING VIEW -->
             <section id="view-billing" class="module-view">
+                <div class="ux-navigation-bar">
+                    <div class="breadcrumbs">
+                        <a onclick="switchTab('view-dashboard', document.querySelector('[data-target=view-dashboard]'))"><i class="fa-solid fa-house"></i> Home</a>
+                        <i class="fa-solid fa-chevron-right" style="font-size:10px;"></i>
+                        <span class="current">Billing & Invoicing</span>
+                    </div>
+                    <button class="btn-back-dashboard" onclick="switchTab('view-dashboard', document.querySelector('[data-target=view-dashboard]'))">
+                        <i class="fa-solid fa-arrow-left"></i> Back to Dashboard
+                    </button>
+                </div>
+
                 <div class="view-header">
                     <div>
                         <h1>Outpatient & Inpatient Billing</h1>
@@ -1378,91 +1664,165 @@ APP_HTML = """<!DOCTYPE html>
                 </div>
             </section>
 
-            <!-- 5. CLINICAL EMR VIEW -->
+            <!-- 5. CLINICAL EMR VIEW (DOCTOR DESK WITH INTERACTIVE PATIENT SWITCHER) -->
             <section id="view-clinical" class="module-view">
+                <div class="ux-navigation-bar">
+                    <div class="breadcrumbs">
+                        <a onclick="switchTab('view-dashboard', document.querySelector('[data-target=view-dashboard]'))"><i class="fa-solid fa-house"></i> Home</a>
+                        <i class="fa-solid fa-chevron-right" style="font-size:10px;"></i>
+                        <span class="current">Clinical EMR (Doctor Desk)</span>
+                    </div>
+                    <button class="btn-back-dashboard" onclick="switchTab('view-dashboard', document.querySelector('[data-target=view-dashboard]'))">
+                        <i class="fa-solid fa-arrow-left"></i> Back to Dashboard
+                    </button>
+                </div>
+
                 <div class="view-header">
                     <div>
                         <h1>Doctor Consultation Desk (Clinical EMR)</h1>
                         <p>Record clinical encounters, ICD-10 diagnoses, vital signs, and prescribe electronic medications</p>
                     </div>
-                    <div>
+                    <div style="display:flex; gap:10px;">
+                        <button class="btn-secondary" onclick="openModal('modal-select-patient')">
+                            <i class="fa-solid fa-user-gear"></i> Change Active Patient
+                        </button>
                         <button class="btn-accent-action" onclick="showToast('Electronic Prescription Signed & Synced to Pharmacy Counter!')">
                             <i class="fa-solid fa-signature"></i> Sign & Send e-Prescription
                         </button>
                     </div>
                 </div>
 
-                <div class="grid-2col">
-                    <div class="card-box">
-                        <div class="card-box-header">
-                            <h3><i class="fa-solid fa-user-tag" style="color:var(--brand-primary);"></i> Active Patient: Juan Dela Cruz (45 Y / M)</h3>
-                            <span class="status-badge status-active">Hospital No: G1-2026-0090</span>
+                <div class="clinical-layout">
+                    <!-- Left Column: Patient Queue -->
+                    <div class="patient-queue-card">
+                        <div style="font-size:13px; font-weight:800; color:#0f172a; margin-bottom:12px; display:flex; align-items:center; justify-content:space-between;">
+                            <span><i class="fa-solid fa-users-line" style="color:var(--brand-primary);"></i> OPD Queue</span>
+                            <span class="badge-new" style="background:#e2e8f0; color:#475569;">4 Total</span>
                         </div>
-                        <div class="form-grid">
-                            <div class="form-group">
-                                <label>Blood Pressure (mmHg)</label>
-                                <input type="text" class="form-control" value="120/80" />
+                        <div class="queue-item active" id="q-pat-juan" onclick="setActivePatient('Juan Dela Cruz')">
+                            <div class="q-name">
+                                <span>Juan Dela Cruz</span>
+                                <span class="status-badge status-active" style="font-size:9.5px;">Active</span>
                             </div>
-                            <div class="form-group">
-                                <label>Pulse Rate (bpm)</label>
-                                <input type="text" class="form-control" value="76" />
-                            </div>
-                            <div class="form-group">
-                                <label>Temperature (°C)</label>
-                                <input type="text" class="form-control" value="36.8" />
-                            </div>
-                            <div class="form-group">
-                                <label>SpO2 (%)</label>
-                                <input type="text" class="form-control" value="98%" />
-                            </div>
+                            <div class="q-sub">G1-2026-0090 &bull; 45 Y / M &bull; Rm 201</div>
                         </div>
-                        <div class="form-group" style="margin-bottom:14px;">
-                            <label>Chief Complaints & Subjective History</label>
-                            <textarea class="form-control" rows="3">Patient reports recurrent mild headache for 3 days, accompanied by eye strain during computer screen work.</textarea>
+                        <div class="queue-item" id="q-pat-maria" onclick="setActivePatient('Maria Santos')">
+                            <div class="q-name">
+                                <span>Maria Santos</span>
+                                <span class="status-badge status-pending" style="font-size:9.5px;">Waiting</span>
+                            </div>
+                            <div class="q-sub">G1-2026-0089 &bull; 34 Y / F &bull; Rm 202</div>
                         </div>
-                        <div class="form-group">
-                            <label>ICD-10 Primary Diagnosis</label>
-                            <input type="text" class="form-control" value="G44.2 - Tension-type headache" />
+                        <div class="queue-item" id="q-pat-elena" onclick="setActivePatient('Elena Reyes')">
+                            <div class="q-name">
+                                <span>Elena Reyes</span>
+                                <span class="status-badge status-pending" style="font-size:9.5px;">Waiting</span>
+                            </div>
+                            <div class="q-sub">G1-2026-0091 &bull; 28 Y / F &bull; Rm 203</div>
+                        </div>
+                        <div class="queue-item" id="q-pat-antonio" onclick="setActivePatient('Antonio Gonzales')">
+                            <div class="q-name">
+                                <span>Antonio Gonzales</span>
+                                <span class="status-badge status-completed" style="font-size:9.5px;">Done</span>
+                            </div>
+                            <div class="q-sub">G1-2026-0092 &bull; 52 Y / M &bull; Followup</div>
                         </div>
                     </div>
 
-                    <div class="card-box">
-                        <div class="card-box-header">
-                            <h3><i class="fa-solid fa-pills" style="color:var(--brand-accent);"></i> Electronic Prescription Builder</h3>
+                    <!-- Right Column: Active Patient Consultation File -->
+                    <div style="display:flex; flex-direction:column; gap:20px;">
+                        <div class="card-box">
+                            <div class="card-box-header">
+                                <h3>
+                                    <i class="fa-solid fa-user-tag" style="color:var(--brand-primary);"></i>
+                                    Active Chart: <span id="emr-patient-title">Juan Dela Cruz (45 Y / Male)</span>
+                                </h3>
+                                <div style="display:flex; gap:8px;">
+                                    <span class="status-badge status-active" id="emr-hospital-badge">Hospital No: G1-2026-0090</span>
+                                    <button class="btn-switch-pat" onclick="openModal('modal-select-patient')">Switch</button>
+                                </div>
+                            </div>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label>Blood Pressure (mmHg)</label>
+                                    <input type="text" class="form-control" id="emr-bp" value="120/80" />
+                                </div>
+                                <div class="form-group">
+                                    <label>Pulse Rate (bpm)</label>
+                                    <input type="text" class="form-control" id="emr-pulse" value="76" />
+                                </div>
+                                <div class="form-group">
+                                    <label>Temperature (°C)</label>
+                                    <input type="text" class="form-control" id="emr-temp" value="36.8" />
+                                </div>
+                                <div class="form-group">
+                                    <label>SpO2 (%)</label>
+                                    <input type="text" class="form-control" id="emr-spo2" value="98%" />
+                                </div>
+                            </div>
+                            <div class="form-group" style="margin-bottom:14px;">
+                                <label>Chief Complaints & Subjective History</label>
+                                <textarea class="form-control" id="emr-complaints" rows="3">Patient reports recurrent mild headache for 3 days, accompanied by eye strain during computer screen work.</textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>ICD-10 Primary Diagnosis</label>
+                                <input type="text" class="form-control" id="emr-diagnosis" value="G44.2 - Tension-type headache" />
+                            </div>
                         </div>
-                        <table class="emr-table" style="margin-bottom:16px;">
-                            <thead>
-                                <tr>
-                                    <th>Medicine Name</th>
-                                    <th>Dosage</th>
-                                    <th>Frequency</th>
-                                    <th>Days</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td><strong>Paracetamol 500mg</strong></td>
-                                    <td>1 Tab</td>
-                                    <td>TID (Every 8h)</td>
-                                    <td>5 Days</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Vitamin B-Complex</strong></td>
-                                    <td>1 Capsule</td>
-                                    <td>OD (Once Daily)</td>
-                                    <td>30 Days</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <button class="btn-primary-action" style="width:100%; justify-content:center;" onclick="showToast('Added Medicine to Prescription List')">
-                            <i class="fa-solid fa-plus"></i> Add Another Medication
-                        </button>
+
+                        <!-- Prescription Builder -->
+                        <div class="card-box">
+                            <div class="card-box-header">
+                                <h3><i class="fa-solid fa-pills" style="color:var(--brand-accent);"></i> Electronic Prescription Builder</h3>
+                                <button class="btn-primary-action" style="padding:4px 10px; font-size:12px;" onclick="addPrescriptionRow()">
+                                    <i class="fa-solid fa-plus"></i> Add Medicine
+                                </button>
+                            </div>
+                            <table class="emr-table" id="rx-table" style="margin-bottom:16px;">
+                                <thead>
+                                    <tr>
+                                        <th>Medicine Name</th>
+                                        <th>Dosage</th>
+                                        <th>Frequency</th>
+                                        <th>Duration</th>
+                                        <th>Remove</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Paracetamol 500mg</strong></td>
+                                        <td>1 Tab</td>
+                                        <td>TID (Every 8h)</td>
+                                        <td>5 Days</td>
+                                        <td><button class="btn-del-rx" onclick="this.closest('tr').remove(); showToast('Medication removed from Rx');">&times;</button></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Vitamin B-Complex</strong></td>
+                                        <td>1 Capsule</td>
+                                        <td>OD (Once Daily)</td>
+                                        <td>30 Days</td>
+                                        <td><button class="btn-del-rx" onclick="this.closest('tr').remove(); showToast('Medication removed from Rx');">&times;</button></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </section>
 
             <!-- 6. LABORATORY VIEW -->
             <section id="view-laboratory" class="module-view">
+                <div class="ux-navigation-bar">
+                    <div class="breadcrumbs">
+                        <a onclick="switchTab('view-dashboard', document.querySelector('[data-target=view-dashboard]'))"><i class="fa-solid fa-house"></i> Home</a>
+                        <i class="fa-solid fa-chevron-right" style="font-size:10px;"></i>
+                        <span class="current">Laboratory (LIS)</span>
+                    </div>
+                    <button class="btn-back-dashboard" onclick="switchTab('view-dashboard', document.querySelector('[data-target=view-dashboard]'))">
+                        <i class="fa-solid fa-arrow-left"></i> Back to Dashboard
+                    </button>
+                </div>
+
                 <div class="view-header">
                     <div>
                         <h1>Laboratory Information System (LIS)</h1>
@@ -1511,6 +1871,17 @@ APP_HTML = """<!DOCTYPE html>
 
             <!-- 7. RADIOLOGY VIEW -->
             <section id="view-radiology" class="module-view">
+                <div class="ux-navigation-bar">
+                    <div class="breadcrumbs">
+                        <a onclick="switchTab('view-dashboard', document.querySelector('[data-target=view-dashboard]'))"><i class="fa-solid fa-house"></i> Home</a>
+                        <i class="fa-solid fa-chevron-right" style="font-size:10px;"></i>
+                        <span class="current">Radiology & PACS</span>
+                    </div>
+                    <button class="btn-back-dashboard" onclick="switchTab('view-dashboard', document.querySelector('[data-target=view-dashboard]'))">
+                        <i class="fa-solid fa-arrow-left"></i> Back to Dashboard
+                    </button>
+                </div>
+
                 <div class="view-header">
                     <div>
                         <h1>Radiology & Imaging (RIS / PACS)</h1>
@@ -1546,6 +1917,17 @@ APP_HTML = """<!DOCTYPE html>
 
             <!-- 8. PHARMACY VIEW -->
             <section id="view-pharmacy" class="module-view">
+                <div class="ux-navigation-bar">
+                    <div class="breadcrumbs">
+                        <a onclick="switchTab('view-dashboard', document.querySelector('[data-target=view-dashboard]'))"><i class="fa-solid fa-house"></i> Home</a>
+                        <i class="fa-solid fa-chevron-right" style="font-size:10px;"></i>
+                        <span class="current">Pharmacy & Inventory</span>
+                    </div>
+                    <button class="btn-back-dashboard" onclick="switchTab('view-dashboard', document.querySelector('[data-target=view-dashboard]'))">
+                        <i class="fa-solid fa-arrow-left"></i> Back to Dashboard
+                    </button>
+                </div>
+
                 <div class="view-header">
                     <div>
                         <h1>Hospital Pharmacy & Inventory Management</h1>
@@ -1612,6 +1994,17 @@ APP_HTML = """<!DOCTYPE html>
 
             <!-- 9. AI CRM VIEW (NEW) -->
             <section id="view-aicrm" class="module-view">
+                <div class="ux-navigation-bar">
+                    <div class="breadcrumbs">
+                        <a onclick="switchTab('view-dashboard', document.querySelector('[data-target=view-dashboard]'))"><i class="fa-solid fa-house"></i> Home</a>
+                        <i class="fa-solid fa-chevron-right" style="font-size:10px;"></i>
+                        <span class="current">AI CRM & Patient Leads</span>
+                    </div>
+                    <button class="btn-back-dashboard" onclick="switchTab('view-dashboard', document.querySelector('[data-target=view-dashboard]'))">
+                        <i class="fa-solid fa-arrow-left"></i> Back to Dashboard
+                    </button>
+                </div>
+
                 <div class="view-header">
                     <div>
                         <h1>AI CRM & Intelligent Patient Engagement</h1>
@@ -1690,6 +2083,17 @@ APP_HTML = """<!DOCTYPE html>
 
             <!-- 10. PATIENT 360 VIEW (PIS) -->
             <section id="view-patient360" class="module-view">
+                <div class="ux-navigation-bar">
+                    <div class="breadcrumbs">
+                        <a onclick="switchTab('view-dashboard', document.querySelector('[data-target=view-dashboard]'))"><i class="fa-solid fa-house"></i> Home</a>
+                        <i class="fa-solid fa-chevron-right" style="font-size:10px;"></i>
+                        <span class="current">Patient 360 (PIS Portal)</span>
+                    </div>
+                    <button class="btn-back-dashboard" onclick="switchTab('view-dashboard', document.querySelector('[data-target=view-dashboard]'))">
+                        <i class="fa-solid fa-arrow-left"></i> Back to Dashboard
+                    </button>
+                </div>
+
                 <div class="view-header">
                     <div>
                         <h1>Patient Information System (PIS 360° Portal)</h1>
@@ -1701,14 +2105,17 @@ APP_HTML = """<!DOCTYPE html>
                     <div style="display:flex; align-items:center; justify-content:space-between;">
                         <div style="display:flex; align-items:center; gap:16px;">
                             <div style="width:64px; height:64px; border-radius:50%; background:#e2e8f0; display:flex; align-items:center; justify-content:center; font-size:24px; font-weight:800; color:var(--brand-primary);">
-                                MS
+                                <span id="p360-avatar">MS</span>
                             </div>
                             <div>
                                 <h2 style="font-size:20px; font-weight:800; color:#0f172a;" id="p360-name">Maria Santos</h2>
-                                <p style="font-size:13px; color:#64748b;">Hospital No: <strong id="p360-code">G1-2026-0089</strong> &bull; 34 Y / Female &bull; Blood Group: B+ &bull; HMO: Gold Care</p>
+                                <p style="font-size:13px; color:#64748b;">Hospital No: <strong id="p360-code">G1-2026-0089</strong> &bull; <span id="p360-submeta">34 Y / Female &bull; Blood Group: B+ &bull; HMO: Gold Care</span></p>
                             </div>
                         </div>
-                        <div>
+                        <div style="display:flex; gap:10px;">
+                            <button class="btn-secondary" onclick="openModal('modal-select-patient')">
+                                <i class="fa-solid fa-arrows-rotate"></i> Change Patient
+                            </button>
                             <button class="btn-primary-action" onclick="showToast('Outside Medical File Uploaded to Patient Vault')">
                                 <i class="fa-solid fa-cloud-arrow-up"></i> Upload External Record
                             </button>
@@ -1769,6 +2176,17 @@ APP_HTML = """<!DOCTYPE html>
 
             <!-- 11. EMPLOYEE HEALTH & SAFETY (EHS) VIEW -->
             <section id="view-ehs" class="module-view">
+                <div class="ux-navigation-bar">
+                    <div class="breadcrumbs">
+                        <a onclick="switchTab('view-dashboard', document.querySelector('[data-target=view-dashboard]'))"><i class="fa-solid fa-house"></i> Home</a>
+                        <i class="fa-solid fa-chevron-right" style="font-size:10px;"></i>
+                        <span class="current">Employee Health & Safety (EHS)</span>
+                    </div>
+                    <button class="btn-back-dashboard" onclick="switchTab('view-dashboard', document.querySelector('[data-target=view-dashboard]'))">
+                        <i class="fa-solid fa-arrow-left"></i> Back to Dashboard
+                    </button>
+                </div>
+
                 <div class="view-header">
                     <div>
                         <h1>Employee Health & Safety (EHS Occupational Health)</h1>
@@ -1847,6 +2265,17 @@ APP_HTML = """<!DOCTYPE html>
 
             <!-- 12. WHITE-LABEL & PERSONALIZATION SETTINGS -->
             <section id="view-whitelabel" class="module-view">
+                <div class="ux-navigation-bar">
+                    <div class="breadcrumbs">
+                        <a onclick="switchTab('view-dashboard', document.querySelector('[data-target=view-dashboard]'))"><i class="fa-solid fa-house"></i> Home</a>
+                        <i class="fa-solid fa-chevron-right" style="font-size:10px;"></i>
+                        <span class="current">White-Label & Branding Settings</span>
+                    </div>
+                    <button class="btn-back-dashboard" onclick="switchTab('view-dashboard', document.querySelector('[data-target=view-dashboard]'))">
+                        <i class="fa-solid fa-arrow-left"></i> Back to Dashboard
+                    </button>
+                </div>
+
                 <div class="view-header">
                     <div>
                         <h1>White-Label & Personalization Settings</h1>
@@ -1914,6 +2343,44 @@ APP_HTML = """<!DOCTYPE html>
         </main>
     </div>
 
+    <!-- MODAL: SELECT / SWITCH ACTIVE PATIENT -->
+    <div id="modal-select-patient" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-users"></i> Switch Active Patient Context</h3>
+                <button class="modal-close" onclick="closeModal('modal-select-patient')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p style="font-size:13px; color:#64748b; margin-bottom:14px;">Select a patient below to instantly load their clinical chart, vitals, visit history, and prescription file:</p>
+                <div class="search-box" style="width:100%; margin-bottom:14px;">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="modal-pat-filter" placeholder="Filter patient by name..." onkeyup="filterPatientModalList(this)" />
+                </div>
+                <div style="display:flex; flex-direction:column; gap:8px; max-height:280px; overflow-y:auto;" id="pat-modal-list">
+                    <div class="queue-item" onclick="setActivePatient('Juan Dela Cruz'); closeModal('modal-select-patient');">
+                        <div class="q-name"><span>Juan Dela Cruz</span><span class="status-badge status-active">PhilHealth</span></div>
+                        <div class="q-sub">Hospital No: G1-2026-0090 &bull; 45 Y / Male &bull; Tension Headache</div>
+                    </div>
+                    <div class="queue-item" onclick="setActivePatient('Maria Santos'); closeModal('modal-select-patient');">
+                        <div class="q-name"><span>Maria Santos</span><span class="status-badge status-completed">HMO Gold</span></div>
+                        <div class="q-sub">Hospital No: G1-2026-0089 &bull; 34 Y / Female &bull; Cardiology Follow-up</div>
+                    </div>
+                    <div class="queue-item" onclick="setActivePatient('Elena Reyes'); closeModal('modal-select-patient');">
+                        <div class="q-name"><span>Elena Reyes</span><span class="status-badge status-pending">Self-Pay</span></div>
+                        <div class="q-sub">Hospital No: G1-2026-0091 &bull; 28 Y / Female &bull; Neurological Checkup</div>
+                    </div>
+                    <div class="queue-item" onclick="setActivePatient('Antonio Gonzales'); closeModal('modal-select-patient');">
+                        <div class="q-name"><span>Antonio Gonzales</span><span class="status-badge status-completed">Corporate EHS</span></div>
+                        <div class="q-sub">Hospital No: G1-2026-0092 &bull; 52 Y / Male &bull; Annual Checkup</div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeModal('modal-select-patient')">Close</button>
+            </div>
+        </div>
+    </div>
+
     <!-- MODAL: NEW PATIENT REGISTRATION -->
     <div id="modal-new-patient" class="modal-overlay">
         <div class="modal-box">
@@ -1965,6 +2432,98 @@ APP_HTML = """<!DOCTYPE html>
             <div class="modal-footer">
                 <button class="btn-secondary" onclick="closeModal('modal-new-patient')">Cancel</button>
                 <button class="btn-primary-action" onclick="submitNewPatient()">Save Patient</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: BOOK APPOINTMENT -->
+    <div id="modal-new-appointment" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-calendar-plus"></i> Book Doctor Consultation</h3>
+                <button class="modal-close" onclick="closeModal('modal-new-appointment')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Select Patient</label>
+                        <select class="form-control" id="apt-patient">
+                            <option>Maria Santos (G1-2026-0089)</option>
+                            <option>Juan Dela Cruz (G1-2026-0090)</option>
+                            <option>Elena Reyes (G1-2026-0091)</option>
+                            <option>Antonio Gonzales (G1-2026-0092)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Clinical Department</label>
+                        <select class="form-control">
+                            <option>Cardiology</option>
+                            <option>Internal Medicine</option>
+                            <option>Neurology</option>
+                            <option>Orthopedics</option>
+                            <option>General Surgery</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Attending Consultant</label>
+                        <select class="form-control">
+                            <option>Dr. Roberto Tan, MD (Cardiologist)</option>
+                            <option>Dr. Alicia Gomez, MD (Internal Med)</option>
+                            <option>Dr. Vincent Lim, MD (Neurologist)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Appointment Date</label>
+                        <input type="date" class="form-control" value="2026-08-24" />
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeModal('modal-new-appointment')">Cancel</button>
+                <button class="btn-primary-action" onclick="closeModal('modal-new-appointment'); showToast('Appointment Booked & SMS Reminder Scheduled!');">Confirm Appointment</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: GENERATE INVOICE -->
+    <div id="modal-generate-invoice" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-file-invoice-dollar"></i> Create Billing Invoice</h3>
+                <button class="modal-close" onclick="closeModal('modal-generate-invoice')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Patient</label>
+                        <select class="form-control">
+                            <option>Elena Reyes (G1-2026-0091)</option>
+                            <option>Maria Santos (G1-2026-0089)</option>
+                            <option>Juan Dela Cruz (G1-2026-0090)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Service / Item</label>
+                        <select class="form-control">
+                            <option>OPD Consultation Fee - ₱ 1,000.00</option>
+                            <option>Chest X-Ray Digital - ₱ 850.00</option>
+                            <option>Lipid Profile Blood Test - ₱ 650.00</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Payment Method</label>
+                        <select class="form-control">
+                            <option>Cash</option>
+                            <option>GCash / Maya QR</option>
+                            <option>Credit / Debit Card</option>
+                            <option>HMO Direct Billing</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeModal('modal-generate-invoice')">Cancel</button>
+                <button class="btn-primary-action" onclick="closeModal('modal-generate-invoice'); showToast('Invoice Generated & Receipt Printed!');">Process Payment & Print</button>
             </div>
         </div>
     </div>
@@ -2041,126 +2600,6 @@ APP_HTML = """<!DOCTYPE html>
         </div>
     </div>
 
-    <!-- MODAL: AI TRIAGE SIMULATOR -->
-    <div id="modal-ai-simulation" class="modal-overlay">
-        <div class="modal-box">
-            <div class="modal-header">
-                <h3><i class="fa-solid fa-robot"></i> AI CRM Patient Triage Assistant</h3>
-                <button class="modal-close" onclick="closeModal('modal-ai-simulation')">&times;</button>
-            </div>
-            <div class="modal-body">
-                <p style="font-size:13.5px; color:#475569; margin-bottom:16px;">
-                    Type or paste patient symptoms below to simulate the AI CRM intelligent department matching and automated appointment booking engine:
-                </p>
-                <div class="form-group" style="margin-bottom:16px;">
-                    <label>Patient Symptoms / Inquiry Text</label>
-                    <textarea id="ai-symptom-text" class="form-control" rows="3" placeholder="e.g. Chest tightness, shortness of breath, and left arm numbness since morning"></textarea>
-                </div>
-                <button class="btn-accent-action" style="width:100%; justify-content:center;" onclick="runAITriageTest()">
-                    <i class="fa-solid fa-wand-magic-sparkles"></i> Run AI Triage Diagnosis & Matching
-                </button>
-                <div id="ai-triage-result" style="display:none; margin-top:16px; padding:16px; background:#f0fdf4; border:1px solid #bbf7d0; border-radius:10px;">
-                    <h4 style="font-size:14px; font-weight:800; color:#15803d; margin-bottom:6px;"><i class="fa-solid fa-circle-check"></i> AI Triage Recommendation:</h4>
-                    <p style="font-size:13px; color:#166534;" id="ai-triage-output"></p>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn-secondary" onclick="closeModal('modal-ai-simulation')">Close</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL: BOOK APPOINTMENT -->
-    <div id="modal-new-appointment" class="modal-overlay">
-        <div class="modal-box">
-            <div class="modal-header">
-                <h3><i class="fa-solid fa-calendar-plus"></i> Book Doctor Consultation</h3>
-                <button class="modal-close" onclick="closeModal('modal-new-appointment')">&times;</button>
-            </div>
-            <div class="modal-body">
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label>Select Patient</label>
-                        <select class="form-control" id="apt-patient">
-                            <option>Maria Santos (G1-2026-0089)</option>
-                            <option>Juan Dela Cruz (G1-2026-0090)</option>
-                            <option>Elena Reyes (G1-2026-0091)</option>
-                            <option>Antonio Gonzales (G1-2026-0092)</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Clinical Department</label>
-                        <select class="form-control">
-                            <option>Cardiology</option>
-                            <option>Internal Medicine</option>
-                            <option>Neurology</option>
-                            <option>Orthopedics</option>
-                            <option>General Surgery</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Attending Consultant</label>
-                        <select class="form-control">
-                            <option>Dr. Roberto Tan, MD (Cardiologist)</option>
-                            <option>Dr. Alicia Gomez, MD (Internal Med)</option>
-                            <option>Dr. Vincent Lim, MD (Neurologist)</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Appointment Date</label>
-                        <input type="date" class="form-control" value="2026-08-24" />
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn-secondary" onclick="closeModal('modal-new-appointment')">Cancel</button>
-                <button class="btn-primary-action" onclick="closeModal('modal-new-appointment'); showToast('Appointment Booked & SMS Reminder Scheduled!');">Confirm Appointment</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL: GENERATE INVOICE -->
-    <div id="modal-generate-invoice" class="modal-overlay">
-        <div class="modal-box">
-            <div class="modal-header">
-                <h3><i class="fa-solid fa-file-invoice-dollar"></i> Create Billing Invoice</h3>
-                <button class="modal-close" onclick="closeModal('modal-generate-invoice')">&times;</button>
-            </div>
-            <div class="modal-body">
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label>Patient</label>
-                        <select class="form-control">
-                            <option>Elena Reyes (G1-2026-0091)</option>
-                            <option>Maria Santos (G1-2026-0089)</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Service / Item</label>
-                        <select class="form-control">
-                            <option>OPD Consultation Fee - ₱ 1,000.00</option>
-                            <option>Chest X-Ray Digital - ₱ 850.00</option>
-                            <option>Lipid Profile Blood Test - ₱ 650.00</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Payment Method</label>
-                        <select class="form-control">
-                            <option>Cash</option>
-                            <option>GCash / Maya QR</option>
-                            <option>Credit / Debit Card</option>
-                            <option>HMO Direct Billing</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn-secondary" onclick="closeModal('modal-generate-invoice')">Cancel</button>
-                <button class="btn-primary-action" onclick="closeModal('modal-generate-invoice'); showToast('Invoice Generated & Receipt Printed!');">Process Payment & Print</button>
-            </div>
-        </div>
-    </div>
-
     <!-- MODAL: REPORT SAFETY INCIDENT -->
     <div id="modal-report-incident" class="modal-overlay">
         <div class="modal-box">
@@ -2209,6 +2648,35 @@ APP_HTML = """<!DOCTYPE html>
         </div>
     </div>
 
+    <!-- MODAL: AI TRIAGE SIMULATOR -->
+    <div id="modal-ai-simulation" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-robot"></i> AI CRM Patient Triage Assistant</h3>
+                <button class="modal-close" onclick="closeModal('modal-ai-simulation')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p style="font-size:13.5px; color:#475569; margin-bottom:16px;">
+                    Type or paste patient symptoms below to simulate the AI CRM intelligent department matching and automated appointment booking engine:
+                </p>
+                <div class="form-group" style="margin-bottom:16px;">
+                    <label>Patient Symptoms / Inquiry Text</label>
+                    <textarea id="ai-symptom-text" class="form-control" rows="3" placeholder="e.g. Chest tightness, shortness of breath, and left arm numbness since morning"></textarea>
+                </div>
+                <button class="btn-accent-action" style="width:100%; justify-content:center;" onclick="runAITriageTest()">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> Run AI Triage Diagnosis & Matching
+                </button>
+                <div id="ai-triage-result" style="display:none; margin-top:16px; padding:16px; background:#f0fdf4; border:1px solid #bbf7d0; border-radius:10px;">
+                    <h4 style="font-size:14px; font-weight:800; color:#15803d; margin-bottom:6px;"><i class="fa-solid fa-circle-check"></i> AI Triage Recommendation:</h4>
+                    <p style="font-size:13px; color:#166534;" id="ai-triage-output"></p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeModal('modal-ai-simulation')">Close</button>
+            </div>
+        </div>
+    </div>
+
     <!-- TOAST NOTIFICATION -->
     <div id="toast-notification" class="toast-notify">
         <i class="fa-solid fa-circle-check" style="color: var(--brand-cyan);"></i>
@@ -2216,6 +2684,142 @@ APP_HTML = """<!DOCTYPE html>
     </div>
 
     <script>
+        // Patient Database Objects
+        const PATIENT_RECORDS = {
+            'Juan Dela Cruz': {
+                code: 'G1-2026-0090',
+                name: 'Juan Dela Cruz',
+                age: '45 Y',
+                gender: 'Male',
+                meta: '45 Y / Male &bull; PhilHealth',
+                scheme: 'PhilHealth',
+                bp: '120/80',
+                pulse: '76',
+                temp: '36.8',
+                spo2: '98%',
+                complaints: 'Patient reports recurrent mild headache for 3 days, accompanied by eye strain during computer screen work.',
+                diagnosis: 'G44.2 - Tension-type headache',
+                queueId: 'q-pat-juan',
+                rx: [
+                    { name: 'Paracetamol 500mg', dose: '1 Tab', freq: 'TID (Every 8h)', days: '5 Days' },
+                    { name: 'Vitamin B-Complex', dose: '1 Capsule', freq: 'OD (Once Daily)', days: '30 Days' }
+                ]
+            },
+            'Maria Santos': {
+                code: 'G1-2026-0089',
+                name: 'Maria Santos',
+                age: '34 Y',
+                gender: 'Female',
+                meta: '34 Y / Female &bull; HMO Gold',
+                scheme: 'HMO Gold',
+                bp: '115/75',
+                pulse: '72',
+                temp: '36.6',
+                spo2: '99%',
+                complaints: 'Routine cardiology follow-up. Experiencing occasional mild palpitation after high caffeine intake.',
+                diagnosis: 'I49.8 - Benign premature atrial contractions',
+                queueId: 'q-pat-maria',
+                rx: [
+                    { name: 'Metoprolol 25mg', dose: '1/2 Tab', freq: 'OD (Morning)', days: '14 Days' },
+                    { name: 'CoQ10 100mg', dose: '1 Softgel', freq: 'OD (Daily)', days: '30 Days' }
+                ]
+            },
+            'Elena Reyes': {
+                code: 'G1-2026-0091',
+                name: 'Elena Reyes',
+                age: '28 Y',
+                gender: 'Female',
+                meta: '28 Y / Female &bull; Self-Pay',
+                scheme: 'Self-Pay',
+                bp: '110/70',
+                pulse: '80',
+                temp: '37.0',
+                spo2: '99%',
+                complaints: 'Dizziness and lightheadedness when standing up quickly. Normal appetite.',
+                diagnosis: 'R42 - Dizziness and giddiness (Orthostatic)',
+                queueId: 'q-pat-elena',
+                rx: [
+                    { name: 'Oral Rehydration Salts', dose: '1 Sachet in 1L', freq: 'Daily', days: '7 Days' }
+                ]
+            },
+            'Antonio Gonzales': {
+                code: 'G1-2026-0092',
+                name: 'Antonio Gonzales',
+                age: '52 Y',
+                gender: 'Male',
+                meta: '52 Y / Male &bull; Corporate EHS',
+                scheme: 'Corporate EHS',
+                bp: '135/85',
+                pulse: '74',
+                temp: '36.7',
+                spo2: '97%',
+                complaints: 'Annual executive occupational health checkup. Occasional lower back ache.',
+                diagnosis: 'M54.5 - Low back pain / Lumbar strain',
+                queueId: 'q-pat-antonio',
+                rx: [
+                    { name: 'Ibuprofen 400mg', dose: '1 Tab PRN', freq: 'Post-Meals', days: '5 Days' },
+                    { name: 'Ergonomic Physical Therapy', dose: '3 Sessions', freq: 'Weekly', days: '3 Weeks' }
+                ]
+            }
+        };
+
+        // Active Patient Switcher Function
+        function setActivePatient(patientName) {
+            const pat = PATIENT_RECORDS[patientName];
+            if (!pat) return;
+
+            // 1. Update Global Header Bar
+            document.getElementById('global-pat-name').textContent = pat.name;
+            document.getElementById('global-pat-code').textContent = pat.code;
+            document.getElementById('global-pat-meta').innerHTML = pat.meta;
+
+            // 2. Update Clinical EMR Desk
+            const emrTitle = document.getElementById('emr-patient-title');
+            if (emrTitle) emrTitle.textContent = `${pat.name} (${pat.age} / ${pat.gender})`;
+            const emrBadge = document.getElementById('emr-hospital-badge');
+            if (emrBadge) emrBadge.textContent = `Hospital No: ${pat.code}`;
+            
+            if (document.getElementById('emr-bp')) document.getElementById('emr-bp').value = pat.bp;
+            if (document.getElementById('emr-pulse')) document.getElementById('emr-pulse').value = pat.pulse;
+            if (document.getElementById('emr-temp')) document.getElementById('emr-temp').value = pat.temp;
+            if (document.getElementById('emr-spo2')) document.getElementById('emr-spo2').value = pat.spo2;
+            if (document.getElementById('emr-complaints')) document.getElementById('emr-complaints').value = pat.complaints;
+            if (document.getElementById('emr-diagnosis')) document.getElementById('emr-diagnosis').value = pat.diagnosis;
+
+            // Update prescription table
+            const rxTbody = document.querySelector('#rx-table tbody');
+            if (rxTbody) {
+                rxTbody.innerHTML = '';
+                pat.rx.forEach(item => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td><strong>${item.name}</strong></td>
+                        <td>${item.dose}</td>
+                        <td>${item.freq}</td>
+                        <td>${item.days}</td>
+                        <td><button class="btn-del-rx" onclick="this.closest('tr').remove(); showToast('Medication removed from Rx');">&times;</button></td>
+                    `;
+                    rxTbody.appendChild(row);
+                });
+            }
+
+            // 3. Update Queue Selection Highlight in Doctor Desk
+            document.querySelectorAll('.queue-item').forEach(qi => qi.classList.remove('active'));
+            const activeQueueEl = document.getElementById(pat.queueId);
+            if (activeQueueEl) activeQueueEl.classList.add('active');
+
+            // 4. Update Patient 360 View
+            if (document.getElementById('p360-name')) document.getElementById('p360-name').textContent = pat.name;
+            if (document.getElementById('p360-code')) document.getElementById('p360-code').textContent = pat.code;
+            if (document.getElementById('p360-submeta')) document.getElementById('p360-submeta').innerHTML = pat.meta;
+            if (document.getElementById('p360-avatar')) {
+                const initials = pat.name.split(' ').map(n => n[0]).join('');
+                document.getElementById('p360-avatar').textContent = initials;
+            }
+
+            showToast(`Switched active patient context to ${pat.name} (${pat.code})`);
+        }
+
         // Tab switching
         function switchTab(viewId, element) {
             document.querySelectorAll('.module-view').forEach(v => v.classList.remove('active'));
@@ -2227,7 +2831,25 @@ APP_HTML = """<!DOCTYPE html>
             if (element) {
                 const navItem = element.closest('.nav-item');
                 if (navItem) navItem.classList.add('active');
+            } else {
+                const matchingNav = document.querySelector(`.nav-item[data-target="${viewId}"]`);
+                if (matchingNav) matchingNav.classList.add('active');
             }
+        }
+
+        // Add Rx row dynamically
+        function addPrescriptionRow() {
+            const rxTbody = document.querySelector('#rx-table tbody');
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td><input type="text" class="form-control" value="New Medicine" style="padding:4px 8px; font-size:12px;" /></td>
+                <td><input type="text" class="form-control" value="1 Tab" style="padding:4px 8px; font-size:12px; width:70px;" /></td>
+                <td><input type="text" class="form-control" value="TID" style="padding:4px 8px; font-size:12px; width:80px;" /></td>
+                <td><input type="text" class="form-control" value="7 Days" style="padding:4px 8px; font-size:12px; width:70px;" /></td>
+                <td><button class="btn-del-rx" onclick="this.closest('tr').remove(); showToast('Medication removed from Rx');">&times;</button></td>
+            `;
+            rxTbody.appendChild(row);
+            showToast('Added new prescription item slot.');
         }
 
         // Modal Controls
@@ -2241,6 +2863,19 @@ APP_HTML = """<!DOCTYPE html>
             if (modal) modal.classList.remove('active');
         }
 
+        // Close on Backdrop Click & ESC Key
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('modal-overlay')) {
+                e.target.classList.remove('active');
+            }
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.modal-overlay.active').forEach(m => m.classList.remove('active'));
+            }
+        });
+
         // Toast Feedback
         function showToast(message) {
             const toast = document.getElementById('toast-notification');
@@ -2250,10 +2885,31 @@ APP_HTML = """<!DOCTYPE html>
             setTimeout(() => toast.classList.remove('show'), 3500);
         }
 
+        // Global Patient Quick Search in Header
+        function handleGlobalPatientSearch(input) {
+            const query = input.value.toLowerCase().trim();
+            if (!query) return;
+
+            for (const [name, pat] of Object.entries(PATIENT_RECORDS)) {
+                if (name.toLowerCase().includes(query) || pat.code.toLowerCase().includes(query)) {
+                    setActivePatient(name);
+                    break;
+                }
+            }
+        }
+
+        function filterPatientModalList(input) {
+            const query = input.value.toLowerCase();
+            document.querySelectorAll('#pat-modal-list .queue-item').forEach(el => {
+                el.style.display = el.innerText.toLowerCase().includes(query) ? '' : 'none';
+            });
+        }
+
         // Patient Registration
         function submitNewPatient() {
             const fname = document.getElementById('np-fname').value || 'New';
             const lname = document.getElementById('np-lname').value || 'Patient';
+            const fullName = `${fname} ${lname}`;
             const age = document.getElementById('np-age').value || '30';
             const gender = document.getElementById('np-gender').value || 'Male';
             const phone = document.getElementById('np-phone').value || '+63 900 000 0000';
@@ -2262,24 +2918,45 @@ APP_HTML = """<!DOCTYPE html>
             
             const code = 'G1-2026-00' + Math.floor(100 + Math.random() * 900);
             
+            PATIENT_RECORDS[fullName] = {
+                code: code,
+                name: fullName,
+                age: age + ' Y',
+                gender: gender,
+                meta: `${age} Y / ${gender} &bull; ${scheme}`,
+                scheme: scheme,
+                bp: '120/80',
+                pulse: '72',
+                temp: '36.5',
+                spo2: '99%',
+                complaints: 'Newly registered patient.',
+                diagnosis: 'Z00.0 - General medical examination',
+                queueId: 'q-pat-' + Math.random(),
+                rx: []
+            };
+
             const tbody = document.querySelector('#patient-master-table tbody');
             const tr = document.createElement('tr');
             tr.innerHTML = `
                 <td><strong>${code}</strong></td>
-                <td>${fname} ${lname}</td>
+                <td>${fullName}</td>
                 <td>${age} Y / ${gender}</td>
                 <td>${phone}</td>
                 <td>${address}</td>
                 <td><span class="status-badge status-active">${scheme}</span></td>
                 <td>
-                    <button class="btn-primary-action" style="padding: 5px 10px; font-size: 12px;" onclick="viewPatient360('${fname} ${lname}', '${code}')">
+                    <button class="btn-primary-action" style="padding: 5px 10px; font-size: 12px; margin-right:4px;" onclick="setActivePatient('${fullName}')">
+                        <i class="fa-solid fa-check"></i> Set Active
+                    </button>
+                    <button class="btn-secondary" style="padding: 5px 10px; font-size: 12px;" onclick="viewPatient360('${fullName}', '${code}')">
                         <i class="fa-solid fa-id-card"></i> 360° View
                     </button>
                 </td>
             `;
             tbody.prepend(tr);
             closeModal('modal-new-patient');
-            showToast(`Patient ${fname} ${lname} registered with Hospital No ${code}!`);
+            setActivePatient(fullName);
+            showToast(`Patient ${fullName} registered & set as Active Patient!`);
         }
 
         // Search Filter
@@ -2293,8 +2970,7 @@ APP_HTML = """<!DOCTYPE html>
 
         // Patient 360 View Jump
         function viewPatient360(name, code) {
-            document.getElementById('p360-name').textContent = name;
-            document.getElementById('p360-code').textContent = code;
+            setActivePatient(name);
             switchTab('view-patient360', document.querySelector('[data-target=view-patient360]'));
             showToast(`Viewing 360° longitudinal medical record for ${name}`);
         }
