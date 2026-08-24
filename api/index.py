@@ -543,6 +543,52 @@ LOGIN_HTML = """<!DOCTYPE html>
             }
         }
     
+    
+        /* Code Blue Emergency Banner */
+        .code-blue-banner {
+            display: none;
+            background: linear-gradient(90deg, #b91c1c, #dc2626, #b91c1c);
+            color: #ffffff;
+            padding: 10px 18px;
+            font-size: 13.5px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 15px rgba(220, 38, 38, 0.5);
+            animation: pulse-red 1.5s infinite;
+            z-index: 1060;
+            border-bottom: 2px solid #fecaca;
+        }
+
+        @keyframes pulse-red {
+            0% { background: #b91c1c; }
+            50% { background: #dc2626; }
+            100% { background: #b91c1c; }
+        }
+
+        .code-blue-loc-card {
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 10px 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .code-blue-loc-card:hover {
+            border-color: #ef4444;
+            background: #fef2f2;
+        }
+
+        .code-blue-loc-card.selected {
+            border-color: #dc2626;
+            background: #fee2e2;
+            font-weight: 700;
+        }
+    
     </style>
 </head>
 <body>
@@ -1982,6 +2028,52 @@ APP_HTML = """<!DOCTYPE html>
             }
         }
     
+    
+        /* Code Blue Emergency Banner */
+        .code-blue-banner {
+            display: none;
+            background: linear-gradient(90deg, #b91c1c, #dc2626, #b91c1c);
+            color: #ffffff;
+            padding: 10px 18px;
+            font-size: 13.5px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 15px rgba(220, 38, 38, 0.5);
+            animation: pulse-red 1.5s infinite;
+            z-index: 1060;
+            border-bottom: 2px solid #fecaca;
+        }
+
+        @keyframes pulse-red {
+            0% { background: #b91c1c; }
+            50% { background: #dc2626; }
+            100% { background: #b91c1c; }
+        }
+
+        .code-blue-loc-card {
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 10px 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .code-blue-loc-card:hover {
+            border-color: #ef4444;
+            background: #fef2f2;
+        }
+
+        .code-blue-loc-card.selected {
+            border-color: #dc2626;
+            background: #fee2e2;
+            font-weight: 700;
+        }
+    
     </style>
 </head>
 <body>
@@ -2129,6 +2221,25 @@ APP_HTML = """<!DOCTYPE html>
 
     <!-- Main Wrapper -->
     <div class="main-wrapper">
+                <!-- Code Blue Active System-Wide Emergency Alert Banner -->
+        <div id="code-blue-active-banner" class="code-blue-banner" style="display:none;">
+            <div style="display:flex; align-items:center; gap:12px;">
+                <div style="width:32px; height:32px; border-radius:50%; background:#fff; color:#dc2626; display:flex; align-items:center; justify-content:center; font-size:16px;">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                </div>
+                <div>
+                    <strong style="font-size:14px; text-transform:uppercase; letter-spacing:0.5px;">🚨 STAT CODE BLUE ACTIVATED:</strong>
+                    <span id="active-code-blue-location" style="font-weight:800; background:rgba(0,0,0,0.25); padding:2px 8px; border-radius:4px; margin:0 6px;">ER Resuscitation Bay 1</span> &bull;
+                    <span id="active-code-blue-reason">Cardiac Arrest / Airway Collapse</span>
+                    <span id="active-code-blue-timer" style="margin-left:10px; font-weight:800; color:#fef08a;">(00:00 elapsed)</span>
+                </div>
+            </div>
+            <div style="display:flex; gap:8px;">
+                <button type="button" style="background:#fff; color:#dc2626; border:none; padding:6px 14px; border-radius:6px; font-weight:800; cursor:pointer; font-size:12px;" onclick="standDownCodeBlue()">
+                    <i class="fa-solid fa-circle-check"></i> Patient Stabilized (Stand Down)
+                </button>
+            </div>
+        </div>
         <header class="top-navbar">
             <div class="navbar-left">
                 <button type="button" id="btn-mobile-sidebar-toggle" class="mobile-toggle-btn" onclick="toggleMobileSidebar()" aria-label="Toggle Menu">
@@ -2581,8 +2692,8 @@ APP_HTML = """<!DOCTYPE html>
                         <p>Real-time ER acuity triage (Level 1 to 5), bay tracking, and immediate patient admissions</p>
                     </div>
                     <div style="display:flex; gap:10px;">
-                        <button class="btn-accent-action" style="background:#ef4444; color:#fff;" onclick="callTraumaTeam()">
-                            <i class="fa-solid fa-bell"></i> Code Blue / Activate Trauma Team
+                        <button class="btn-accent-action" style="background:#dc2626; color:#fff; font-weight:800;" onclick="openCodeBlueModal()">
+                            <i class="fa-solid fa-triangle-exclamation"></i> 🚨 Trigger Code Blue Location Alert
                         </button>
                         <button class="btn-primary-action" onclick="openModal('modal-new-er-patient')">
                             <i class="fa-solid fa-user-plus"></i> + Register ER Emergency Case
@@ -5075,6 +5186,118 @@ APP_HTML = """<!DOCTYPE html>
 
     
     
+    
+    <!-- MODAL: CODE BLUE STAT LOCATION DISPATCH -->
+    <div id="modal-code-blue-dispatch" class="modal-overlay">
+        <div class="modal-box" style="max-width:620px; border-top:6px solid #dc2626;">
+            <div class="modal-header" style="background:#fef2f2;">
+                <div>
+                    <h3 style="color:#b91c1c; font-size:17px; font-weight:800;">
+                        <i class="fa-solid fa-bullhorn"></i> STAT Code Blue & Emergency Dispatch
+                    </h3>
+                    <p style="font-size:12px; color:#7f1d1d; margin-top:2px;">Select the exact hospital zone/bay to broadcast emergency resuscitation alerts.</p>
+                </div>
+                <button class="modal-close" onclick="closeModal('modal-code-blue-dispatch')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <!-- 1. Location Selection Grid -->
+                <div class="form-group" style="margin-bottom:14px;">
+                    <label style="font-weight:800; color:#1e293b; display:flex; justify-content:space-between;">
+                        <span>1. CHOOSE EMERGENCY LOCATION / ZONE</span>
+                        <span style="color:#dc2626; font-size:11px;">* Required</span>
+                    </label>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:6px;">
+                        <div class="code-blue-loc-card selected" onclick="selectCodeBlueLoc(this, 'ER Resuscitation Bay 1 (STAT Red)')">
+                            <i class="fa-solid fa-bed-pulse" style="color:#dc2626;"></i>
+                            <div>
+                                <div style="font-size:12.5px; font-weight:700;">ER Resuscitation Bay 1</div>
+                                <div style="font-size:10.5px; color:#64748b;">Ground Floor Emergency Bay</div>
+                            </div>
+                        </div>
+                        <div class="code-blue-loc-card" onclick="selectCodeBlueLoc(this, 'ER Trauma Bay 2')">
+                            <i class="fa-solid fa-truck-medical" style="color:#ea580c;"></i>
+                            <div>
+                                <div style="font-size:12.5px; font-weight:700;">ER Trauma Bay 2</div>
+                                <div style="font-size:10.5px; color:#64748b;">Trauma & Surgical Bay</div>
+                            </div>
+                        </div>
+                        <div class="code-blue-loc-card" onclick="selectCodeBlueLoc(this, '3rd Floor ICU Suite (Bed 101)')">
+                            <i class="fa-solid fa-heart-pulse" style="color:#0284c7;"></i>
+                            <div>
+                                <div style="font-size:12.5px; font-weight:700;">3rd Floor ICU Suite</div>
+                                <div style="font-size:10.5px; color:#64748b;">Intensive Care Unit (Bed 101)</div>
+                            </div>
+                        </div>
+                        <div class="code-blue-loc-card" onclick="selectCodeBlueLoc(this, '2nd Floor Operating Theater (OT-1)')">
+                            <i class="fa-solid fa-mask-ventilator" style="color:#7c3aed;"></i>
+                            <div>
+                                <div style="font-size:12.5px; font-weight:700;">2nd Floor Operating Theater</div>
+                                <div style="font-size:10.5px; color:#64748b;">Main Surgery Suite OT-1</div>
+                            </div>
+                        </div>
+                        <div class="code-blue-loc-card" onclick="selectCodeBlueLoc(this, '4th Floor Inpatient Ward (Room 402)')">
+                            <i class="fa-solid fa-building-user" style="color:#059669;"></i>
+                            <div>
+                                <div style="font-size:12.5px; font-weight:700;">4th Floor Inpatient Ward</div>
+                                <div style="font-size:10.5px; color:#64748b;">Medical / Surgical Room 402</div>
+                            </div>
+                        </div>
+                        <div class="code-blue-loc-card" onclick="selectCodeBlueLoc(this, 'Radiology & CT Scanner Bay')">
+                            <i class="fa-solid fa-x-ray" style="color:#d97706;"></i>
+                            <div>
+                                <div style="font-size:12.5px; font-weight:700;">Radiology & CT Scanner</div>
+                                <div style="font-size:10.5px; color:#64748b;">Ground Floor Imaging Annex</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Custom Location input -->
+                <div class="form-group" style="margin-bottom:14px;">
+                    <label style="font-size:12px; color:#64748b;">Or Specify Other Hospital Area / Room:</label>
+                    <input type="text" id="code-blue-custom-loc" class="form-control" placeholder="e.g. OPD Main Lobby, Elevator 2, Dialysis Unit, Pharmacy Corridor" oninput="clearCardSelection()" />
+                </div>
+
+                <!-- 2. Emergency Acuity & Symptoms -->
+                <div class="form-grid" style="margin-bottom:14px;">
+                    <div class="form-group">
+                        <label style="font-weight:700; font-size:12px;">EMERGENCY NATURE</label>
+                        <select id="code-blue-reason-select" class="form-control">
+                            <option value="Cardiac Arrest / Pulseless STAT">🫀 Cardiac Arrest / Pulseless STAT</option>
+                            <option value="Respiratory Arrest / Severe Airway Loss">🫁 Respiratory Arrest / Severe Airway Loss</option>
+                            <option value="Massive Hemorrhage / Level 1 Shock">🩸 Massive Hemorrhage / Level 1 Shock</option>
+                            <option value="Acute Anaphylaxis / Severe Laryngospasm">⚡ Acute Anaphylaxis / Severe Laryngospasm</option>
+                            <option value="Unresponsive / Acute Collapse">🚨 Unresponsive / Acute Collapse</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-weight:700; font-size:12px;">PATIENT IDENTITY (OPTIONAL)</label>
+                        <input type="text" id="code-blue-patient-name" class="form-control" value="Juan Dela Cruz (G1-2026-0090)" />
+                    </div>
+                </div>
+
+                <!-- 3. Automated Resuscitation Team Notification Preview -->
+                <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:10px 12px;">
+                    <div style="font-size:11.5px; font-weight:800; color:#475569; margin-bottom:4px;">
+                        <i class="fa-solid fa-satellite-dish" style="color:var(--brand-blue);"></i> CODE TEAM ROSTER TO BE BROADCASTED:
+                    </div>
+                    <div style="font-size:11px; color:#64748b; line-height:1.5;">
+                        • Dr. Roberto Tan, MD (Emergency Physician Lead)<br />
+                        • Dr. Edward Hernandez, MD (Anesthesiologist / Airway Specialist)<br />
+                        • Nurse Clara Dizon (Critical Care / Crash Cart Charge Nurse)<br />
+                        • Hospital PA System & Pager Gateway (All Floors)
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer" style="background:#fef2f2; border-top:1px solid #fee2e2;">
+                <button class="btn-secondary" onclick="closeModal('modal-code-blue-dispatch')">Cancel</button>
+                <button class="btn-primary-action" style="background:#dc2626; border-color:#b91c1c; font-weight:800;" onclick="broadcastCodeBlue()">
+                    <i class="fa-solid fa-bullhorn"></i> BROADCAST CODE BLUE NOW
+                </button>
+            </div>
+        </div>
+    </div>
+    
     <!-- TOAST NOTIFICATION -->
     <div id="toast-notification" class="toast-notify">
         <i class="fa-solid fa-circle-check" style="color: var(--brand-cyan);"></i>
@@ -5476,6 +5699,80 @@ APP_HTML = """<!DOCTYPE html>
             setTimeout(() => {
                 switchTab('view-appointments', null);
             }, 1200);
+        }
+    
+        
+        // Interactive Code Blue Location & Dispatch System
+        let selectedCodeBlueLocation = 'ER Resuscitation Bay 1 (STAT Red)';
+        let codeBlueTimerInterval = null;
+        let codeBlueSeconds = 0;
+
+        function openCodeBlueModal(preselectedLocation) {
+            if (preselectedLocation) {
+                selectedCodeBlueLocation = preselectedLocation;
+                document.getElementById('code-blue-custom-loc').value = preselectedLocation;
+                document.querySelectorAll('.code-blue-loc-card').forEach(card => card.classList.remove('selected'));
+            }
+            openModal('modal-code-blue-dispatch');
+        }
+
+        function selectCodeBlueLoc(cardEl, locName) {
+            document.querySelectorAll('.code-blue-loc-card').forEach(card => card.classList.remove('selected'));
+            cardEl.classList.add('selected');
+            selectedCodeBlueLocation = locName;
+            document.getElementById('code-blue-custom-loc').value = '';
+        }
+
+        function clearCardSelection() {
+            const customVal = document.getElementById('code-blue-custom-loc').value.trim();
+            if (customVal) {
+                document.querySelectorAll('.code-blue-loc-card').forEach(card => card.classList.remove('selected'));
+                selectedCodeBlueLocation = customVal;
+            }
+        }
+
+        function broadcastCodeBlue() {
+            const customVal = document.getElementById('code-blue-custom-loc').value.trim();
+            const location = customVal || selectedCodeBlueLocation || 'Emergency Department';
+            const reason = document.getElementById('code-blue-reason-select').value;
+            const patient = document.getElementById('code-blue-patient-name').value.trim() || 'Unidentified Patient';
+
+            closeModal('modal-code-blue-dispatch');
+
+            // Activate Top Screen Banner
+            const banner = document.getElementById('code-blue-active-banner');
+            if (banner) {
+                document.getElementById('active-code-blue-location').textContent = location;
+                document.getElementById('active-code-blue-reason').textContent = `${reason} (${patient})`;
+                banner.style.display = 'flex';
+            }
+
+            // Start Elapsed CPR Timer
+            clearInterval(codeBlueTimerInterval);
+            codeBlueSeconds = 0;
+            updateCodeBlueTimerDisplay();
+            codeBlueTimerInterval = setInterval(() => {
+                codeBlueSeconds++;
+                updateCodeBlueTimerDisplay();
+            }, 1000);
+
+            showToast(`🚨 CODE BLUE BROADCASTED: Resuscitation Team & Crash Cart dispatched to ${location}!`);
+        }
+
+        function updateCodeBlueTimerDisplay() {
+            const mins = String(Math.floor(codeBlueSeconds / 60)).padStart(2, '0');
+            const secs = String(codeBlueSeconds % 60).padStart(2, '0');
+            const timerEl = document.getElementById('active-code-blue-timer');
+            if (timerEl) {
+                timerEl.textContent = `(${mins}:${secs} elapsed)`;
+            }
+        }
+
+        function standDownCodeBlue() {
+            clearInterval(codeBlueTimerInterval);
+            const banner = document.getElementById('code-blue-active-banner');
+            if (banner) banner.style.display = 'none';
+            showToast('✅ Code Blue Stand Down: Patient successfully stabilized. Resuscitation log saved.');
         }
     
         function performSecureLogout(event) {

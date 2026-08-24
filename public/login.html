@@ -450,6 +450,52 @@
             }
         }
     
+    
+        /* Code Blue Emergency Banner */
+        .code-blue-banner {
+            display: none;
+            background: linear-gradient(90deg, #b91c1c, #dc2626, #b91c1c);
+            color: #ffffff;
+            padding: 10px 18px;
+            font-size: 13.5px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 15px rgba(220, 38, 38, 0.5);
+            animation: pulse-red 1.5s infinite;
+            z-index: 1060;
+            border-bottom: 2px solid #fecaca;
+        }
+
+        @keyframes pulse-red {
+            0% { background: #b91c1c; }
+            50% { background: #dc2626; }
+            100% { background: #b91c1c; }
+        }
+
+        .code-blue-loc-card {
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 10px 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .code-blue-loc-card:hover {
+            border-color: #ef4444;
+            background: #fef2f2;
+        }
+
+        .code-blue-loc-card.selected {
+            border-color: #dc2626;
+            background: #fee2e2;
+            font-weight: 700;
+        }
+    
     </style>
 </head>
 <body>
