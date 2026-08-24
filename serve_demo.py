@@ -345,6 +345,204 @@ LOGIN_HTML = """<!DOCTYPE html>
             .auth-container { flex-direction: column; }
             .hero-panel, .form-panel { padding: 32px; }
         }
+    
+        /* ==========================================================================
+           COMPREHENSIVE MOBILE & TABLET RESPONSIVE SYSTEM
+           ========================================================================== */
+        
+        /* Mobile Toggle Button */
+        .mobile-toggle-btn {
+            display: none;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            color: #ffffff;
+            font-size: 18px;
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .mobile-toggle-btn:hover, .mobile-toggle-btn:active {
+            background: var(--brand-cyan);
+            color: #0f172a;
+        }
+
+        /* Sidebar Backdrop for Mobile Drawer */
+        .sidebar-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            z-index: 1040;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .sidebar-backdrop.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* Responsive Breakpoints */
+        @media (max-width: 992px) {
+            body {
+                position: relative;
+            }
+
+            .mobile-toggle-btn {
+                display: inline-flex;
+            }
+
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: 0;
+                bottom: 0;
+                width: 290px;
+                max-width: 85vw;
+                z-index: 1050;
+                transform: translateX(-100%);
+                transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                box-shadow: 4px 0 25px rgba(0, 0, 0, 0.5);
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .top-navbar {
+                padding: 10px 16px;
+                min-height: 56px;
+                gap: 12px;
+            }
+
+            .navbar-left {
+                gap: 12px;
+            }
+
+            .facility-title {
+                font-size: 13px;
+            }
+
+            .content-area {
+                padding: 16px 14px;
+            }
+
+            .view-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 14px;
+            }
+
+            .view-header button, .view-header div[style*="display:flex"] {
+                width: 100%;
+                justify-content: flex-start;
+            }
+
+            .grid-2col, .grid-3col, .grid-4col, .grid-split {
+                grid-template-columns: 1fr !important;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 12px;
+            }
+
+            .bed-matrix-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .table-card {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .emr-table {
+                min-width: 650px;
+            }
+
+            .modal-box {
+                width: 94% !important;
+                max-height: 90vh !important;
+                padding: 18px 16px !important;
+                margin: 10px auto !important;
+            }
+
+            .modal-footer {
+                flex-direction: column-reverse;
+                gap: 8px;
+            }
+
+            .modal-footer button {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .top-navbar {
+                flex-direction: column;
+                align-items: stretch;
+                padding: 10px 12px;
+            }
+
+            .navbar-left, .navbar-right {
+                width: 100%;
+                justify-content: space-between;
+                flex-wrap: wrap;
+            }
+
+            .active-patient-badge {
+                width: 100%;
+                justify-content: space-between;
+                font-size: 11px;
+                padding: 6px 10px;
+            }
+
+            .facility-title span.sub-tagline {
+                display: none;
+            }
+
+            .user-profile {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .ux-navigation-bar {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+
+            .btn-back-dashboard {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .bed-matrix-toolbar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .ward-filter-pills {
+                overflow-x: auto;
+                padding-bottom: 4px;
+            }
+        }
+    
     </style>
 </head>
 <body>
@@ -1586,6 +1784,204 @@ APP_HTML = """<!DOCTYPE html>
             max-width: 90vw;
             box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
         }
+    
+        /* ==========================================================================
+           COMPREHENSIVE MOBILE & TABLET RESPONSIVE SYSTEM
+           ========================================================================== */
+        
+        /* Mobile Toggle Button */
+        .mobile-toggle-btn {
+            display: none;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            color: #ffffff;
+            font-size: 18px;
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .mobile-toggle-btn:hover, .mobile-toggle-btn:active {
+            background: var(--brand-cyan);
+            color: #0f172a;
+        }
+
+        /* Sidebar Backdrop for Mobile Drawer */
+        .sidebar-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            z-index: 1040;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .sidebar-backdrop.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* Responsive Breakpoints */
+        @media (max-width: 992px) {
+            body {
+                position: relative;
+            }
+
+            .mobile-toggle-btn {
+                display: inline-flex;
+            }
+
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: 0;
+                bottom: 0;
+                width: 290px;
+                max-width: 85vw;
+                z-index: 1050;
+                transform: translateX(-100%);
+                transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                box-shadow: 4px 0 25px rgba(0, 0, 0, 0.5);
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .top-navbar {
+                padding: 10px 16px;
+                min-height: 56px;
+                gap: 12px;
+            }
+
+            .navbar-left {
+                gap: 12px;
+            }
+
+            .facility-title {
+                font-size: 13px;
+            }
+
+            .content-area {
+                padding: 16px 14px;
+            }
+
+            .view-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 14px;
+            }
+
+            .view-header button, .view-header div[style*="display:flex"] {
+                width: 100%;
+                justify-content: flex-start;
+            }
+
+            .grid-2col, .grid-3col, .grid-4col, .grid-split {
+                grid-template-columns: 1fr !important;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 12px;
+            }
+
+            .bed-matrix-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .table-card {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .emr-table {
+                min-width: 650px;
+            }
+
+            .modal-box {
+                width: 94% !important;
+                max-height: 90vh !important;
+                padding: 18px 16px !important;
+                margin: 10px auto !important;
+            }
+
+            .modal-footer {
+                flex-direction: column-reverse;
+                gap: 8px;
+            }
+
+            .modal-footer button {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .top-navbar {
+                flex-direction: column;
+                align-items: stretch;
+                padding: 10px 12px;
+            }
+
+            .navbar-left, .navbar-right {
+                width: 100%;
+                justify-content: space-between;
+                flex-wrap: wrap;
+            }
+
+            .active-patient-badge {
+                width: 100%;
+                justify-content: space-between;
+                font-size: 11px;
+                padding: 6px 10px;
+            }
+
+            .facility-title span.sub-tagline {
+                display: none;
+            }
+
+            .user-profile {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .ux-navigation-bar {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+
+            .btn-back-dashboard {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .bed-matrix-toolbar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .ward-filter-pills {
+                overflow-x: auto;
+                padding-bottom: 4px;
+            }
+        }
+    
     </style>
 </head>
 <body>
@@ -1729,11 +2125,15 @@ APP_HTML = """<!DOCTYPE html>
             </ul>
         </div>
     </aside>
+    <div id="sidebar-backdrop" class="sidebar-backdrop" onclick="closeMobileSidebar()"></div>
 
     <!-- Main Wrapper -->
     <div class="main-wrapper">
         <header class="top-navbar">
             <div class="navbar-left">
+                <button type="button" id="btn-mobile-sidebar-toggle" class="mobile-toggle-btn" onclick="toggleMobileSidebar()" aria-label="Toggle Menu">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
                 <div class="facility-title">
                     <i class="fa-solid fa-hospital" style="color: var(--brand-cyan);"></i>
                     <span id="header-facility-name">Global 1 OneTech Medical & Health Center</span>
@@ -4848,6 +5248,22 @@ APP_HTML = """<!DOCTYPE html>
             showToast(`Prescription set '${rxSetName}' attached to active chart!`);
         }
 
+        
+        // Mobile Sidebar Controls
+        function toggleMobileSidebar() {
+            const sidebar = document.querySelector('.sidebar');
+            const backdrop = document.getElementById('sidebar-backdrop');
+            if (sidebar) sidebar.classList.toggle('open');
+            if (backdrop) backdrop.classList.toggle('active');
+        }
+
+        function closeMobileSidebar() {
+            const sidebar = document.querySelector('.sidebar');
+            const backdrop = document.getElementById('sidebar-backdrop');
+            if (sidebar) sidebar.classList.remove('open');
+            if (backdrop) backdrop.classList.remove('active');
+        }
+    
         function performSecureLogout(event) {
             if (event) {
                 event.preventDefault();
@@ -5495,6 +5911,7 @@ APP_HTML = """<!DOCTYPE html>
             document.querySelectorAll('.module-view').forEach(v => v.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
             
+            closeMobileSidebar();
             const targetView = document.getElementById(viewId);
             if (targetView) targetView.classList.add('active');
             
