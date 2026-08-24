@@ -419,3 +419,15 @@ def get_full_emr_state():
 
 # Initialize on module load
 init_database()
+
+
+def insert_bed(data):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute('''
+    INSERT INTO adt_beds (id, ward_name, patient_name, diagnosis, attending_doctor, admission_date, status, updated_at)
+    VALUES (?, ?, ?, ?, ?, ?, ?, datetime('now'))
+    ''', (data.get('id'), data.get('ward_name'), data.get('patient_name'), data.get('diagnosis'), data.get('attending_doctor'), data.get('admission_date'), data.get('status', 'available')))
+    conn.commit()
+    conn.close()
+    return data.get('id')
