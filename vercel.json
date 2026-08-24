@@ -1,31 +1,21 @@
 {
-  "version": 2,
-  "builds": [
+  "cleanUrls": true,
+  "rewrites": [
     {
-      "src": "api/index.py",
-      "use": "@vercel/python"
+      "source": "/Personalization/(.*)",
+      "destination": "/public/Personalization/$1"
     },
     {
-      "src": "public/**",
-      "use": "@vercel/static"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/Personalization/(.*)",
-      "dest": "/public/Personalization/$1"
+      "source": "/dashboard",
+      "destination": "/api/index.py"
     },
     {
-      "src": "/dashboard",
-      "dest": "/api/index.py"
+      "source": "/Account/Login",
+      "destination": "/api/index.py"
     },
     {
-      "src": "/Account/Login",
-      "dest": "/api/index.py"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/api/index.py"
+      "source": "/(.*)",
+      "destination": "/api/index.py"
     }
   ]
 }

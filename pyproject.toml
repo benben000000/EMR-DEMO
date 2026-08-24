@@ -1,0 +1,10 @@
+[project]
+name = "g1-health-emr"
+version = "1.0.0"
+description = "G1 Health EMR Enterprise Cloud - Powered by Global 1 OneTech"
+requires-python = ">=3.12"
+dependencies = []
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
