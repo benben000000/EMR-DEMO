@@ -690,12 +690,12 @@ AS
 /*
 EXEC SP_Danphe_Audit '2019-10-10','2019-12-12','BIL_TXN_BillingTransaction','admin'
 
-Description: We needed dynamic query in this stored proc since the LiveDatabaseName-
-             is a variable stored in SysAdminParameter table and can be different for different hospitals.
+Description: Dynamic query implementation to support multi-tenant database parameter configuration.
+
 ----------------------------------------------------------
 S.No.    UpdatedBy/Date					Remarks
 ----------------------------------------------------------
-3.      Sud/10Nov'19                Made dynamic sql to use variable database name for different hospitals.
+3.      DatabaseAdmin/10-Nov-2019                Made dynamic sql to use variable database name for different hospitals.
 ----------------------------------------------------------
 */
 BEGIN
