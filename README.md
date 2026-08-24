@@ -1,111 +1,49 @@
-If you are looking forward to install the Danphe you can follow the below labs <br>
-<a href="https://youtu.be/lKORZmKG0sA"> Lab 1 :- Installing Danphe App in desktop mode. </a> <br>
-<a href="https://youtu.be/HmAAbFiPOKw"> Lab 2 :- Configuring Danphe inside IIS. </a> <br>
-We will be adding more videos in coming time.
-<br>
-If you have any issues please send us mail at shiv_koirala@yahoo.com  more than happy to help you in understanding and installing. You can also <a href="https://www.ehospitalmanagementsystem.com/" target="_new">
- Chat with us here.
-</a> 
-<br> <br> <br><br>
-Scripts and tools will be listed here <br>
-<a href="https://github.com/opensource-emr/cleanupDanpheDM">Clean up script to start from scratch</a> <br>
- <br>
- If you wish to see demo <a href="http://202.51.74.168:302" target="_blank">
- Click here
-</a> Username  : admin / Password  : pass123 <br>
-Also please do read down for more details of how to install and configure.
+# G1 Health EMR
 
-Introduction
-==============
-Danphe EMR is a enterprise web-based application which covers all day to day aspects of Hospital management end to end. Its currently live 50 plus hospitals in Asia(India,Nepal and Bangladesh). 
+> **Smart Healthcare Management Solution**  
+> Powered by [Global 1 OneTech](https://global1onetech.com/)
 
-![danphelogin](https://user-images.githubusercontent.com/48054642/159859670-05cbe026-f0eb-43cf-811a-0404a36a76f7.jpg) ![danphepatientregistration](https://user-images.githubusercontent.com/48054642/159859505-84b59b71-d271-4e33-b504-1c15ecba3580.jpg)
+---
 
-Modules in Danphe EMR
-==============
-It has around 40 modules and below are important ones listed.
+## 🔑 Access & Demo Credentials
 
-+ Registration/Patient 
-+ Appointment 
-+ Billing Module 
-+ Accounting Module 
-+ Inventory Management 
-+ Pharmacy Module 
-+ Laboratory Management 
-+ User Module 
-+ Admission Discharge and Transfer (ADT) 
-+ Nursing Module 
-+ Sub-store Module 
-+ Radiology Management 
-+ Medical Record 
-+ Emergency 
-+ Reporting and Dashboard 
-+ Doctors 
+Once the system is launched, access the portal in your browser:
 
-`and more...`
+- **Login URL**: `http://localhost:5000/Account/Login`
+- **Username**: `admin`
+- **Password**: `pass123`
 
-Demo of Danphe EMR
-==============
-If you have any issues please sen us mail at shiv_koirala@yahoo.com 
+---
 
-Click on below demo link and check out live application
+## 🚀 How to Run and Access
 
-<a href="http://202.51.74.168:302/" target="_blank">
-  Danphe EMR Live Application
-</a>
+### 1. Prerequisites
+- **Operating System**: Windows 10 / 11 / Windows Server
+- **IDE**: Visual Studio 2019 / 2022 (with *.NET Desktop and Web Development* workload)
+- **Framework**: .NET Framework 4.6.1 Developer Pack
+- **Database**: Microsoft SQL Server 2016+ (or SQL Server Express)
+- **Frontend**: Node.js (v10.x – v12.x) & npm
 
-Use below `credentials` for login
+---
 
+### 2. Setup Steps
+
+#### Step 1: Restore Databases
+1. Open SQL Server Management Studio (SSMS).
+2. Extract and restore `Database/2. EMR-Db/DanpheInternationalDB/Dev_DanpheEMR_INT1.zip` as database **`DEV_DanpheEMR_INT`**.
+3. Execute `Database/1. Admin-Db/1. DanpheAdmin_CompleteDB.sql` to create database **`DanpheAdmin`**.
+4. Verify connection strings in `Code/Websites/DanpheEMR/appsettings.json`.
+
+#### Step 2: Build Frontend
+Navigate to the Angular directory and build the client bundle:
+```bash
+cd Code/Websites/DanpheEMR/wwwroot/DanpheApp
+npm install
+npm run build
 ```
-   Username  : admin
-   Password  : pass123
-```   
 
-Need help?
-==============
-If you have any issues please send us mail at shiv_koirala@yahoo.com  more than happy to help you in understanding and installing.
-
-Installation & Setup
-======================
-Getting start with **DanpheEMR** Please visit <a href="https://opensource-emr.github.io/hospital-management-emr//#setup" target="_blank">
-    :point_right: Page
-</a>  and read it carefully. 
-Here you have details about requirements, configuration and setup.
-
-
-#### Development Setup
-
-+ This details for `developers` who wants to `clone DanpheEMR`, Use it and `help` us for improvements.
-+ We have all details like software and tools `requirements`
-+ Step by step guide for `build and run` project
-+ Database creation 
-`and more..`
-
-
-<a href="https://opensource-emr.github.io/hospital-management-emr/#setup" target="_blank">
-    :point_right: docs
-</a>
-
-Credits
-========
-
-## Sponsors
-All sponsors are here. Thanks all sponsors for your contributions.
-
-<a href="https://www.imarkdigital.com/" target="_blank">
-  <img src="https://user-images.githubusercontent.com/48054642/161473176-51fcb05f-e87f-4229-8673-887bf5060fe0.png" />
-</a>
-
-## Contributors
-Thanks all contributors. 
-
-<a href="https://github.com/opensource-emr/hospital-management-emr/graphs/contributors" target="_blank">
-  <img src="https://contrib.rocks/image?repo=opensource-emr/hospital-management-emr" />
-</a> <br><br>
-
-
-License
-==============
-
-See the [LICENSE](https://github.com/opensource-emr/hospital-management-emr/blob/master/LICENSE) file.
-
+#### Step 3: Launch Application
+1. Open `Code/Solutions/DanpheEMR.sln` in Visual Studio.
+2. Set `DanpheEMR` as the Startup Project.
+3. Press **`F5`** (or `Ctrl + F5`) to run via IIS Express / Kestrel.
+4. Navigate to `http://localhost:5000` and sign in with the credentials above.
