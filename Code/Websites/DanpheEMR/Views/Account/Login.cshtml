@@ -1,0 +1,426 @@
+@using DanpheEMR.Security
+@model LoginViewModel
+
+@{
+    string message = (string)ViewData["status"];
+    string expiryNotice = (string)ViewData["ExpiryNotice"];
+}
+
+
+<meta charset="utf-8" />
+<link href="~/assets-dph/external/global/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+<link href="https://fonts.googleapis.com/css?family=Oswald|Nunito:400,600,900&display=swap" rel="stylesheet">
+<style type="text/css">
+    html {
+        background-image: none;
+    }
+
+    body {
+        font-family: 'Nunito';
+    }
+
+    .form-control {
+        border: none;
+        height: 50px;
+        margin-top: 1.25rem;
+        background-color: rgba(247,247,249,.7);
+        padding-left: 1.25rem;
+        padding-right: 1.25rem;
+        -webkit-transition: background-color .3s ease;
+        transition: background-color .3s ease;
+        box-shadow: none !important;
+        font-family: 'Nunito'
+    }
+
+    #versionBar {
+        background-color: #eee;
+        position: fixed;
+        width: 100%;
+        height: 35px;
+        bottom: 0;
+        left: 0;
+        text-align: center;
+        line-height: 35px;
+    }
+
+    .text-center {
+        margin: auto;
+        text-align: center;
+    }
+
+    .copyright {
+        text-align: center;
+        font-size: 12px;
+        color: #555;
+    }
+
+        .copyright a {
+            color: #5867dd;
+            text-decoration: none;
+        }
+
+    .ui-selectmenu.small, .ui-selectmenu-menu.small {
+        width: 320px;
+    }
+
+    .username_id {
+        background-image: url(../images/icon/user_.png);
+    }
+
+    .main-wrapper {
+        display: flex;
+        align-items: center;
+        background: #fdfdff;
+        display: flex;
+        -webkit-box-orient: horizontal;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: row;
+        flex-direction: row;
+    }
+
+    input:-internal-autofill-selected {
+        background-color: rgba(247,247,249,.7) !important;
+    }
+
+    .zeropad {
+        padding: 0 !important;
+    }
+
+    .reduce-padding {
+        padding: 0.6rem;
+        margin: 0;
+    }
+
+    h1 small {
+        font-weight: 600;
+    }
+
+
+    .txt-xs {
+        font-size: 80%;
+    }
+
+    .alert-success {
+        background-color: #90f7b9;
+        border-color: #90f7b9;
+        color: #00802d;
+        border-radius: 0px;
+        text-align: center;
+    }
+
+    .left-img {
+        background-position: left;
+        background-size: cover;
+        height: 100vh;
+        width: 100%;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-content: stretch;
+        color: #fff;
+        padding: 40px;
+        justify-content: center;
+        align-items: center;
+    }
+
+        .left-img:before {
+            content: '';
+            position: absolute;
+            height: 100%;
+            width: 100%;
+            background: #253545;
+            opacity: 0.92;
+            top: 0px;
+            left: 0px;
+        }
+
+        .left-img div {
+            z-index: 9;
+        }
+
+            .left-img div h1 {
+                font-weight: 700;
+                text-transform: uppercase;
+                margin-bottom: 10px;
+                font-family: 'Nunito', 'Segoe UI', sans-serif;
+                color: #ffffff;
+                letter-spacing: 1px;
+            }
+
+            .left-img div p {
+                font-weight: 500;
+                font-size: 14px;
+                margin-top: 10px;
+                background: rgba(15, 23, 42, 0.6);
+                border-left: 3px solid #00ffa1;
+                padding: 15px 15px;
+                margin: 20px auto;
+                border-radius: 4px;
+            }
+
+        .left-img .left-footer {
+            width: 100%;
+            position: relative;
+            top: 35%;
+            font-size: 12px;
+        }
+
+            .left-img .left-footer a {
+                color: #00ffa1;
+            }
+
+    .btn-primary {
+        background-color: #253545;
+        border-color: #253545;
+        color: #fff;
+        height: 50px;
+        padding-left: 2em;
+        padding-right: 2em;
+        font-size: 15px;
+        font-weight: 600;
+        border-radius: 6px;
+        -webkit-box-shadow: 0 4px 16px 0 rgba(37,53,69,.25);
+        box-shadow: 0 4px 16px 0 rgba(37,53,69,.25);
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover, .btn-primary:focus {
+        background-color: #1b2838;
+        border-color: #1b2838;
+        color: #00ffa1;
+    }
+
+    a.c-7 {
+        font-weight: 600;
+        color: #253545;
+        margin: 15px auto;
+    }
+
+    a.c-7:hover {
+        color: #0284c7;
+    }
+
+    .l-c {
+        margin-top: 15%;
+    }
+
+    .feature li {
+        font-size: 14px;
+        font-weight: 500;
+        margin-bottom: 8px;
+        display: block;
+    }
+
+    ul.feature {
+        padding-left: 0px;
+    }
+
+    .feature li span {
+        margin-right: 9px;
+        color: #00ffa1;
+        font-weight: bold;
+    }
+
+    p.footer-btm-cprt {
+        font-size: 11px;
+        width: 100%;
+        position: absolute;
+        bottom: 0;
+        margin: 0;
+        line-height: 20px;
+        margin: 0 0 8px 0;
+        text-align: center;
+    }
+
+    .footer-btm-cprt a {
+        color: #00ffa1;
+        font-weight: 600
+    }
+
+    .termscondition {
+        color: #00ffa1;
+        font-size: 11px;
+    }
+
+    .rem-me {
+        margin-top: 15px;
+    }
+
+        .rem-me label {
+            font-size: 11px;
+            font-weight: normal;
+        }
+        .rem-me label input{
+            float: left;
+            margin-top: 1px;
+        }
+</style>
+
+
+
+<div id="alertMessage" class="error"></div>
+
+
+<div class="main-wrapper">
+    <div class="row" style="width: 100%;">
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="left-img" style=" background-image: url('/themes/theme-default/images/login-left.jpg'); position: relative;">
+                        <div class="">
+                            <div style="margin-bottom: 20px;">
+                                <img src="~/themes/theme-default/images/global1onetech-logo.png" alt="Global 1 OneTech" style="max-height: 60px; filter: brightness(0) invert(1);" />
+                            </div>
+                            <h1>G1 Health EMR</h1>
+                            <p>A Smart <b style="color: #00ffa1; font-weight: 600 ">Healthcare Management Solution</b> powered by Global 1 OneTech.</p>
+                            <ul class="feature">
+                                <li><span>&#10003;</span>Electronic Medical Records (EMR & EHR)</li>
+                                <li><span>&#10003;</span>Hospital ERP & Pharmacy Supply Chain</li>
+                                <li><span>&#10003;</span>AI CRM & Intelligent Patient Triage</li>
+                                <li><span>&#10003;</span>Patient 360 Information System (PIS)</li>
+                                <li><span>&#10003;</span>Employee Health & Safety (EHS)</li>
+                                <li><span>&#10003;</span>Telehealth & Digital Patient Portal</li>
+                            </ul>
+                        </div>
+                        <p class="text-center footer-btm-cprt">
+                            <a class="text-right termscondition" href="https://global1onetech.com/" target="_blank" original-title="terms and conditions">Terms & Condition</a><br />
+                            &copy; Copyright @DateTime.Now.Year <a href="https://global1onetech.com/" target="_blank" title="Global 1 OneTech">Global 1 OneTech</a>
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="l-c">
+                        <div class="row">
+                            <div class="col-md-offset-4 col-md-4">
+                                <div class="form-wrapper">
+                                    @using (Html.BeginForm("Login", "Account", FormMethod.Post))
+                                    {
+
+                                        <div class="form-horizontal">
+
+                                            <div class="form-group text-center">
+                                                <img src="~/themes/theme-default/images/global1onetech-logo.png" alt="Global 1 OneTech" style="max-height: 55px;" />
+                                            </div>
+
+                                            <div class="form-group" style="margin-top: 25px;">
+                                                <div class="text-center">
+                                                    <h1 style="font-size: 24px; font-weight: 700; color: #253545;"><small class="balck" style="font-size: 20px; font-weight: 700; color: #253545;">Sign in to G1 Health EMR</small></h1>
+                                                </div>
+                                            </div>
+
+                                            @if (message == "login-failed")
+                                            {
+                                                <div class="form-group has-error">
+                                                    <div class="col-sm-12">
+                                                        <div class="alert alert-danger reduce-padding">
+                                                            Invalid credentials !
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            }
+                                            else if (message == "logout-success")
+                                            {
+                                                <div class="form-group has-error">
+                                                    <div class="col-sm-12">
+                                                        <div class="alert alert-success reduce-padding">
+                                                            You've been logged out successfully !
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            }
+                                            else if (message == "user-inactive")
+                                            {
+                                                <div class="form-group has-error">
+                                                    <div class="col-sm-12">
+                                                        <div class="alert alert-danger reduce-padding">
+                                                            Your account has been DE-ACTIVATED ! Please contact System Administrator to activate it.
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            }
+
+                                            @if (!string.IsNullOrEmpty(expiryNotice))
+                                            {
+                                                <div class="form-group has-error">
+                                                    <div class="col-sm-12">
+                                                        <div class="alert alert-danger reduce-padding">
+                                                            @expiryNotice
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            }
+
+                                            <div class="form-group">
+                                                <div class="col-sm-12">
+                                                    <input class="form-control" name="Username" required type="text" id="username_id" title="Username" placeholder="Username" />
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <div class="col-sm-12">
+                                                    <input class="form-control" name="password" required type="Password" id="password" title="Password" placeholder="Password" />
+                                                </div>
+                                                <div class="col-sm-12 rem-me">
+                                                    <label class="pull-left">
+                                                        @Html.CheckBoxFor(x => x.RememberMe)
+                                                        @Html.DisplayNameFor(m => m.RememberMe)
+                                                    </label>
+                                                </div>
+
+                                            </div>
+
+                                            <div class="form-group">
+                                                <div class=" col-sm-12">
+                                                    <div class="checkbox zeropad" style="margin-top: 25px;">
+                                                        <a class="pull-left c-7" href="@Url.Action("ForgotPassword","Account")" target="_blank">Forgot password?</a>
+                                                        <button id="login" type="submit" class="btn btn-primary pull-right">Sign in</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                    <div class="col-sm-12">
+                                                        <div class="text-center"><span class="txt-xs" style="font-weight: 600;line-height: 5; color: #64748b;">G1 Health EMR &bull; Global 1 OneTech</span> </div>
+                                                    </div>
+                                                </div>
+
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+
+
+<!--Login div-->
+<div class="clear"></div>
+
+<!-- Link JScript-->
+<script>
+    var doc = document.querySelector(".has-error");
+    document.getElementById('username_id').addEventListener("click", function (e) {
+        if (doc) {
+            doc.style.display = "none";
+        }
+    });
+
+    document.getElementById('password').addEventListener("click", function (e) {
+        if (doc) {
+            doc.style.display = "none";
+        }
+    });
+</script>
+<script type="text/javascript" src="~/themes/theme-default/login/js/jquery.min.js"></script>
+<script type="text/javascript" src="~/themes/theme-default/login/components/effect/jquery-jrumble.js"></script>
+<script type="text/javascript" src="~/themes/theme-default/login/components/ui/jquery.ui.min.js"></script>
+<script type="text/javascript" src="~/themes/theme-default/login/components/tipsy/jquery.tipsy.js"></script>
+<script type="text/javascript" src="~/themes/theme-default/login/components/checkboxes/iphone.check.js"></script>
+<script type="text/javascript" src="~/themes/theme-default/login/js/login.js"></script>

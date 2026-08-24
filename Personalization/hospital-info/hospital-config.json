@@ -1,0 +1,20 @@
+{
+  "TenantCode": "GLOBAL1_ONETECH",
+  "HospitalName": "Global 1 OneTech Medical & Health Center",
+  "ShortName": "G1 Health EMR",
+  "Tagline": "Driving Digital Transformation Through Smart Healthcare Solutions",
+  "Contact": {
+    "Address": "Technology Innovation Center, Metro Manila",
+    "City": "Manila",
+    "Country": "Philippines",
+    "Phone": "+63-2-8000-1111",
+    "Email": "info@global1onetech.com",
+    "Website": "https://global1onetech.com/",
+    "TaxRegistrationNumber": "TIN-987-654-321-000"
+  },
+  "PrintSettings": {
+    "InvoiceHeaderNote": "Powered by Global 1 OneTech Smart Health Cloud",
+    "InvoiceFooterNote": "Thank you for choosing Global 1 OneTech Medical Center. Wishing you a speedy recovery!",
+    "ShowWatermarkOnPrint": true
+  }
+}

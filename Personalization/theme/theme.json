@@ -1,0 +1,19 @@
+{
+  "BrandName": "G1 Health EMR",
+  "Company": "Global 1 OneTech",
+  "Website": "https://global1onetech.com/",
+  "PrimaryColor": "#253545",
+  "PrimaryHoverColor": "#1b2838",
+  "SecondaryColor": "#0f172a",
+  "AccentColor": "#00bfa5",
+  "HighlightCyan": "#00ffa1",
+  "TechBlue": "#0284c7",
+  "SuccessColor": "#10b981",
+  "WarningColor": "#f59e0b",
+  "DangerColor": "#ef4444",
+  "SidebarBgColor": "#1b2838",
+  "SidebarTextColor": "#f8fafc",
+  "NavbarBgColor": "#253545",
+  "NavbarTextColor": "#ffffff",
+  "FontFamily": "'Inter', 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
+}

@@ -1,0 +1,26 @@
+/* ==========================================================================
+   Global 1 OneTech Theme Variables (G1 Health EMR)
+   Branding: Slate Navy (#253545), Cyber Cyan (#00ffa1 / #00bfa5), Tech Blue (#0284c7)
+   ========================================================================== */
+
+:root {
+  --brand-primary: #253545;
+  --brand-primary-hover: #1b2838;
+  --brand-secondary: #0f172a;
+  --brand-accent: #00bfa5;
+  --brand-cyan: #00ffa1;
+  --brand-blue: #0284c7;
+  --brand-success: #10b981;
+  --brand-warning: #f59e0b;
+  --brand-danger: #ef4444;
+
+  --sidebar-bg: #1b2838;
+  --sidebar-text: #f8fafc;
+  --sidebar-active-bg: #253545;
+  --sidebar-active-border: #00ffa1;
+
+  --navbar-bg: #253545;
+  --navbar-text: #ffffff;
+
+  --font-family-base: 'Nunito', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
