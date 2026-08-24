@@ -6341,6 +6341,7 @@ APP_HTML = """<!DOCTYPE html>
 
 class G1HealthRequestHandler(http.server.BaseHTTPRequestHandler):
     def send_security_headers(self, is_html=True):
+        self.send_header("Strict-Transport-Security", "max-age=31536000; includeSubDomains")
         self.send_header("X-Content-Type-Options", "nosniff")
         self.send_header("X-Frame-Options", "SAMEORIGIN")
         self.send_header("X-XSS-Protection", "1; mode=block")
