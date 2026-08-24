@@ -1,16 +1,15 @@
 #!/usr/bin/env python3
 """
-G1 Health EMR - macOS Full-Feature Interactive Application & Demo Runner
-Powered by Global 1 OneTech (https://global1onetech.com/)
+G1 Health EMR - macOS Complete Interactive Enterprise Suite & Demo Runner
+Organization: Global 1 OneTech (https://global1onetech.com/)
+Product: G1 Health EMR Enterprise Cloud
 
-UX Overhaul Features:
-- Universal Active Patient Bar in Header + Instant Patient Switcher in Clinical EMR & Header
-- Interactive OPD Patient Queue in Doctor Desk (Click any patient to load their chart)
-- Back to Dashboard button + Breadcrumbs on EVERY module view
-- Global Patient Quick Search in Top Navbar
-- Dynamic Prescription Builder (Add & Remove medications with live calculation)
-- ESC key & Backdrop Click to close all modals
-- Live White-Label configuration with instant UI updates
+Features Included & Fully Interactive:
+- Core EMR: Dashboard, Patient Registration, OPD Appointments, Inpatient ADT & Bed Management, Emergency (ER), Clinical Doctor Desk, Nursing Station, Operation Theater (OT)
+- Diagnostics & Meds: Laboratory (LIS), Radiology & PACS, Pharmacy & Dispensary
+- Smart Cloud Extensions: AI CRM & Patient Leads, Patient 360 (PIS), Employee Health & Safety (EHS), Telehealth
+- Finance & Administration: Billing & Invoicing, White-Label & Personalization Settings
+- Global UX: Universal Active Patient context pill in top navbar + Patient Switcher in Doctor Desk + Back to Dashboard on every view + Universal Search + Toast alerts + ESC key modal closing.
 """
 
 import http.server
@@ -242,7 +241,6 @@ LOGIN_HTML = """<!DOCTYPE html>
 </head>
 <body>
     <div class="auth-container">
-        <!-- Hero Section -->
         <div class="hero-panel">
             <div>
                 <img src="/Personalization/logos/logo-main.png" alt="Global 1 OneTech" class="brand-logo-hero" />
@@ -278,7 +276,6 @@ LOGIN_HTML = """<!DOCTYPE html>
             </div>
         </div>
 
-        <!-- Form Section -->
         <div class="form-panel">
             <div class="form-logo">
                 <img src="/Personalization/logos/logo-main.png" alt="Global 1 OneTech" />
@@ -850,7 +847,7 @@ APP_HTML = """<!DOCTYPE html>
         /* Stats Grid */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
             gap: 20px;
             margin-bottom: 24px;
         }
@@ -977,6 +974,37 @@ APP_HTML = """<!DOCTYPE html>
             color: #64748b;
             margin-top: 4px;
         }
+
+        /* Bed Matrix */
+        .bed-matrix {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .bed-card {
+            background: #ffffff;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .bed-card.occupied {
+            border-color: #f87171;
+            background: #fef2f2;
+        }
+
+        .bed-card.available {
+            border-color: var(--brand-cyan);
+            background: #f0fdf4;
+        }
+
+        .bed-card .bed-number { font-weight: 800; font-size: 14px; }
+        .bed-card .bed-type { font-size: 11px; color: #64748b; margin-top: 2px; }
 
         /* Form Inputs */
         .form-grid {
@@ -1170,13 +1198,22 @@ APP_HTML = """<!DOCTYPE html>
                 <li class="nav-item" data-target="view-appointments">
                     <a onclick="switchTab('view-appointments', this)"><i class="fa-solid fa-calendar-check"></i><span>Appointments</span></a>
                 </li>
-                <li class="nav-item" data-target="view-billing">
-                    <a onclick="switchTab('view-billing', this)"><i class="fa-solid fa-file-invoice-dollar"></i><span>Billing & Invoicing</span></a>
+                <li class="nav-item" data-target="view-adt">
+                    <a onclick="switchTab('view-adt', this)"><i class="fa-solid fa-bed"></i><span>Inpatient & Beds (ADT)</span></a>
                 </li>
-                
+                <li class="nav-item" data-target="view-emergency">
+                    <a onclick="switchTab('view-emergency', this)"><i class="fa-solid fa-truck-medical"></i><span>Emergency (ER)</span></a>
+                </li>
+
                 <li class="nav-section-title">Clinical & Diagnostic</li>
                 <li class="nav-item" data-target="view-clinical">
                     <a onclick="switchTab('view-clinical', this)"><i class="fa-solid fa-stethoscope"></i><span>Clinical EMR (Doctor)</span></a>
+                </li>
+                <li class="nav-item" data-target="view-nursing">
+                    <a onclick="switchTab('view-nursing', this)"><i class="fa-solid fa-user-nurse"></i><span>Nursing Station</span></a>
+                </li>
+                <li class="nav-item" data-target="view-ot">
+                    <a onclick="switchTab('view-ot', this)"><i class="fa-solid fa-scalpel"></i><span>Operation Theater (OT)</span></a>
                 </li>
                 <li class="nav-item" data-target="view-laboratory">
                     <a onclick="switchTab('view-laboratory', this)"><i class="fa-solid fa-flask-vial"></i><span>Laboratory</span></a>
@@ -1198,8 +1235,14 @@ APP_HTML = """<!DOCTYPE html>
                 <li class="nav-item" data-target="view-ehs">
                     <a onclick="switchTab('view-ehs', this)"><i class="fa-solid fa-heart-pulse"></i><span>Employee Health (EHS)</span><span class="badge-new">NEW</span></a>
                 </li>
+                <li class="nav-item" data-target="view-telehealth">
+                    <a onclick="switchTab('view-telehealth', this)"><i class="fa-solid fa-video"></i><span>Telehealth Consult</span><span class="badge-new">NEW</span></a>
+                </li>
                 
-                <li class="nav-section-title">Administration</li>
+                <li class="nav-section-title">Finance & Admin</li>
+                <li class="nav-item" data-target="view-billing">
+                    <a onclick="switchTab('view-billing', this)"><i class="fa-solid fa-file-invoice-dollar"></i><span>Billing & Invoicing</span></a>
+                </li>
                 <li class="nav-item" data-target="view-whitelabel">
                     <a onclick="switchTab('view-whitelabel', this)"><i class="fa-solid fa-sliders"></i><span>White-Label Settings</span></a>
                 </li>
@@ -1209,7 +1252,6 @@ APP_HTML = """<!DOCTYPE html>
 
     <!-- Main Wrapper -->
     <div class="main-wrapper">
-        <!-- Top Navbar with Global Active Patient Bar & Universal Search -->
         <header class="top-navbar">
             <div class="navbar-left">
                 <div class="facility-title">
@@ -1218,7 +1260,7 @@ APP_HTML = """<!DOCTYPE html>
                 </div>
             </div>
 
-            <!-- Active Patient Context Pill -->
+            <!-- Global Active Patient Context Pill -->
             <div class="active-patient-badge" id="global-active-patient-bar">
                 <div class="pat-name">
                     <i class="fa-solid fa-user-circle"></i>
@@ -1233,7 +1275,7 @@ APP_HTML = """<!DOCTYPE html>
                 </button>
             </div>
 
-            <!-- Global Quick Search -->
+            <!-- Global Search -->
             <div class="global-search-wrapper">
                 <i class="fa-solid fa-magnifying-glass"></i>
                 <input type="text" class="global-search-input" placeholder="Quick Search Patient..." onkeyup="handleGlobalPatientSearch(this)" />
@@ -1253,7 +1295,6 @@ APP_HTML = """<!DOCTYPE html>
             </div>
         </header>
 
-        <!-- Main Workspace Area -->
         <main class="content-area">
             
             <!-- 1. DASHBOARD VIEW -->
@@ -1394,8 +1435,8 @@ APP_HTML = """<!DOCTYPE html>
 
                 <div class="view-header">
                     <div>
-                        <h1>Patient Registration & Demographics</h1>
-                        <p>Register new outpatients/inpatients and manage master patient indexing (EMPI)</p>
+                        <h1>Patient Registration & Master Indexing</h1>
+                        <p>Register new outpatients/inpatients, verify insurance, and issue digital hospital cards</p>
                     </div>
                     <div>
                         <button class="btn-primary-action" onclick="openModal('modal-new-patient')">
@@ -1409,9 +1450,6 @@ APP_HTML = """<!DOCTYPE html>
                         <div class="search-box">
                             <i class="fa-solid fa-magnifying-glass"></i>
                             <input type="text" id="patient-search-input" placeholder="Search by Hospital No, Name, or Phone..." onkeyup="filterPatientTable()" />
-                        </div>
-                        <div style="font-size: 13px; color: var(--text-muted);">
-                            Showing <strong>4</strong> registered patients
                         </div>
                     </div>
                     <table class="emr-table" id="patient-master-table">
@@ -1475,22 +1513,6 @@ APP_HTML = """<!DOCTYPE html>
                                     </button>
                                 </td>
                             </tr>
-                            <tr>
-                                <td><strong>G1-2026-0092</strong></td>
-                                <td>Antonio Gonzales</td>
-                                <td>52 Y / Male</td>
-                                <td>+63 919 222 9988</td>
-                                <td>Pasig City, Manila</td>
-                                <td><span class="status-badge status-completed">Corporate EHS</span></td>
-                                <td>
-                                    <button class="btn-primary-action" style="padding: 5px 10px; font-size: 12px; margin-right:4px;" onclick="setActivePatient('Antonio Gonzales')">
-                                        <i class="fa-solid fa-check"></i> Set Active
-                                    </button>
-                                    <button class="btn-secondary" style="padding: 5px 10px; font-size: 12px;" onclick="viewPatient360('Antonio Gonzales', 'G1-2026-0092')">
-                                        <i class="fa-solid fa-id-card"></i> 360° View
-                                    </button>
-                                </td>
-                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -1518,30 +1540,6 @@ APP_HTML = """<!DOCTYPE html>
                         <button class="btn-primary-action" onclick="openModal('modal-new-appointment')">
                             <i class="fa-solid fa-plus"></i> Book OPD Appointment
                         </button>
-                    </div>
-                </div>
-
-                <div class="grid-3col">
-                    <div class="stat-card">
-                        <div class="stat-icon"><i class="fa-solid fa-user-doctor"></i></div>
-                        <div class="stat-content">
-                            <h3>14</h3>
-                            <p>Doctors on Duty Today</p>
-                        </div>
-                    </div>
-                    <div class="stat-card cyan">
-                        <div class="stat-icon"><i class="fa-solid fa-calendar-check"></i></div>
-                        <div class="stat-content">
-                            <h3>58</h3>
-                            <p>Completed Consultations</p>
-                        </div>
-                    </div>
-                    <div class="stat-card teal">
-                        <div class="stat-icon"><i class="fa-solid fa-clock"></i></div>
-                        <div class="stat-content">
-                            <h3>26</h3>
-                            <p>Waiting in OPD Queue</p>
-                        </div>
                     </div>
                 </div>
 
@@ -1591,13 +1589,13 @@ APP_HTML = """<!DOCTYPE html>
                 </div>
             </section>
 
-            <!-- 4. BILLING & INVOICING VIEW -->
-            <section id="view-billing" class="module-view">
+            <!-- 4. INPATIENT ADT & BED MANAGEMENT -->
+            <section id="view-adt" class="module-view">
                 <div class="ux-navigation-bar">
                     <div class="breadcrumbs">
                         <a onclick="switchTab('view-dashboard', document.querySelector('[data-target=view-dashboard]'))"><i class="fa-solid fa-house"></i> Home</a>
                         <i class="fa-solid fa-chevron-right" style="font-size:10px;"></i>
-                        <span class="current">Billing & Invoicing</span>
+                        <span class="current">Inpatient & Bed Management (ADT)</span>
                     </div>
                     <button class="btn-back-dashboard" onclick="switchTab('view-dashboard', document.querySelector('[data-target=view-dashboard]'))">
                         <i class="fa-solid fa-arrow-left"></i> Back to Dashboard
@@ -1606,65 +1604,109 @@ APP_HTML = """<!DOCTYPE html>
 
                 <div class="view-header">
                     <div>
-                        <h1>Outpatient & Inpatient Billing</h1>
-                        <p>Generate invoices, process insurance/HMO claims, and print official hospital receipts</p>
+                        <h1>Inpatient Admission, Discharge & Transfer (ADT)</h1>
+                        <p>Real-time hospital ward census, bed assignment matrix, and discharge clearance</p>
                     </div>
                     <div>
-                        <button class="btn-primary-action" onclick="openModal('modal-generate-invoice')">
-                            <i class="fa-solid fa-receipt"></i> + Create New Invoice
+                        <button class="btn-primary-action" onclick="showToast('Admitted patient to ICU Bed 102')">
+                            <i class="fa-solid fa-bed"></i> + Admit Inpatient
+                        </button>
+                    </div>
+                </div>
+
+                <div class="grid-3col">
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fa-solid fa-bed"></i></div>
+                        <div class="stat-content"><h3>120</h3><p>Total Hospital Beds</p></div>
+                    </div>
+                    <div class="stat-card cyan">
+                        <div class="stat-icon"><i class="fa-solid fa-bed-pulse"></i></div>
+                        <div class="stat-content"><h3>110</h3><p>Occupied Beds (91.6%)</p></div>
+                    </div>
+                    <div class="stat-card teal">
+                        <div class="stat-icon"><i class="fa-solid fa-door-open"></i></div>
+                        <div class="stat-content"><h3>10</h3><p>Available Ready Beds</p></div>
+                    </div>
+                </div>
+
+                <div class="card-box">
+                    <div class="card-box-header">
+                        <h3><i class="fa-solid fa-layer-group"></i> Ward Bed Matrix Overview</h3>
+                    </div>
+                    <div class="bed-matrix">
+                        <div class="bed-card occupied" onclick="showToast('Bed ICU-101: Occupied by Patient Juan Dela Cruz')"><div class="bed-number">ICU-101</div><div class="bed-type">Occupied</div></div>
+                        <div class="bed-card occupied" onclick="showToast('Bed ICU-102: Occupied by Patient Carlos Mendoza')"><div class="bed-number">ICU-102</div><div class="bed-type">Occupied</div></div>
+                        <div class="bed-card available" onclick="showToast('Bed ICU-103: Available for Admission')"><div class="bed-number">ICU-103</div><div class="bed-type">Available</div></div>
+                        <div class="bed-card occupied"><div class="bed-number">WARD-201</div><div class="bed-type">Occupied</div></div>
+                        <div class="bed-card occupied"><div class="bed-number">WARD-202</div><div class="bed-type">Occupied</div></div>
+                        <div class="bed-card available"><div class="bed-number">WARD-203</div><div class="bed-type">Available</div></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 5. EMERGENCY (ER) VIEW -->
+            <section id="view-emergency" class="module-view">
+                <div class="ux-navigation-bar">
+                    <div class="breadcrumbs">
+                        <a onclick="switchTab('view-dashboard', document.querySelector('[data-target=view-dashboard]'))"><i class="fa-solid fa-house"></i> Home</a>
+                        <i class="fa-solid fa-chevron-right" style="font-size:10px;"></i>
+                        <span class="current">Emergency Room (ER)</span>
+                    </div>
+                    <button class="btn-back-dashboard" onclick="switchTab('view-dashboard', document.querySelector('[data-target=view-dashboard]'))">
+                        <i class="fa-solid fa-arrow-left"></i> Back to Dashboard
+                    </button>
+                </div>
+
+                <div class="view-header">
+                    <div>
+                        <h1>Emergency Department & Trauma Triage</h1>
+                        <p>Acuity triage tracking (Level 1 Resuscitation to Level 5 Non-Urgent)</p>
+                    </div>
+                    <div>
+                        <button class="btn-accent-action" style="background:#ef4444; color:#fff;" onclick="showToast('Code Blue Trauma Team Activated in Bay 1!')">
+                            <i class="fa-solid fa-bell"></i> Activate Trauma Team
                         </button>
                     </div>
                 </div>
 
                 <div class="table-card">
-                    <div class="table-toolbar">
-                        <h3 style="font-size: 15px; font-weight: 700;">Recent Invoices & Transactions</h3>
-                    </div>
                     <table class="emr-table">
                         <thead>
                             <tr>
-                                <th>Invoice No</th>
-                                <th>Date & Time</th>
+                                <th>Triage Level</th>
                                 <th>Patient Name</th>
-                                <th>Total Amount</th>
-                                <th>Payment Mode</th>
-                                <th>Status</th>
-                                <th>Print Receipt</th>
+                                <th>Age/Sex</th>
+                                <th>Chief Complaint</th>
+                                <th>Vitals</th>
+                                <th>ER Bay</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td><strong>INV-2026-0412</strong></td>
-                                <td>24-Aug-2026 10:15 AM</td>
-                                <td>Maria Santos</td>
-                                <td>₱ 2,850.00</td>
-                                <td>Credit Card / HMO</td>
-                                <td><span class="status-badge status-completed">Paid</span></td>
-                                <td>
-                                    <button class="btn-primary-action" style="padding: 4px 10px; font-size: 12px;" onclick="openPrintInvoice('INV-2026-0412', 'Maria Santos', '2,850.00')">
-                                        <i class="fa-solid fa-print"></i> Print Receipt
-                                    </button>
-                                </td>
+                                <td><span class="status-badge status-urgent" style="background:#fee2e2; color:#b91c1c; font-weight:800;">Level 1 - Resuscitation</span></td>
+                                <td>Victor Ramos</td>
+                                <td>42 Y / M</td>
+                                <td>Acute myocardial infarction / Chest crushing</td>
+                                <td>BP: 85/50 &bull; HR: 120</td>
+                                <td>Bay 01 (Crash Cart)</td>
+                                <td><button class="btn-primary-action" style="padding:4px 8px; font-size:11px;" onclick="showToast('Direct Transfer to Cath Lab Initiated')">Cath Lab Transfer</button></td>
                             </tr>
                             <tr>
-                                <td><strong>INV-2026-0413</strong></td>
-                                <td>24-Aug-2026 11:00 AM</td>
-                                <td>Juan Dela Cruz</td>
-                                <td>₱ 1,450.00</td>
-                                <td>Cash / PhilHealth</td>
-                                <td><span class="status-badge status-completed">Paid</span></td>
-                                <td>
-                                    <button class="btn-primary-action" style="padding: 4px 10px; font-size: 12px;" onclick="openPrintInvoice('INV-2026-0413', 'Juan Dela Cruz', '1,450.00')">
-                                        <i class="fa-solid fa-print"></i> Print Receipt
-                                    </button>
-                                </td>
+                                <td><span class="status-badge status-pending">Level 3 - Urgent</span></td>
+                                <td>Sofia Manalo</td>
+                                <td>19 Y / F</td>
+                                <td>Acute lower right quadrant abdominal pain (R/O Appendicitis)</td>
+                                <td>BP: 110/70 &bull; HR: 88</td>
+                                <td>Bay 04</td>
+                                <td><button class="btn-primary-action" style="padding:4px 8px; font-size:11px;" onclick="showToast('Abdominal Ultrasound STAT Requested')">STAT Ultrasound</button></td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
             </section>
 
-            <!-- 5. CLINICAL EMR VIEW (DOCTOR DESK WITH INTERACTIVE PATIENT SWITCHER) -->
+            <!-- 6. CLINICAL EMR VIEW (DOCTOR DESK WITH PATIENT SWITCHER) -->
             <section id="view-clinical" class="module-view">
                 <div class="ux-navigation-bar">
                     <div class="breadcrumbs">
@@ -1693,43 +1735,29 @@ APP_HTML = """<!DOCTYPE html>
                 </div>
 
                 <div class="clinical-layout">
-                    <!-- Left Column: Patient Queue -->
                     <div class="patient-queue-card">
                         <div style="font-size:13px; font-weight:800; color:#0f172a; margin-bottom:12px; display:flex; align-items:center; justify-content:space-between;">
                             <span><i class="fa-solid fa-users-line" style="color:var(--brand-primary);"></i> OPD Queue</span>
                             <span class="badge-new" style="background:#e2e8f0; color:#475569;">4 Total</span>
                         </div>
                         <div class="queue-item active" id="q-pat-juan" onclick="setActivePatient('Juan Dela Cruz')">
-                            <div class="q-name">
-                                <span>Juan Dela Cruz</span>
-                                <span class="status-badge status-active" style="font-size:9.5px;">Active</span>
-                            </div>
+                            <div class="q-name"><span>Juan Dela Cruz</span><span class="status-badge status-active" style="font-size:9.5px;">Active</span></div>
                             <div class="q-sub">G1-2026-0090 &bull; 45 Y / M &bull; Rm 201</div>
                         </div>
                         <div class="queue-item" id="q-pat-maria" onclick="setActivePatient('Maria Santos')">
-                            <div class="q-name">
-                                <span>Maria Santos</span>
-                                <span class="status-badge status-pending" style="font-size:9.5px;">Waiting</span>
-                            </div>
+                            <div class="q-name"><span>Maria Santos</span><span class="status-badge status-pending" style="font-size:9.5px;">Waiting</span></div>
                             <div class="q-sub">G1-2026-0089 &bull; 34 Y / F &bull; Rm 202</div>
                         </div>
                         <div class="queue-item" id="q-pat-elena" onclick="setActivePatient('Elena Reyes')">
-                            <div class="q-name">
-                                <span>Elena Reyes</span>
-                                <span class="status-badge status-pending" style="font-size:9.5px;">Waiting</span>
-                            </div>
+                            <div class="q-name"><span>Elena Reyes</span><span class="status-badge status-pending" style="font-size:9.5px;">Waiting</span></div>
                             <div class="q-sub">G1-2026-0091 &bull; 28 Y / F &bull; Rm 203</div>
                         </div>
                         <div class="queue-item" id="q-pat-antonio" onclick="setActivePatient('Antonio Gonzales')">
-                            <div class="q-name">
-                                <span>Antonio Gonzales</span>
-                                <span class="status-badge status-completed" style="font-size:9.5px;">Done</span>
-                            </div>
+                            <div class="q-name"><span>Antonio Gonzales</span><span class="status-badge status-completed" style="font-size:9.5px;">Done</span></div>
                             <div class="q-sub">G1-2026-0092 &bull; 52 Y / M &bull; Followup</div>
                         </div>
                     </div>
 
-                    <!-- Right Column: Active Patient Consultation File -->
                     <div style="display:flex; flex-direction:column; gap:20px;">
                         <div class="card-box">
                             <div class="card-box-header">
@@ -1770,7 +1798,6 @@ APP_HTML = """<!DOCTYPE html>
                             </div>
                         </div>
 
-                        <!-- Prescription Builder -->
                         <div class="card-box">
                             <div class="card-box-header">
                                 <h3><i class="fa-solid fa-pills" style="color:var(--brand-accent);"></i> Electronic Prescription Builder</h3>
@@ -1810,7 +1837,125 @@ APP_HTML = """<!DOCTYPE html>
                 </div>
             </section>
 
-            <!-- 6. LABORATORY VIEW -->
+            <!-- 7. NURSING STATION VIEW -->
+            <section id="view-nursing" class="module-view">
+                <div class="ux-navigation-bar">
+                    <div class="breadcrumbs">
+                        <a onclick="switchTab('view-dashboard', document.querySelector('[data-target=view-dashboard]'))"><i class="fa-solid fa-house"></i> Home</a>
+                        <i class="fa-solid fa-chevron-right" style="font-size:10px;"></i>
+                        <span class="current">Nursing Station & Inpatient Care</span>
+                    </div>
+                    <button class="btn-back-dashboard" onclick="switchTab('view-dashboard', document.querySelector('[data-target=view-dashboard]'))">
+                        <i class="fa-solid fa-arrow-left"></i> Back to Dashboard
+                    </button>
+                </div>
+
+                <div class="view-header">
+                    <div>
+                        <h1>Nursing Station & Ward Care</h1>
+                        <p>Medication Administration Records (e-MAR), IV fluid tracking, and nurse shift handovers</p>
+                    </div>
+                    <div>
+                        <button class="btn-primary-action" onclick="showToast('Nurse Shift Handover Recorded')">
+                            <i class="fa-solid fa-clipboard-check"></i> Submit Shift Handover
+                        </button>
+                    </div>
+                </div>
+
+                <div class="table-card">
+                    <table class="emr-table">
+                        <thead>
+                            <tr>
+                                <th>Bed No</th>
+                                <th>Patient Name</th>
+                                <th>Medication Due</th>
+                                <th>Dose & Route</th>
+                                <th>Scheduled Time</th>
+                                <th>Administer</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>ICU-101</strong></td>
+                                <td>Juan Dela Cruz</td>
+                                <td>IV Ceftriaxone 1g</td>
+                                <td>IV Infusion in 100mL Saline</td>
+                                <td>12:00 PM (Due Now)</td>
+                                <td><button class="btn-accent-action" style="padding:4px 10px; font-size:12px;" onclick="showToast('Medication Administered & e-MAR Updated')">Administer</button></td>
+                            </tr>
+                            <tr>
+                                <td><strong>WARD-201</strong></td>
+                                <td>Carlos Mendoza</td>
+                                <td>Oral Metoprolol 25mg</td>
+                                <td>Oral with water</td>
+                                <td>01:00 PM</td>
+                                <td><button class="btn-primary-action" style="padding:4px 10px; font-size:12px;" onclick="showToast('Medication Pending')">Mark Given</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- 8. OPERATION THEATER (OT) VIEW -->
+            <section id="view-ot" class="module-view">
+                <div class="ux-navigation-bar">
+                    <div class="breadcrumbs">
+                        <a onclick="switchTab('view-dashboard', document.querySelector('[data-target=view-dashboard]'))"><i class="fa-solid fa-house"></i> Home</a>
+                        <i class="fa-solid fa-chevron-right" style="font-size:10px;"></i>
+                        <span class="current">Operation Theater (OT)</span>
+                    </div>
+                    <button class="btn-back-dashboard" onclick="switchTab('view-dashboard', document.querySelector('[data-target=view-dashboard]'))">
+                        <i class="fa-solid fa-arrow-left"></i> Back to Dashboard
+                    </button>
+                </div>
+
+                <div class="view-header">
+                    <div>
+                        <h1>Operation Theater & Surgical Scheduling</h1>
+                        <p>OT room bookings, surgeon allocations, WHO surgical safety checklists, and anesthesia records</p>
+                    </div>
+                    <div>
+                        <button class="btn-primary-action" onclick="showToast('Surgical Case Scheduled for OT-1')">
+                            <i class="fa-solid fa-plus"></i> Schedule Surgical Case
+                        </button>
+                    </div>
+                </div>
+
+                <div class="table-card">
+                    <table class="emr-table">
+                        <thead>
+                            <tr>
+                                <th>OT Room</th>
+                                <th>Time</th>
+                                <th>Patient Name</th>
+                                <th>Procedure</th>
+                                <th>Lead Surgeon</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>OT Suite 1</strong></td>
+                                <td>01:30 PM</td>
+                                <td>Sofia Manalo</td>
+                                <td>Laparoscopic Appendectomy</td>
+                                <td>Dr. Edward Hernandez, MD</td>
+                                <td><span class="status-badge status-active">Pre-Op Prepared</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>OT Suite 2</strong></td>
+                                <td>03:00 PM</td>
+                                <td>Antonio Gonzales</td>
+                                <td>Lumbar Microdiscectomy</td>
+                                <td>Dr. Miguel Garcia, MD</td>
+                                <td><span class="status-badge status-pending">Scheduled</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- 9. LABORATORY VIEW -->
             <section id="view-laboratory" class="module-view">
                 <div class="ux-navigation-bar">
                     <div class="breadcrumbs">
@@ -1869,7 +2014,7 @@ APP_HTML = """<!DOCTYPE html>
                 </div>
             </section>
 
-            <!-- 7. RADIOLOGY VIEW -->
+            <!-- 10. RADIOLOGY VIEW -->
             <section id="view-radiology" class="module-view">
                 <div class="ux-navigation-bar">
                     <div class="breadcrumbs">
@@ -1915,7 +2060,7 @@ APP_HTML = """<!DOCTYPE html>
                 </div>
             </section>
 
-            <!-- 8. PHARMACY VIEW -->
+            <!-- 11. PHARMACY VIEW -->
             <section id="view-pharmacy" class="module-view">
                 <div class="ux-navigation-bar">
                     <div class="breadcrumbs">
@@ -1992,7 +2137,7 @@ APP_HTML = """<!DOCTYPE html>
                 </div>
             </section>
 
-            <!-- 9. AI CRM VIEW (NEW) -->
+            <!-- 12. AI CRM VIEW (NEW) -->
             <section id="view-aicrm" class="module-view">
                 <div class="ux-navigation-bar">
                     <div class="breadcrumbs">
@@ -2081,7 +2226,7 @@ APP_HTML = """<!DOCTYPE html>
                 </div>
             </section>
 
-            <!-- 10. PATIENT 360 VIEW (PIS) -->
+            <!-- 13. PATIENT 360 VIEW (PIS) -->
             <section id="view-patient360" class="module-view">
                 <div class="ux-navigation-bar">
                     <div class="breadcrumbs">
@@ -2174,7 +2319,7 @@ APP_HTML = """<!DOCTYPE html>
                 </div>
             </section>
 
-            <!-- 11. EMPLOYEE HEALTH & SAFETY (EHS) VIEW -->
+            <!-- 14. EMPLOYEE HEALTH & SAFETY (EHS) VIEW -->
             <section id="view-ehs" class="module-view">
                 <div class="ux-navigation-bar">
                     <div class="breadcrumbs">
@@ -2263,7 +2408,131 @@ APP_HTML = """<!DOCTYPE html>
                 </div>
             </section>
 
-            <!-- 12. WHITE-LABEL & PERSONALIZATION SETTINGS -->
+            <!-- 15. TELEHEALTH VIEW -->
+            <section id="view-telehealth" class="module-view">
+                <div class="ux-navigation-bar">
+                    <div class="breadcrumbs">
+                        <a onclick="switchTab('view-dashboard', document.querySelector('[data-target=view-dashboard]'))"><i class="fa-solid fa-house"></i> Home</a>
+                        <i class="fa-solid fa-chevron-right" style="font-size:10px;"></i>
+                        <span class="current">Telehealth & Virtual Care</span>
+                    </div>
+                    <button class="btn-back-dashboard" onclick="switchTab('view-dashboard', document.querySelector('[data-target=view-dashboard]'))">
+                        <i class="fa-solid fa-arrow-left"></i> Back to Dashboard
+                    </button>
+                </div>
+
+                <div class="view-header">
+                    <div>
+                        <h1>Telehealth & Remote Doctor Consultations</h1>
+                        <p>Encrypted WebRTC video calls, digital vitals sharing, and immediate e-prescription delivery</p>
+                    </div>
+                    <div>
+                        <button class="btn-accent-action" onclick="showToast('Connecting to Secure Video Consultation Room...')">
+                            <i class="fa-solid fa-video"></i> Start Video Room
+                        </button>
+                    </div>
+                </div>
+
+                <div class="table-card">
+                    <table class="emr-table">
+                        <thead>
+                            <tr>
+                                <th>Room ID</th>
+                                <th>Patient Name</th>
+                                <th>Specialty</th>
+                                <th>Doctor</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>TEL-5501</strong></td>
+                                <td>Elena Reyes</td>
+                                <td>Neurology Follow-up</td>
+                                <td>Dr. Vincent Lim, MD</td>
+                                <td><span class="status-badge status-active">Patient Waiting in Room</span></td>
+                                <td><button class="btn-primary-action" style="padding:4px 10px; font-size:12px;" onclick="showToast('Joining Telehealth Consultation...')"><i class="fa-solid fa-video"></i> Join Call</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- 16. BILLING & INVOICING VIEW -->
+            <section id="view-billing" class="module-view">
+                <div class="ux-navigation-bar">
+                    <div class="breadcrumbs">
+                        <a onclick="switchTab('view-dashboard', document.querySelector('[data-target=view-dashboard]'))"><i class="fa-solid fa-house"></i> Home</a>
+                        <i class="fa-solid fa-chevron-right" style="font-size:10px;"></i>
+                        <span class="current">Billing & Invoicing</span>
+                    </div>
+                    <button class="btn-back-dashboard" onclick="switchTab('view-dashboard', document.querySelector('[data-target=view-dashboard]'))">
+                        <i class="fa-solid fa-arrow-left"></i> Back to Dashboard
+                    </button>
+                </div>
+
+                <div class="view-header">
+                    <div>
+                        <h1>Outpatient & Inpatient Billing</h1>
+                        <p>Generate invoices, process insurance/HMO claims, and print official hospital receipts</p>
+                    </div>
+                    <div>
+                        <button class="btn-primary-action" onclick="openModal('modal-generate-invoice')">
+                            <i class="fa-solid fa-receipt"></i> + Create New Invoice
+                        </button>
+                    </div>
+                </div>
+
+                <div class="table-card">
+                    <div class="table-toolbar">
+                        <h3 style="font-size: 15px; font-weight: 700;">Recent Invoices & Transactions</h3>
+                    </div>
+                    <table class="emr-table">
+                        <thead>
+                            <tr>
+                                <th>Invoice No</th>
+                                <th>Date & Time</th>
+                                <th>Patient Name</th>
+                                <th>Total Amount</th>
+                                <th>Payment Mode</th>
+                                <th>Status</th>
+                                <th>Print Receipt</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>INV-2026-0412</strong></td>
+                                <td>24-Aug-2026 10:15 AM</td>
+                                <td>Maria Santos</td>
+                                <td>₱ 2,850.00</td>
+                                <td>Credit Card / HMO</td>
+                                <td><span class="status-badge status-completed">Paid</span></td>
+                                <td>
+                                    <button class="btn-primary-action" style="padding: 4px 10px; font-size: 12px;" onclick="openPrintInvoice('INV-2026-0412', 'Maria Santos', '2,850.00')">
+                                        <i class="fa-solid fa-print"></i> Print Receipt
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>INV-2026-0413</strong></td>
+                                <td>24-Aug-2026 11:00 AM</td>
+                                <td>Juan Dela Cruz</td>
+                                <td>₱ 1,450.00</td>
+                                <td>Cash / PhilHealth</td>
+                                <td><span class="status-badge status-completed">Paid</span></td>
+                                <td>
+                                    <button class="btn-primary-action" style="padding: 4px 10px; font-size: 12px;" onclick="openPrintInvoice('INV-2026-0413', 'Juan Dela Cruz', '1,450.00')">
+                                        <i class="fa-solid fa-print"></i> Print Receipt
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- 17. WHITE-LABEL & PERSONALIZATION SETTINGS -->
             <section id="view-whitelabel" class="module-view">
                 <div class="ux-navigation-bar">
                     <div class="breadcrumbs">
@@ -2684,7 +2953,7 @@ APP_HTML = """<!DOCTYPE html>
     </div>
 
     <script>
-        // Patient Database Objects
+        // Patient Database State
         const PATIENT_RECORDS = {
             'Juan Dela Cruz': {
                 code: 'G1-2026-0090',
