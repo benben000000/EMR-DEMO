@@ -362,6 +362,92 @@ def init_database():
     )
     """)
 
+    # 25. Clinical Templates
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS clinical_templates (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        template_code TEXT UNIQUE NOT NULL,
+        title TEXT NOT NULL,
+        icd_code TEXT,
+        template_body TEXT,
+        created_date TEXT
+    )
+    """)
+
+    # 26. Order Sets
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS order_sets (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        set_name TEXT NOT NULL,
+        department TEXT,
+        items_count TEXT,
+        description TEXT
+    )
+    """)
+
+    # 27. Nursing Handovers
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS nursing_handovers (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        bed_no TEXT NOT NULL,
+        patient_name TEXT NOT NULL,
+        medication_due TEXT NOT NULL,
+        dose_route TEXT,
+        scheduled_time TEXT,
+        status TEXT
+    )
+    """)
+
+    # 28. Verification Alerts
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS verification_alerts (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        item_title TEXT NOT NULL,
+        department TEXT,
+        requested_by TEXT,
+        justification TEXT,
+        status TEXT
+    )
+    """)
+
+    # 29. Medical Records (MRD)
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS mrd_records (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        hospital_no TEXT NOT NULL,
+        patient_name TEXT NOT NULL,
+        discharge_date TEXT,
+        icd_code TEXT,
+        shelf_location TEXT,
+        status TEXT
+    )
+    """)
+
+    # 30. Helpdesk Queries
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS helpdesk_queries (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        ticket_no TEXT UNIQUE NOT NULL,
+        visitor_name TEXT NOT NULL,
+        category TEXT,
+        action_taken TEXT,
+        attending_staff TEXT,
+        status TEXT
+    )
+    """)
+
+    # 31. System Users
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS system_users (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT UNIQUE NOT NULL,
+        full_name TEXT NOT NULL,
+        role TEXT NOT NULL,
+        allowed_modules TEXT,
+        session_status TEXT
+    )
+    """)
+
     conn.commit()
 
     # Seed each table individually if empty
@@ -517,6 +603,46 @@ def init_database():
         ('2026-08-24 08:20:10', 'accountant', 'POST_JOURNAL_VOUCHER (JV-2026-041)', '192.168.1.108', 'SUCCESS')
     """)
 
+    seed_if_empty(cursor, "clinical_templates", """INSERT INTO clinical_templates (template_code, title, icd_code, template_body, created_date) VALUES
+        ('.HTN-FOLLOWUP', 'Hypertension Routine Review', 'I10 - Essential HTN', 'Patient presents for routine BP follow-up. Medications tolerated well. No palpitations or chest pain.', '2026-08-24'),
+        ('.DM-PANEL', 'Type 2 Diabetes Screening', 'E11.9 - DM Type 2', 'Fast Blood Sugar & HbA1c review. Diet compliance assessed. Foot examination normal.', '2026-08-24'),
+        ('.ASTHMA-STAT', 'Acute Bronchospasm Protocol', 'J45.9 - Bronchial Asthma', 'Wheezing and chest tightness on exertion. Nebulization with Salbutamol administered.', '2026-08-24')
+    """)
+
+    seed_if_empty(cursor, "order_sets", """INSERT INTO order_sets (set_name, department, items_count, description) VALUES
+        ('Standard Triple Therapy (H. Pylori)', 'Gastroenterology', '3 Meds', 'Omeprazole 20mg + Clarithromycin 500mg + Amoxicillin 1g for 14 Days'),
+        ('Pediatric URI Starter Pack', 'Pediatrics', '2 Meds', 'Paracetamol Syrup 120mg/5mL + Cetirizine Drops 2.5mg/mL'),
+        ('Post-Op Pain Management', 'Orthopedics', '3 Meds', 'Celecoxib 200mg + Tramadol 50mg PRN + Paracetamol 500mg IV')
+    """)
+
+    seed_if_empty(cursor, "nursing_handovers", """INSERT INTO nursing_handovers (bed_no, patient_name, medication_due, dose_route, scheduled_time, status) VALUES
+        ('ICU-101', 'Juan Dela Cruz', 'IV Ceftriaxone 1g', 'IV Infusion in 100mL Saline', '12:00 PM (Due Now)', 'Pending'),
+        ('WARD-201', 'Carlos Mendoza', 'Oral Metoprolol 25mg', 'Oral with water', '01:00 PM', 'Given'),
+        ('WARD-203', 'Elena Ramos', 'IV Tramadol 50mg', 'Slow IV Push', '02:00 PM', 'Scheduled')
+    """)
+
+    seed_if_empty(cursor, "verification_alerts", """INSERT INTO verification_alerts (item_title, department, requested_by, justification, status) VALUES
+        ('Critical Lab Panic Value', 'Laboratory (LIS)', 'Sarah Cruz, RMT', 'Serum Potassium 6.8 mmol/L (STAT Panic)', 'Awaiting Senior Pathologist'),
+        ('Senior Citizen 20% Discount', 'Billing & Cashier', 'Mark Mendoza', 'Official Senior ID Verification (Elena Reyes)', 'Approved')
+    """)
+
+    seed_if_empty(cursor, "mrd_records", """INSERT INTO mrd_records (hospital_no, patient_name, discharge_date, icd_code, shelf_location, status) VALUES
+        ('G1-2026-0089', 'Maria Santos', '24-Aug-2026', 'I49.8 - Benign PACs', 'Rack A • Bay 4 • Box 12', '100% Digitized (PDF)'),
+        ('G1-2026-0090', 'Juan Dela Cruz', 'Active OPD', 'G44.2 - Tension Headache', 'Rack B • Bay 1 • Box 04', 'Active Live Chart')
+    """)
+
+    seed_if_empty(cursor, "helpdesk_queries", """INSERT INTO helpdesk_queries (ticket_no, visitor_name, category, action_taken, attending_staff, status) VALUES
+        ('HLP-901', 'Rosa Mercado', 'ICU Inpatient Room Location', 'Guided to 3rd Floor ICU Room 101', 'Joy Pascual', 'Resolved'),
+        ('HLP-902', 'Emergency Caller', 'STAT Ambulance Request (Quezon City)', 'Ambulance Unit 1 Dispatched', 'Joy Pascual', 'En Route')
+    """)
+
+    seed_if_empty(cursor, "system_users", """INSERT INTO system_users (username, full_name, role, allowed_modules, session_status) VALUES
+        ('admin', 'Administrator', '👑 Super Admin', 'All 33 Modules', 'Online Active'),
+        ('doctor', 'Dr. Roberto Tan, MD', '🩺 Doctor (MD)', 'Clinical, Appointments, ER, OT, LIS, RIS, MRD', 'Online Active'),
+        ('nurse', 'Nurse Clara Dizon', '💉 Nurse (RN)', 'Nursing, ADT Beds, ER, Vaccine, Queue, CSSD', 'Online Active'),
+        ('accountant', 'Elena Villar, CPA', '💰 Accountant', 'Accounting, Billing, Claims, Incentives, Fixed Assets', 'Online Active')
+    """)
+
     conn.commit()
     conn.close()
 
@@ -525,33 +651,95 @@ def seed_if_empty(cursor, table_name, insert_sql):
     if cursor.fetchone()[0] == 0:
         cursor.execute(insert_sql)
 
+# Table Name Resolution & Aliases
+TABLE_ALIASES = {
+    "purchase_orders": "procurement_po",
+    "po": "procurement_po",
+    "beds": "adt_beds",
+    "users": "system_users",
+    "templates": "clinical_templates",
+    "incidents": "ehs_incidents",
+    "leads": "ai_crm_leads",
+    "invoices": "billing_invoices",
+    "vouchers": "accounting_vouchers",
+    "claims": "insurance_claims",
+    "referrals": "mkt_referrals",
+    "mrd": "mrd_records",
+    "helpdesk": "helpdesk_queries",
+    "verification": "verification_alerts",
+    "nursing": "nursing_handovers",
+    "ordersets": "order_sets"
+}
+
+def resolve_table_name(table_name):
+    return TABLE_ALIASES.get(table_name.lower(), table_name.lower())
+
+def get_table_columns(conn, table_name):
+    cursor = conn.cursor()
+    cursor.execute(f"PRAGMA table_info({table_name})")
+    return [row[1] for row in cursor.fetchall()]
+
 # Universal Generic CRUD Helpers
 def get_all_records(table_name):
+    table_name = resolve_table_name(table_name)
     conn = get_db_connection()
     id_col = "id" if table_name != "adt_beds" else "id"
-    rows = conn.execute(f"SELECT * FROM {table_name} ORDER BY {id_col} DESC").fetchall()
+    try:
+        rows = conn.execute(f"SELECT * FROM {table_name} ORDER BY {id_col} DESC").fetchall()
+        result = [dict(r) for r in rows]
+    except Exception:
+        result = []
     conn.close()
-    return [dict(r) for r in rows]
+    return result
 
 def insert_record(table_name, data):
+    table_name = resolve_table_name(table_name)
     conn = get_db_connection()
+    valid_cols = get_table_columns(conn, table_name)
+    if not valid_cols:
+        conn.close()
+        raise ValueError(f"Table '{table_name}' does not exist.")
+    
+    filtered = {k: v for k, v in data.items() if k in valid_cols and not k.startswith('_')}
+    if 'id' in filtered and table_name != 'adt_beds' and not filtered['id']:
+        del filtered['id']
+        
+    if not filtered:
+        cursor = conn.cursor()
+        cursor.execute(f"INSERT INTO {table_name} DEFAULT VALUES")
+        conn.commit()
+        new_id = cursor.lastrowid
+        conn.close()
+        return new_id
+        
     cursor = conn.cursor()
-    columns = [k for k in data.keys() if k != 'id' or table_name == 'adt_beds']
+    columns = list(filtered.keys())
     placeholders = ['?'] * len(columns)
-    values = [data[k] for k in columns]
+    values = [filtered[k] for k in columns]
     sql = f"INSERT OR REPLACE INTO {table_name} ({', '.join(columns)}) VALUES ({', '.join(placeholders)})"
     cursor.execute(sql, values)
     conn.commit()
-    new_id = cursor.lastrowid or data.get('id')
+    new_id = cursor.lastrowid or filtered.get('id')
     conn.close()
     return new_id
 
 def update_record(table_name, record_id, data):
+    table_name = resolve_table_name(table_name)
     conn = get_db_connection()
+    valid_cols = get_table_columns(conn, table_name)
+    if not valid_cols:
+        conn.close()
+        raise ValueError(f"Table '{table_name}' does not exist.")
+        
+    filtered = {k: v for k, v in data.items() if k in valid_cols and k != 'id' and not k.startswith('_')}
+    if not filtered:
+        conn.close()
+        return True
+        
     cursor = conn.cursor()
-    columns = [k for k in data.keys() if k != 'id']
+    columns = list(filtered.keys())
     set_clause = ', '.join([f"{k} = ?" for k in columns])
-    values = [data[k] for k in columns]
+    values = [filtered[k] for k in columns]
     values.append(record_id)
     id_field = "id"
     sql = f"UPDATE {table_name} SET {set_clause} WHERE {id_field} = ?"
@@ -561,6 +749,7 @@ def update_record(table_name, record_id, data):
     return True
 
 def delete_record(table_name, record_id):
+    table_name = resolve_table_name(table_name)
     conn = get_db_connection()
     cursor = conn.cursor()
     id_field = "id"
@@ -578,7 +767,9 @@ def get_full_emr_state():
         "inventory_items", "procurement_po", "fixed_assets", "ot_schedules",
         "vaccination_records", "queue_tickets", "cssd_batches", "ehs_incidents",
         "ai_crm_leads", "substore_inventory", "doctor_incentives", "telehealth_sessions",
-        "mkt_referrals", "insurance_claims", "audit_logs"
+        "mkt_referrals", "insurance_claims", "audit_logs",
+        "clinical_templates", "order_sets", "nursing_handovers", "verification_alerts",
+        "mrd_records", "helpdesk_queries", "system_users"
     ]
     state = {}
     for t in tables:
@@ -627,3 +818,4 @@ def get_all_audit_logs(): return get_all_records("audit_logs")
 
 # Initialize database schema and seeds
 init_database()
+
