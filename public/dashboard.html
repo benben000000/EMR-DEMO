@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
-    <!-- IMMEDIATE CLIENT-SIDE AUTH & ANTI-CACHE GUARD -->
+    <!-- CLIENT-SIDE AUTH GUARD -->
     <script>
         (function() {
             const hasAuthToken = sessionStorage.getItem('g1_auth_token');
@@ -16,7 +16,6 @@
             if (!hasAuthToken && !hasCookie) {
                 window.location.replace('/Account/Login?error=unauthorized');
             }
-            // Block browser bfcache (back/forward cache)
             window.addEventListener('pageshow', function(event) {
                 if (event.persisted && !sessionStorage.getItem('g1_auth_token') && !document.cookie.includes('g1_session=')) {
                     window.location.replace('/Account/Login?error=unauthorized');
@@ -495,9 +494,7 @@
             transition: all 0.2s;
         }
 
-        .search-box input:focus {
-            border-color: var(--brand-primary);
-        }
+        .search-box input:focus { border-color: var(--brand-primary); }
 
         .emr-table {
             width: 100%;
@@ -523,9 +520,7 @@
             color: #1e293b;
         }
 
-        .emr-table tbody tr:hover {
-            background-color: #f8fafc;
-        }
+        .emr-table tbody tr:hover { background-color: #f8fafc; }
 
         /* Badges */
         .status-badge {
@@ -2489,7 +2484,7 @@
                     <div class="grid-3col">
                         <div>
                             <strong style="font-size:13px; color:#0f172a;">Session Token Protection:</strong>
-                            <p style="font-size:12px; color:#64748b; margin-top:2px;">HttpOnly Cookie + Anti-CSRF Token</p>
+                            <p style="font-size:12px; color:#64748b; margin-top:2px;">HMAC Cryptographic Token + SameSite Cookie</p>
                         </div>
                         <div>
                             <strong style="font-size:13px; color:#0f172a;">Inactivity Auto-Lock:</strong>
@@ -2524,7 +2519,7 @@
                             <tr>
                                 <td>24-Aug-2026 14:00:10</td>
                                 <td><strong>admin (Super Admin)</strong></td>
-                                <td>User Authenticated via Secure Cookie Handshake</td>
+                                <td>User Authenticated via Secure HMAC Cookie Handshake</td>
                                 <td>127.0.0.1</td>
                                 <td><span class="status-badge status-active">SUCCESS</span></td>
                             </tr>
@@ -3292,7 +3287,6 @@
             if (event) event.preventDefault();
             sessionStorage.clear();
             localStorage.clear();
-            // Erase cookie on client
             document.cookie = "g1_session=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Max-Age=0;";
             window.location.replace('/Account/Logout');
         }
