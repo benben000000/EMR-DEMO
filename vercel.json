@@ -7,15 +7,27 @@
     },
     {
       "source": "/dashboard",
-      "destination": "/api"
+      "destination": "/public/dashboard.html"
     },
     {
       "source": "/Account/Login",
-      "destination": "/api"
+      "destination": "/public/index.html"
+    },
+    {
+      "source": "/login",
+      "destination": "/public/index.html"
+    },
+    {
+      "source": "/Account/Logout",
+      "destination": "/public/index.html?logout=success"
+    },
+    {
+      "source": "/logout",
+      "destination": "/public/index.html?logout=success"
     },
     {
       "source": "/(.*)",
-      "destination": "/api"
+      "destination": "/public/$1"
     }
   ]
 }

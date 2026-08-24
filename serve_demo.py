@@ -392,7 +392,7 @@ LOGIN_HTML = """<!DOCTYPE html>
             <!-- Dynamic Alert Container -->
             <div id="auth-alert-container"></div>
 
-            <form action="/login" method="POST" id="login-form">
+            <form id="login-form" onsubmit="return handleLoginSubmit(event)">
                 <div class="input-group">
                     <label for="username">Username / System ID</label>
                     <div class="input-wrapper">
@@ -414,7 +414,7 @@ LOGIN_HTML = """<!DOCTYPE html>
                     </label>
                     <a href="javascript:void(0)" onclick="showForgotAlert()" class="forgot-link">Forgot password?</a>
                 </div>
-                <button type="submit" class="btn-submit" id="btn-login-submit" onclick="sessionStorage.setItem('g1_auth_token', 'active');">
+                <button type="submit" class="btn-submit" id="btn-login-submit">
                     <span>Sign In to Dashboard</span>
                     <i class="fa-solid fa-arrow-right"></i>
                 </button>
@@ -437,6 +437,49 @@ LOGIN_HTML = """<!DOCTYPE html>
     </div>
 
     <script>
+        const VALID_USERS = {
+            'admin': { pass: 'pass123', name: 'Administrator', role: 'Super Admin &bull; Session Secure', avatar: 'AD' },
+            'doctor': { pass: 'pass123', name: 'Dr. Roberto Tan, MD', role: 'Attending Cardiologist &bull; Active Desk', avatar: 'RT' },
+            'nurse': { pass: 'pass123', name: 'Nurse Clara Dizon', role: 'Charge Nurse &bull; Inpatient Station', avatar: 'CD' },
+            'billing': { pass: 'pass123', name: 'Mark Mendoza', role: 'Billing Officer &bull; Finance Dept', avatar: 'MM' }
+        };
+
+        function handleLoginSubmit(event) {
+            if (event) event.preventDefault();
+            const userInp = (document.getElementById('username').value || 'admin').trim().toLowerCase();
+            const passInp = (document.getElementById('password').value || 'pass123').trim();
+            const btn = document.getElementById('btn-login-submit');
+            const alertBox = document.getElementById('auth-alert-container');
+
+            const matched = VALID_USERS[userInp];
+            if (matched && matched.pass === passInp) {
+                btn.innerHTML = '<span><i class="fa-solid fa-circle-notch fa-spin"></i> Authenticating...</span>';
+                btn.disabled = true;
+
+                sessionStorage.setItem('g1_auth_token', 'active_' + Date.now());
+                sessionStorage.setItem('g1_user', userInp);
+                sessionStorage.setItem('g1_user_name', matched.name);
+                sessionStorage.setItem('g1_user_role', matched.role);
+                sessionStorage.setItem('g1_user_avatar', matched.avatar);
+                localStorage.setItem('g1_user', userInp);
+
+                document.cookie = "g1_session=sess_" + userInp + "_" + Date.now() + "; Path=/; Max-Age=86400; SameSite=Lax;";
+
+                setTimeout(() => {
+                    window.location.href = '/dashboard';
+                }, 100);
+                return false;
+            } else {
+                alertBox.innerHTML = `
+                    <div class="security-alert alert-danger">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                        <span>Invalid credentials. Use demo accounts: <b>admin</b>, <b>doctor</b>, <b>nurse</b>, or <b>billing</b> with password <b>pass123</b>.</span>
+                    </div>
+                `;
+                return false;
+            }
+        }
+
         window.addEventListener('DOMContentLoaded', () => {
             const params = new URLSearchParams(window.location.search);
             const container = document.getElementById('auth-alert-container');
@@ -4593,6 +4636,20 @@ APP_HTML = """<!DOCTYPE html>
         }
 
         window.addEventListener('DOMContentLoaded', () => {
+            const uName = sessionStorage.getItem('g1_user_name');
+            const uRole = sessionStorage.getItem('g1_user_role');
+            const uAvatar = sessionStorage.getItem('g1_user_avatar');
+
+            if (uName && document.getElementById('header-user-name')) {
+                document.getElementById('header-user-name').textContent = uName;
+            }
+            if (uRole && document.getElementById('header-user-role')) {
+                document.getElementById('header-user-role').innerHTML = uRole;
+            }
+            if (uAvatar && document.getElementById('header-user-avatar')) {
+                document.getElementById('header-user-avatar').textContent = uAvatar;
+            }
+
             renderBedMatrix();
             renderERCases();
         });

@@ -4104,6 +4104,20 @@
         }
 
         window.addEventListener('DOMContentLoaded', () => {
+            const uName = sessionStorage.getItem('g1_user_name');
+            const uRole = sessionStorage.getItem('g1_user_role');
+            const uAvatar = sessionStorage.getItem('g1_user_avatar');
+
+            if (uName && document.getElementById('header-user-name')) {
+                document.getElementById('header-user-name').textContent = uName;
+            }
+            if (uRole && document.getElementById('header-user-role')) {
+                document.getElementById('header-user-role').innerHTML = uRole;
+            }
+            if (uAvatar && document.getElementById('header-user-avatar')) {
+                document.getElementById('header-user-avatar').textContent = uAvatar;
+            }
+
             renderBedMatrix();
             renderERCases();
         });
