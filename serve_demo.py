@@ -5,7 +5,13 @@ Organization: Global 1 OneTech (https://global1onetech.com/)
 Product: G1 Health EMR Enterprise Cloud
 
 Features Included & Fully Interactive:
-- Core EMR: Dashboard, Patient Registration, OPD Appointments, Inpatient ADT & Bed Management, Emergency (ER), Clinical Doctor Desk, Nursing Station, Operation Theater (OT)
+- Core EMR: Dashboard, Patient Registration, OPD Appointments, Inpatient ADT & Interactive Bed Matrix, Emergency (ER), Clinical Doctor Desk, Nursing Station, Operation Theater (OT)
+- Ward Bed Matrix Engine:
+  * 1-Click Status Toggling (Available / Occupied / Cleaning / Reserved)
+  * Patient Admission & 1-Click Discharge / Vacate Bed
+  * Add New Beds dynamically
+  * Filter by Ward (ICU, General Male, General Female, Deluxe, Pediatric) & Status
+  * Live KPI statistics synchronization (Total Beds, Occupied, Available, Occupancy Rate %)
 - Diagnostics & Meds: Laboratory (LIS), Radiology & PACS, Pharmacy & Dispensary
 - Smart Cloud Extensions: AI CRM & Patient Leads, Patient 360 (PIS), Employee Health & Safety (EHS), Telehealth
 - Finance & Administration: Billing & Invoicing, White-Label & Personalization Settings
@@ -975,36 +981,166 @@ APP_HTML = """<!DOCTYPE html>
             margin-top: 4px;
         }
 
-        /* Bed Matrix */
-        .bed-matrix {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-            gap: 12px;
-            margin-top: 12px;
+        /* Ward Bed Matrix Rich Styles */
+        .bed-matrix-toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            padding: 12px 16px;
+            background: #f8fafc;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
         }
 
-        .bed-card {
+        .ward-filter-pills {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .filter-pill {
             background: #ffffff;
-            border: 2px solid var(--border-color);
-            border-radius: 10px;
-            padding: 12px;
-            text-align: center;
+            border: 1px solid var(--border-color);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
             cursor: pointer;
+            color: #475569;
             transition: all 0.2s;
         }
 
-        .bed-card.occupied {
-            border-color: #f87171;
-            background: #fef2f2;
+        .filter-pill:hover, .filter-pill.active {
+            background: var(--brand-primary);
+            color: #ffffff;
+            border-color: var(--brand-primary);
         }
 
-        .bed-card.available {
-            border-color: var(--brand-cyan);
+        .bed-matrix-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+            gap: 16px;
+            margin-top: 14px;
+        }
+
+        .bed-card-rich {
+            background: #ffffff;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: all 0.2s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+            position: relative;
+        }
+
+        .bed-card-rich:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px -4px rgba(0,0,0,0.1);
+        }
+
+        .bed-card-rich.status-occupied {
+            border-color: #fca5a5;
+            background: #fffafa;
+        }
+
+        .bed-card-rich.status-available {
+            border-color: #86efac;
             background: #f0fdf4;
         }
 
-        .bed-card .bed-number { font-weight: 800; font-size: 14px; }
-        .bed-card .bed-type { font-size: 11px; color: #64748b; margin-top: 2px; }
+        .bed-card-rich.status-cleaning {
+            border-color: #fde047;
+            background: #fefce8;
+        }
+
+        .bed-card-rich.status-reserved {
+            border-color: #93c5fd;
+            background: #eff6ff;
+        }
+
+        .bed-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .bed-card-title {
+            font-size: 16px;
+            font-weight: 800;
+            color: #0f172a;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .bed-ward-tag {
+            font-size: 11px;
+            font-weight: 700;
+            color: #64748b;
+            margin-bottom: 8px;
+        }
+
+        .bed-patient-info {
+            background: rgba(255,255,255,0.75);
+            border: 1px solid rgba(0,0,0,0.06);
+            border-radius: 6px;
+            padding: 8px;
+            margin-bottom: 12px;
+            font-size: 12px;
+        }
+
+        .bed-patient-info strong {
+            display: block;
+            font-size: 13px;
+            color: #0f172a;
+        }
+
+        .bed-card-actions {
+            display: flex;
+            gap: 6px;
+            margin-top: 10px;
+        }
+
+        .bed-action-btn {
+            flex: 1;
+            padding: 6px 8px;
+            border-radius: 6px;
+            font-size: 11.5px;
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            transition: all 0.2s;
+        }
+
+        .btn-bed-vacate {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+        .btn-bed-vacate:hover { background: #fca5a5; }
+
+        .btn-bed-admit {
+            background: var(--brand-cyan);
+            color: #0f172a;
+            font-weight: 800;
+        }
+        .btn-bed-admit:hover { background: #00d688; }
+
+        .btn-bed-edit {
+            background: #e2e8f0;
+            color: #334155;
+        }
+        .btn-bed-edit:hover { background: #cbd5e1; }
 
         /* Form Inputs */
         .form-grid {
@@ -1178,6 +1314,29 @@ APP_HTML = """<!DOCTYPE html>
             font-weight: 700;
         }
         .btn-del-rx:hover { background: #fca5a5; }
+
+        .btn-status-selector {
+            display: flex;
+            gap: 8px;
+            margin-top: 6px;
+        }
+
+        .btn-status-opt {
+            flex: 1;
+            padding: 8px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            border: 2px solid var(--border-color);
+            background: #ffffff;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .btn-status-opt.active {
+            border-color: var(--brand-primary);
+            background: #f1f5f9;
+        }
     </style>
 </head>
 <body>
@@ -1332,7 +1491,7 @@ APP_HTML = """<!DOCTYPE html>
                     <div class="stat-card teal">
                         <div class="stat-icon"><i class="fa-solid fa-bed-pulse"></i></div>
                         <div class="stat-content">
-                            <h3>92%</h3>
+                            <h3 id="dash-occupancy-kpi">92%</h3>
                             <p>Inpatient Bed Occupancy</p>
                         </div>
                     </div>
@@ -1589,13 +1748,13 @@ APP_HTML = """<!DOCTYPE html>
                 </div>
             </section>
 
-            <!-- 4. INPATIENT ADT & BED MANAGEMENT -->
+            <!-- 4. INPATIENT ADT & EDITABLE WARD BED MATRIX -->
             <section id="view-adt" class="module-view">
                 <div class="ux-navigation-bar">
                     <div class="breadcrumbs">
                         <a onclick="switchTab('view-dashboard', document.querySelector('[data-target=view-dashboard]'))"><i class="fa-solid fa-house"></i> Home</a>
                         <i class="fa-solid fa-chevron-right" style="font-size:10px;"></i>
-                        <span class="current">Inpatient & Bed Management (ADT)</span>
+                        <span class="current">Inpatient & Ward Bed Matrix (ADT)</span>
                     </div>
                     <button class="btn-back-dashboard" onclick="switchTab('view-dashboard', document.querySelector('[data-target=view-dashboard]'))">
                         <i class="fa-solid fa-arrow-left"></i> Back to Dashboard
@@ -1604,42 +1763,69 @@ APP_HTML = """<!DOCTYPE html>
 
                 <div class="view-header">
                     <div>
-                        <h1>Inpatient Admission, Discharge & Transfer (ADT)</h1>
-                        <p>Real-time hospital ward census, bed assignment matrix, and discharge clearance</p>
+                        <h1>Inpatient Ward Bed Matrix & Occupancy Control</h1>
+                        <p>Click any bed to edit status, admit inpatients, or discharge & vacate beds in real time</p>
                     </div>
-                    <div>
-                        <button class="btn-primary-action" onclick="showToast('Admitted patient to ICU Bed 102')">
-                            <i class="fa-solid fa-bed"></i> + Admit Inpatient
+                    <div style="display:flex; gap:10px;">
+                        <button class="btn-secondary" onclick="openModal('modal-add-bed')">
+                            <i class="fa-solid fa-plus"></i> + Add New Bed
+                        </button>
+                        <button class="btn-primary-action" onclick="openModal('modal-manage-bed')">
+                            <i class="fa-solid fa-pen-to-square"></i> Manage Bed Allocations
                         </button>
                     </div>
                 </div>
 
-                <div class="grid-3col">
+                <!-- Dynamic Real-Time KPI Cards -->
+                <div class="stats-grid">
                     <div class="stat-card">
                         <div class="stat-icon"><i class="fa-solid fa-bed"></i></div>
-                        <div class="stat-content"><h3>120</h3><p>Total Hospital Beds</p></div>
+                        <div class="stat-content"><h3 id="adt-total-beds">14</h3><p>Total Hospital Beds</p></div>
+                    </div>
+                    <div class="stat-card" style="border-left-color:#ef4444;">
+                        <div class="stat-icon" style="color:#ef4444;"><i class="fa-solid fa-bed-pulse"></i></div>
+                        <div class="stat-content"><h3 id="adt-occupied-beds" style="color:#b91c1c;">5</h3><p>Occupied Beds</p></div>
                     </div>
                     <div class="stat-card cyan">
-                        <div class="stat-icon"><i class="fa-solid fa-bed-pulse"></i></div>
-                        <div class="stat-content"><h3>110</h3><p>Occupied Beds (91.6%)</p></div>
+                        <div class="stat-icon"><i class="fa-solid fa-door-open"></i></div>
+                        <div class="stat-content"><h3 id="adt-available-beds">7</h3><p>Available (Empty) Beds</p></div>
                     </div>
                     <div class="stat-card teal">
-                        <div class="stat-icon"><i class="fa-solid fa-door-open"></i></div>
-                        <div class="stat-content"><h3>10</h3><p>Available Ready Beds</p></div>
+                        <div class="stat-icon"><i class="fa-solid fa-chart-pie"></i></div>
+                        <div class="stat-content"><h3 id="adt-occupancy-rate">35.7%</h3><p>Current Occupancy Rate</p></div>
                     </div>
                 </div>
 
+                <!-- Bed Matrix Container & Filter Toolbar -->
                 <div class="card-box">
-                    <div class="card-box-header">
-                        <h3><i class="fa-solid fa-layer-group"></i> Ward Bed Matrix Overview</h3>
+                    <div class="bed-matrix-toolbar">
+                        <div>
+                            <span style="font-size:12px; font-weight:800; color:#475569; margin-right:8px;">FILTER WARD:</span>
+                            <div class="ward-filter-pills" id="ward-pills-list">
+                                <button class="filter-pill active" onclick="filterBedsByWard('ALL', this)">All Wards</button>
+                                <button class="filter-pill" onclick="filterBedsByWard('ICU', this)">ICU</button>
+                                <button class="filter-pill" onclick="filterBedsByWard('General Male', this)">General Male</button>
+                                <button class="filter-pill" onclick="filterBedsByWard('General Female', this)">General Female</button>
+                                <button class="filter-pill" onclick="filterBedsByWard('Deluxe', this)">Private Deluxe</button>
+                                <button class="filter-pill" onclick="filterBedsByWard('Pediatric', this)">Pediatric</button>
+                            </div>
+                        </div>
+
+                        <div style="display:flex; align-items:center; gap:12px;">
+                            <select id="bed-status-filter" class="form-control" style="width:160px; padding:6px 10px; font-size:12.5px;" onchange="renderBedMatrix()">
+                                <option value="ALL">All Statuses</option>
+                                <option value="available">🟢 Available (Empty)</option>
+                                <option value="occupied">🔴 Occupied</option>
+                                <option value="cleaning">🟡 Under Cleaning</option>
+                                <option value="reserved">🔵 Reserved</option>
+                            </select>
+                            <input type="text" id="bed-search-box" class="form-control" placeholder="Search Bed ID / Patient..." style="width:200px; padding:6px 10px; font-size:12.5px;" onkeyup="renderBedMatrix()" />
+                        </div>
                     </div>
-                    <div class="bed-matrix">
-                        <div class="bed-card occupied" onclick="showToast('Bed ICU-101: Occupied by Patient Juan Dela Cruz')"><div class="bed-number">ICU-101</div><div class="bed-type">Occupied</div></div>
-                        <div class="bed-card occupied" onclick="showToast('Bed ICU-102: Occupied by Patient Carlos Mendoza')"><div class="bed-number">ICU-102</div><div class="bed-type">Occupied</div></div>
-                        <div class="bed-card available" onclick="showToast('Bed ICU-103: Available for Admission')"><div class="bed-number">ICU-103</div><div class="bed-type">Available</div></div>
-                        <div class="bed-card occupied"><div class="bed-number">WARD-201</div><div class="bed-type">Occupied</div></div>
-                        <div class="bed-card occupied"><div class="bed-number">WARD-202</div><div class="bed-type">Occupied</div></div>
-                        <div class="bed-card available"><div class="bed-number">WARD-203</div><div class="bed-type">Available</div></div>
+
+                    <!-- Dynamic Rendered Bed Grid -->
+                    <div id="bed-matrix-container" class="bed-matrix-grid">
+                        <!-- Populated by renderBedMatrix() -->
                     </div>
                 </div>
             </section>
@@ -2650,6 +2836,138 @@ APP_HTML = """<!DOCTYPE html>
         </div>
     </div>
 
+    <!-- MODAL: MANAGE & EDIT BED ALLOCATION -->
+    <div id="modal-manage-bed" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-bed"></i> Manage Bed Allocation & Status</h3>
+                <button class="modal-close" onclick="closeModal('modal-manage-bed')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="edit-bed-id" />
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Bed Number / Code</label>
+                        <input type="text" id="edit-bed-code" class="form-control" readonly style="background:#f1f5f9; font-weight:800;" />
+                    </div>
+                    <div class="form-group">
+                        <label>Hospital Ward</label>
+                        <select id="edit-bed-ward" class="form-control">
+                            <option value="Intensive Care Unit (ICU)">Intensive Care Unit (ICU)</option>
+                            <option value="General Male Ward">General Male Ward</option>
+                            <option value="General Female Ward">General Female Ward</option>
+                            <option value="Private Deluxe Suite">Private Deluxe Suite</option>
+                            <option value="Pediatric Ward">Pediatric Ward</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Bed Category / Type</label>
+                        <input type="text" id="edit-bed-type" class="form-control" placeholder="e.g. ICU Ventilator Bed" />
+                    </div>
+                    <div class="form-group">
+                        <label>Daily Room Rate</label>
+                        <input type="text" id="edit-bed-rate" class="form-control" placeholder="₱ 1,500/day" />
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-bottom:18px;">
+                    <label>Bed Availability Status (1-Click Switch)</label>
+                    <div class="btn-status-selector">
+                        <button type="button" class="btn-status-opt" id="bopt-available" onclick="setBedStatusDraft('available')">🟢 Available (Empty)</button>
+                        <button type="button" class="btn-status-opt" id="bopt-occupied" onclick="setBedStatusDraft('occupied')">🔴 Occupied</button>
+                        <button type="button" class="btn-status-opt" id="bopt-cleaning" onclick="setBedStatusDraft('cleaning')">🟡 Cleaning</button>
+                        <button type="button" class="btn-status-opt" id="bopt-reserved" onclick="setBedStatusDraft('reserved')">🔵 Reserved</button>
+                    </div>
+                </div>
+
+                <!-- Patient Inpatient Assignment Section -->
+                <div style="background:#f8fafc; border:1px solid var(--border-color); border-radius:10px; padding:16px; margin-bottom:16px;">
+                    <div style="font-size:13px; font-weight:800; color:#0f172a; margin-bottom:12px; display:flex; align-items:center; justify-content:space-between;">
+                        <span><i class="fa-solid fa-user-injured" style="color:var(--brand-primary);"></i> Inpatient Allocation</span>
+                        <button type="button" class="btn-bed-vacate" style="padding:4px 10px; border-radius:6px; font-size:11px; cursor:pointer;" onclick="dischargeBedPatientDraft()">
+                            <i class="fa-solid fa-person-walking-arrow-right"></i> Discharge & Vacate Bed
+                        </button>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Assigned Patient</label>
+                            <select id="edit-bed-patient" class="form-control" onchange="handleBedPatientChange(this)">
+                                <option value="">-- No Patient (Bed Empty) --</option>
+                                <option value="Juan Dela Cruz">Juan Dela Cruz (G1-2026-0090)</option>
+                                <option value="Maria Santos">Maria Santos (G1-2026-0089)</option>
+                                <option value="Elena Reyes">Elena Reyes (G1-2026-0091)</option>
+                                <option value="Antonio Gonzales">Antonio Gonzales (G1-2026-0092)</option>
+                                <option value="Carlos Mendoza">Carlos Mendoza (G1-2026-0098)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Attending Consultant Doctor</label>
+                            <select id="edit-bed-doctor" class="form-control">
+                                <option value="Dr. Roberto Tan, MD">Dr. Roberto Tan, MD (Cardiology / ICU)</option>
+                                <option value="Dr. Alicia Gomez, MD">Dr. Alicia Gomez, MD (Internal Med)</option>
+                                <option value="Dr. Vincent Lim, MD">Dr. Vincent Lim, MD (Neurology)</option>
+                                <option value="Dr. Miguel Garcia, MD">Dr. Miguel Garcia, MD (Orthopedics)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeModal('modal-manage-bed')">Cancel</button>
+                <button class="btn-primary-action" onclick="saveBedDetails()"><i class="fa-solid fa-floppy-disk"></i> Save Bed Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: ADD NEW BED -->
+    <div id="modal-add-bed" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-plus"></i> Add New Hospital Bed</h3>
+                <button class="modal-close" onclick="closeModal('modal-add-bed')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Bed Number / Code *</label>
+                        <input type="text" id="add-bed-code" class="form-control" placeholder="e.g. ICU-105 or WARD-301" />
+                    </div>
+                    <div class="form-group">
+                        <label>Ward Category *</label>
+                        <select id="add-bed-ward" class="form-control">
+                            <option value="Intensive Care Unit (ICU)">Intensive Care Unit (ICU)</option>
+                            <option value="General Male Ward">General Male Ward</option>
+                            <option value="General Female Ward">General Female Ward</option>
+                            <option value="Private Deluxe Suite">Private Deluxe Suite</option>
+                            <option value="Pediatric Ward">Pediatric Ward</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Bed Category / Type</label>
+                        <input type="text" id="add-bed-type" class="form-control" placeholder="e.g. Electric Motorized Bed" />
+                    </div>
+                    <div class="form-group">
+                        <label>Daily Room Rate</label>
+                        <input type="text" id="add-bed-rate" class="form-control" placeholder="₱ 1,800/day" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Initial Status</label>
+                    <select id="add-bed-status" class="form-control">
+                        <option value="available">🟢 Available (Empty)</option>
+                        <option value="occupied">🔴 Occupied</option>
+                        <option value="cleaning">🟡 Under Cleaning</option>
+                        <option value="reserved">🔵 Reserved</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeModal('modal-add-bed')">Cancel</button>
+                <button class="btn-primary-action" onclick="submitNewBed()"><i class="fa-solid fa-plus"></i> Add Bed</button>
+            </div>
+        </div>
+    </div>
+
     <!-- MODAL: NEW PATIENT REGISTRATION -->
     <div id="modal-new-patient" class="modal-overlay">
         <div class="modal-box">
@@ -3032,6 +3350,292 @@ APP_HTML = """<!DOCTYPE html>
             }
         };
 
+        // Ward Bed Matrix Records State
+        let BED_RECORDS = [
+            { id: 'ICU-101', ward: 'Intensive Care Unit (ICU)', type: 'ICU Ventilator Bed', rate: '₱ 4,500/day', status: 'occupied', patient: 'Juan Dela Cruz', code: 'G1-2026-0090', doctor: 'Dr. Roberto Tan, MD', admittedDate: '23-Aug-2026' },
+            { id: 'ICU-102', ward: 'Intensive Care Unit (ICU)', type: 'ICU Cardiac Bed', rate: '₱ 4,500/day', status: 'occupied', patient: 'Carlos Mendoza', code: 'G1-2026-0098', doctor: 'Dr. Roberto Tan, MD', admittedDate: '24-Aug-2026' },
+            { id: 'ICU-103', ward: 'Intensive Care Unit (ICU)', type: 'ICU Isolation Bed', rate: '₱ 5,000/day', status: 'available', patient: '', code: '', doctor: '', admittedDate: '' },
+            { id: 'ICU-104', ward: 'Intensive Care Unit (ICU)', type: 'ICU Standard Bed', rate: '₱ 4,500/day', status: 'cleaning', patient: '', code: '', doctor: '', admittedDate: '' },
+            { id: 'GEN-201', ward: 'General Male Ward', type: 'Semi-Private Bed', rate: '₱ 1,200/day', status: 'occupied', patient: 'Antonio Gonzales', code: 'G1-2026-0092', doctor: 'Dr. Alicia Gomez, MD', admittedDate: '22-Aug-2026' },
+            { id: 'GEN-202', ward: 'General Male Ward', type: 'Standard Ward Bed', rate: '₱ 950/day', status: 'available', patient: '', code: '', doctor: '', admittedDate: '' },
+            { id: 'GEN-203', ward: 'General Male Ward', type: 'Standard Ward Bed', rate: '₱ 950/day', status: 'available', patient: '', code: '', doctor: '', admittedDate: '' },
+            { id: 'FEM-301', ward: 'General Female Ward', type: 'Semi-Private Bed', rate: '₱ 1,200/day', status: 'occupied', patient: 'Maria Santos', code: 'G1-2026-0089', doctor: 'Dr. Alicia Gomez, MD', admittedDate: '24-Aug-2026' },
+            { id: 'FEM-302', ward: 'General Female Ward', type: 'Standard Ward Bed', rate: '₱ 950/day', status: 'available', patient: '', code: '', doctor: '', admittedDate: '' },
+            { id: 'FEM-303', ward: 'General Female Ward', type: 'Standard Ward Bed', rate: '₱ 950/day', status: 'cleaning', patient: '', code: '', doctor: '', admittedDate: '' },
+            { id: 'DLX-401', ward: 'Private Deluxe Suite', type: 'VIP Executive Suite', rate: '₱ 6,000/day', status: 'occupied', patient: 'Elena Reyes', code: 'G1-2026-0091', doctor: 'Dr. Vincent Lim, MD', admittedDate: '24-Aug-2026' },
+            { id: 'DLX-402', ward: 'Private Deluxe Suite', type: 'VIP Executive Suite', rate: '₱ 6,000/day', status: 'available', patient: '', code: '', doctor: '', admittedDate: '' },
+            { id: 'PED-501', ward: 'Pediatric Ward', type: 'Pediatric Crib Bed', rate: '₱ 1,500/day', status: 'available', patient: '', code: '', doctor: '', admittedDate: '' },
+            { id: 'PED-502', ward: 'Pediatric Ward', type: 'Pediatric Junior Bed', rate: '₱ 1,500/day', status: 'available', patient: '', code: '', doctor: '', admittedDate: '' }
+        ];
+
+        let activeWardFilter = 'ALL';
+        let currentEditingDraftStatus = 'available';
+
+        // Render Dynamic Ward Bed Matrix
+        function renderBedMatrix() {
+            const container = document.getElementById('bed-matrix-container');
+            if (!container) return;
+
+            const statusFilter = document.getElementById('bed-status-filter') ? document.getElementById('bed-status-filter').value : 'ALL';
+            const searchQuery = document.getElementById('bed-search-box') ? document.getElementById('bed-search-box').value.toLowerCase().trim() : '';
+
+            // Calculate KPIs
+            const totalBeds = BED_RECORDS.length;
+            const occupiedBeds = BED_RECORDS.filter(b => b.status === 'occupied').length;
+            const availableBeds = BED_RECORDS.filter(b => b.status === 'available').length;
+            const cleaningBeds = BED_RECORDS.filter(b => b.status === 'cleaning').length;
+            const occupancyRate = totalBeds > 0 ? ((occupiedBeds / totalBeds) * 100).toFixed(1) + '%' : '0%';
+
+            // Update KPI elements
+            if (document.getElementById('adt-total-beds')) document.getElementById('adt-total-beds').textContent = totalBeds;
+            if (document.getElementById('adt-occupied-beds')) document.getElementById('adt-occupied-beds').textContent = occupiedBeds;
+            if (document.getElementById('adt-available-beds')) document.getElementById('adt-available-beds').textContent = availableBeds;
+            if (document.getElementById('adt-occupancy-rate')) document.getElementById('adt-occupancy-rate').textContent = occupancyRate;
+            if (document.getElementById('dash-occupancy-kpi')) document.getElementById('dash-occupancy-kpi').textContent = occupancyRate;
+
+            // Filter beds
+            let filtered = BED_RECORDS.filter(bed => {
+                if (activeWardFilter !== 'ALL' && !bed.ward.toLowerCase().includes(activeWardFilter.toLowerCase())) return false;
+                if (statusFilter !== 'ALL' && bed.status !== statusFilter) return false;
+                if (searchQuery) {
+                    const matchId = bed.id.toLowerCase().includes(searchQuery);
+                    const matchPat = bed.patient.toLowerCase().includes(searchQuery);
+                    const matchWard = bed.ward.toLowerCase().includes(searchQuery);
+                    if (!matchId && !matchPat && !matchWard) return false;
+                }
+                return true;
+            });
+
+            container.innerHTML = '';
+
+            if (filtered.length === 0) {
+                container.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding:32px; color:#64748b;"><i class="fa-solid fa-bed" style="font-size:32px; margin-bottom:8px; opacity:0.4;"></i><p>No beds found matching the selected ward or status filter.</p></div>`;
+                return;
+            }
+
+            filtered.forEach(bed => {
+                const card = document.createElement('div');
+                card.className = `bed-card-rich status-${bed.status}`;
+                
+                let badgeClass = 'status-active';
+                let badgeText = 'Available (Empty)';
+                let icon = 'fa-circle-check';
+                let actionsHtml = '';
+
+                if (bed.status === 'occupied') {
+                    badgeClass = 'status-urgent';
+                    badgeText = 'Occupied';
+                    icon = 'fa-bed-pulse';
+                    actionsHtml = `
+                        <button class="bed-action-btn btn-bed-vacate" onclick="quickVacateBed('${bed.id}', event)">
+                            <i class="fa-solid fa-person-walking-arrow-right"></i> Discharge
+                        </button>
+                        <button class="bed-action-btn btn-bed-edit" onclick="openManageBed('${bed.id}')">
+                            <i class="fa-solid fa-pen"></i> Edit
+                        </button>
+                    `;
+                } else if (bed.status === 'available') {
+                    badgeClass = 'status-active';
+                    badgeText = 'Available (Empty)';
+                    icon = 'fa-circle-check';
+                    actionsHtml = `
+                        <button class="bed-action-btn btn-bed-admit" onclick="quickAdmitBed('${bed.id}', event)">
+                            <i class="fa-solid fa-plus"></i> + Admit
+                        </button>
+                        <button class="bed-action-btn btn-bed-edit" onclick="openManageBed('${bed.id}')">
+                            <i class="fa-solid fa-pen"></i> Edit
+                        </button>
+                    `;
+                } else if (bed.status === 'cleaning') {
+                    badgeClass = 'status-pending';
+                    badgeText = 'Cleaning / Disinfection';
+                    icon = 'fa-broom';
+                    actionsHtml = `
+                        <button class="bed-action-btn btn-bed-admit" style="background:#15803d; color:#fff;" onclick="quickSetReady('${bed.id}', event)">
+                            <i class="fa-solid fa-check"></i> Mark Ready
+                        </button>
+                        <button class="bed-action-btn btn-bed-edit" onclick="openManageBed('${bed.id}')">
+                            <i class="fa-solid fa-pen"></i> Edit
+                        </button>
+                    `;
+                } else if (bed.status === 'reserved') {
+                    badgeClass = 'status-completed';
+                    badgeText = 'Reserved';
+                    icon = 'fa-bookmark';
+                    actionsHtml = `
+                        <button class="bed-action-btn btn-bed-admit" onclick="quickAdmitBed('${bed.id}', event)">
+                            <i class="fa-solid fa-user-plus"></i> Admit
+                        </button>
+                        <button class="bed-action-btn btn-bed-edit" onclick="openManageBed('${bed.id}')">
+                            <i class="fa-solid fa-pen"></i> Edit
+                        </button>
+                    `;
+                }
+
+                card.innerHTML = `
+                    <div>
+                        <div class="bed-card-header">
+                            <span class="bed-card-title"><i class="fa-solid fa-bed"></i> ${bed.id}</span>
+                            <span class="status-badge ${badgeClass}" style="font-size:10.5px;"><i class="fa-solid ${icon}"></i> ${badgeText}</span>
+                        </div>
+                        <div class="bed-ward-tag">${bed.ward} &bull; ${bed.type}</div>
+                        <div class="bed-patient-info">
+                            ${bed.status === 'occupied' && bed.patient ? `
+                                <strong>${bed.patient}</strong>
+                                <span style="color:#64748b; font-size:11.5px;">${bed.code} &bull; ${bed.doctor}</span>
+                                <div style="color:#94a3b8; font-size:10.5px; margin-top:2px;">Admitted: ${bed.admittedDate || '24-Aug-2026'}</div>
+                            ` : `
+                                <span style="color:#64748b; font-style:italic;">${bed.status === 'cleaning' ? 'Under terminal disinfection' : 'Ready for patient admission'} &bull; ${bed.rate}</span>
+                            `}
+                        </div>
+                    </div>
+                    <div class="bed-card-actions">
+                        ${actionsHtml}
+                    </div>
+                `;
+
+                card.onclick = (e) => {
+                    if (!e.target.closest('button')) {
+                        openManageBed(bed.id);
+                    }
+                };
+
+                container.appendChild(card);
+            });
+        }
+
+        // Ward Filter Switcher
+        function filterBedsByWard(wardKey, buttonEl) {
+            activeWardFilter = wardKey;
+            document.querySelectorAll('#ward-pills-list .filter-pill').forEach(btn => btn.classList.remove('active'));
+            if (buttonEl) buttonEl.classList.add('active');
+            renderBedMatrix();
+        }
+
+        // Open Manage Bed Dialog
+        function openManageBed(bedId) {
+            let bed = BED_RECORDS.find(b => b.id === bedId);
+            if (!bed) bed = BED_RECORDS[0];
+
+            document.getElementById('edit-bed-id').value = bed.id;
+            document.getElementById('edit-bed-code').value = bed.id;
+            document.getElementById('edit-bed-ward').value = bed.ward;
+            document.getElementById('edit-bed-type').value = bed.type;
+            document.getElementById('edit-bed-rate').value = bed.rate;
+            document.getElementById('edit-bed-patient').value = bed.patient || '';
+            document.getElementById('edit-bed-doctor').value = bed.doctor || 'Dr. Roberto Tan, MD';
+
+            setBedStatusDraft(bed.status);
+            openModal('modal-manage-bed');
+        }
+
+        // Draft Status Selection in Modal
+        function setBedStatusDraft(status) {
+            currentEditingDraftStatus = status;
+            document.querySelectorAll('.btn-status-opt').forEach(b => b.classList.remove('active'));
+            const activeBtn = document.getElementById('bopt-' + status);
+            if (activeBtn) activeBtn.classList.add('active');
+        }
+
+        function dischargeBedPatientDraft() {
+            document.getElementById('edit-bed-patient').value = '';
+            setBedStatusDraft('available');
+            showToast('Patient cleared. Click Save Bed Changes to confirm discharge.');
+        }
+
+        function handleBedPatientChange(selectEl) {
+            if (selectEl.value) {
+                setBedStatusDraft('occupied');
+            } else {
+                setBedStatusDraft('available');
+            }
+        }
+
+        // Save Bed Modifications
+        function saveBedDetails() {
+            const bedId = document.getElementById('edit-bed-id').value;
+            const bed = BED_RECORDS.find(b => b.id === bedId);
+            if (!bed) return;
+
+            const newPatient = document.getElementById('edit-bed-patient').value;
+            const newDoctor = document.getElementById('edit-bed-doctor').value;
+            const newWard = document.getElementById('edit-bed-ward').value;
+            const newType = document.getElementById('edit-bed-type').value;
+            const newRate = document.getElementById('edit-bed-rate').value;
+
+            bed.ward = newWard;
+            bed.type = newType;
+            bed.rate = newRate;
+            bed.status = currentEditingDraftStatus;
+            bed.patient = newPatient;
+            bed.doctor = newPatient ? newDoctor : '';
+            bed.code = newPatient ? (PATIENT_RECORDS[newPatient] ? PATIENT_RECORDS[newPatient].code : 'G1-2026-0099') : '';
+            bed.admittedDate = newPatient ? (bed.admittedDate || '24-Aug-2026') : '';
+
+            closeModal('modal-manage-bed');
+            renderBedMatrix();
+            showToast(`Bed ${bed.id} updated successfully: ${bed.status.toUpperCase()} ${newPatient ? '(' + newPatient + ')' : '(Empty)'}!`);
+        }
+
+        // Quick Actions from Matrix Card
+        function quickVacateBed(bedId, event) {
+            if (event) event.stopPropagation();
+            const bed = BED_RECORDS.find(b => b.id === bedId);
+            if (!bed) return;
+            const dischargedPatient = bed.patient;
+            bed.status = 'cleaning';
+            bed.patient = '';
+            bed.code = '';
+            bed.doctor = '';
+            bed.admittedDate = '';
+            renderBedMatrix();
+            showToast(`Patient ${dischargedPatient} discharged! Bed ${bed.id} marked under cleaning/disinfection.`);
+        }
+
+        function quickSetReady(bedId, event) {
+            if (event) event.stopPropagation();
+            const bed = BED_RECORDS.find(b => b.id === bedId);
+            if (!bed) return;
+            bed.status = 'available';
+            renderBedMatrix();
+            showToast(`Bed ${bed.id} disinfected & marked Available (Empty)!`);
+        }
+
+        function quickAdmitBed(bedId, event) {
+            if (event) event.stopPropagation();
+            openManageBed(bedId);
+            // Default to first patient if empty
+            if (!document.getElementById('edit-bed-patient').value) {
+                document.getElementById('edit-bed-patient').value = 'Juan Dela Cruz';
+                setBedStatusDraft('occupied');
+            }
+        }
+
+        // Submit New Bed
+        function submitNewBed() {
+            const code = document.getElementById('add-bed-code').value.trim() || ('BED-' + Math.floor(100 + Math.random() * 900));
+            const ward = document.getElementById('add-bed-ward').value;
+            const type = document.getElementById('add-bed-type').value.trim() || 'Standard Ward Bed';
+            const rate = document.getElementById('add-bed-rate').value.trim() || '₱ 1,200/day';
+            const status = document.getElementById('add-bed-status').value;
+
+            BED_RECORDS.push({
+                id: code,
+                ward: ward,
+                type: type,
+                rate: rate,
+                status: status,
+                patient: '',
+                code: '',
+                doctor: '',
+                admittedDate: ''
+            });
+
+            closeModal('modal-add-bed');
+            renderBedMatrix();
+            showToast(`New Bed ${code} added to ${ward}!`);
+        }
+
         // Active Patient Switcher Function
         function setActivePatient(patientName) {
             const pat = PATIENT_RECORDS[patientName];
@@ -3103,6 +3707,10 @@ APP_HTML = """<!DOCTYPE html>
             } else {
                 const matchingNav = document.querySelector(`.nav-item[data-target="${viewId}"]`);
                 if (matchingNav) matchingNav.classList.add('active');
+            }
+
+            if (viewId === 'view-adt') {
+                renderBedMatrix();
             }
         }
 
@@ -3286,6 +3894,11 @@ APP_HTML = """<!DOCTYPE html>
             document.getElementById('header-facility-name').textContent = hospName;
             showToast('Branding & White-Label configuration updated successfully!');
         }
+
+        // Initialize on load
+        window.addEventListener('DOMContentLoaded', () => {
+            renderBedMatrix();
+        });
     </script>
 </body>
 </html>
