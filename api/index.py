@@ -1,3 +1,4 @@
+import db_manager
 #!/usr/bin/env python3
 """
 G1 Health EMR - macOS Complete Interactive Enterprise Suite & Demo Runner
@@ -5775,6 +5776,276 @@ APP_HTML = """<!DOCTYPE html>
             showToast('✅ Code Blue Stand Down: Patient successfully stabilized. Resuscitation log saved.');
         }
     
+        
+        // ==========================================================================
+        // FULL-STACK LIVE DATA PERSISTENCE ENGINE (SQLite + REST API Synchronization)
+        // ==========================================================================
+        
+        let LIVE_EMR_STATE = {
+            patients: [],
+            appointments: [],
+            beds: [],
+            er_cases: [],
+            billing_invoices: [],
+            accounting_vouchers: [],
+            crm_leads: [],
+            audit_logs: []
+        };
+
+        async function loadLiveEMRState() {
+            try {
+                const res = await fetch('/api/state');
+                if (!res.ok) return;
+                const state = await res.json();
+                LIVE_EMR_STATE = state;
+
+                // Sync in-memory records
+                if (state.beds && state.beds.length > 0) {
+                    BED_RECORDS = state.beds.map(b => ({
+                        id: b.id,
+                        ward: b.ward_name,
+                        status: b.status,
+                        patient: b.patient_name || 'Vacant / Ready',
+                        diagnosis: b.diagnosis || '',
+                        doctor: b.attending_doctor || '',
+                        admitDate: b.admission_date || '',
+                        price: b.ward_name.includes('ICU') ? '₱ 8,500/day' : '₱ 2,500/day'
+                    }));
+                    renderBedMatrix();
+                }
+
+                if (state.er_cases && state.er_cases.length > 0) {
+                    ER_RECORDS = state.er_cases.map(c => ({
+                        id: c.case_no,
+                        level: c.triage_level,
+                        name: c.patient_name,
+                        ageSex: c.age_sex,
+                        complaint: c.chief_complaint,
+                        vitals: c.vitals,
+                        bay: c.bay_no,
+                        staff: c.doctor_nurse,
+                        disposition: c.disposition
+                    }));
+                    renderERCases();
+                }
+
+                if (state.patients && state.patients.length > 0) {
+                    renderLivePatientsTable(state.patients);
+                }
+
+                if (state.appointments && state.appointments.length > 0) {
+                    renderLiveAppointmentsTable(state.appointments);
+                }
+
+                if (state.billing_invoices && state.billing_invoices.length > 0) {
+                    renderLiveBillingTable(state.billing_invoices);
+                }
+
+                if (state.accounting_vouchers && state.accounting_vouchers.length > 0) {
+                    renderLiveAccountingTable(state.accounting_vouchers);
+                }
+
+                if (state.crm_leads && state.crm_leads.length > 0) {
+                    renderLiveCRMTable(state.crm_leads);
+                }
+
+                if (state.audit_logs && state.audit_logs.length > 0) {
+                    renderLiveAuditTable(state.audit_logs);
+                }
+
+            } catch (e) {
+                console.warn('Live EMR sync: running local fallback mode', e);
+            }
+        }
+
+        function renderLivePatientsTable(patients) {
+            const tbody = document.querySelector('#pat-master-table tbody') || document.querySelector('#view-patient-reg table tbody');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+            patients.forEach(p => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><strong>${p.patient_no}</strong></td>
+                    <td>${p.name}</td>
+                    <td>${p.age} Y / ${p.gender}</td>
+                    <td>${p.phone || '+63 917 123 4567'}</td>
+                    <td><span class="status-badge status-active">${p.blood_group || 'O+'}</span></td>
+                    <td>${p.insurance_no || 'PhilHealth Active'}</td>
+                    <td><span class="status-badge status-completed">Active</span></td>
+                    <td><button class="btn-primary-action" style="padding:4px 8px; font-size:11px;" onclick="setActivePatient('${p.name}')">Select</button></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function renderLiveAppointmentsTable(appointments) {
+            const tbody = document.querySelector('#view-appointments table tbody');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+            appointments.forEach(a => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><strong>${a.id}</strong></td>
+                    <td>${a.patient_name}</td>
+                    <td>${a.doctor_name}</td>
+                    <td><span class="status-badge status-completed">${a.department}</span></td>
+                    <td>${a.appointment_date}</td>
+                    <td>${a.appointment_time}</td>
+                    <td><span class="status-badge ${a.status === 'Confirmed' ? 'status-active' : 'status-pending'}">${a.status}</span></td>
+                    <td><button class="btn-primary-action" style="padding:4px 8px; font-size:11px;" onclick="showToast('Patient checked in for appointment')">Check-In</button></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function renderLiveBillingTable(invoices) {
+            const tbody = document.querySelector('#view-billing table tbody');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+            invoices.forEach(inv => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><strong>${inv.invoice_no}</strong></td>
+                    <td>${inv.patient_name}</td>
+                    <td>${inv.item_desc}</td>
+                    <td>₱ ${Number(inv.amount).toLocaleString('en-US', {minimumFractionDigits: 2})}</td>
+                    <td>₱ ${Number(inv.discount).toLocaleString('en-US', {minimumFractionDigits: 2})}</td>
+                    <td><strong>₱ ${Number(inv.net_total).toLocaleString('en-US', {minimumFractionDigits: 2})}</strong></td>
+                    <td><span class="status-badge ${inv.payment_status === 'Paid' ? 'status-active' : 'status-urgent'}">${inv.payment_status}</span></td>
+                    <td><button class="btn-secondary" style="padding:4px 8px; font-size:11px;" onclick="printBillingInvoice('${inv.invoice_no}')"><i class="fa-solid fa-print"></i> Print</button></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function renderLiveAccountingTable(vouchers) {
+            const tbody = document.querySelector('#view-accounting table tbody');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+            vouchers.forEach(v => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><strong>${v.voucher_no}</strong></td>
+                    <td>${v.narration}</td>
+                    <td>${v.debit_acc}</td>
+                    <td>${v.credit_acc}</td>
+                    <td>₱ ${Number(v.amount).toLocaleString('en-US', {minimumFractionDigits: 2})}</td>
+                    <td><span class="status-badge status-active">${v.status}</span></td>
+                    <td><button class="btn-secondary" style="padding:4px 8px; font-size:11px;" onclick="showToast('Voucher audited: ' + '${v.voucher_no}')">View</button></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function renderLiveCRMTable(leads) {
+            const tbody = document.querySelector('#crm-leads-table tbody') || document.querySelector('#view-aicrm table tbody');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+            leads.forEach(l => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><strong>${l.lead_no}</strong></td>
+                    <td>${l.patient_name}</td>
+                    <td><i class="fa-brands fa-whatsapp" style="color:#25d366;"></i> ${l.channel}</td>
+                    <td>"${l.symptoms}"</td>
+                    <td><span class="status-badge status-completed">${l.predicted_dept}</span></td>
+                    <td><span class="status-badge status-active">${l.sentiment}</span></td>
+                    <td><button class="btn-primary-action" style="padding:4px 8px; font-size:11px;" onclick="executeAIAutoBook('${l.patient_name}', 'Dr. Roberto Tan, MD', '${l.predicted_dept}')">Book Consult</button></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function renderLiveAuditTable(logs) {
+            const tbody = document.querySelector('#audit-table-body') || document.querySelector('#view-whitelabel table tbody');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+            logs.forEach(log => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${log.timestamp}</td>
+                    <td><strong>${log.user_id}</strong></td>
+                    <td>${log.action_name}</td>
+                    <td>${log.ip_address}</td>
+                    <td><span class="status-badge status-active">${log.status}</span></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Mutation Handlers that save directly to SQLite database
+        async function submitNewPatient() {
+            const name = document.getElementById('reg-pat-name') ? document.getElementById('reg-pat-name').value.trim() : '';
+            const age = document.getElementById('reg-pat-age') ? document.getElementById('reg-pat-age').value : 30;
+            const gender = document.getElementById('reg-pat-gender') ? document.getElementById('reg-pat-gender').value : 'Male';
+            const phone = document.getElementById('reg-pat-phone') ? document.getElementById('reg-pat-phone').value.trim() : '+63 917 000 0000';
+            const address = document.getElementById('reg-pat-address') ? document.getElementById('reg-pat-address').value.trim() : 'Metro Manila';
+            const blood = document.getElementById('reg-pat-blood') ? document.getElementById('reg-pat-blood').value : 'O+';
+            
+            if (!name) { alert('Please enter patient name'); return; }
+
+            const patNo = 'G1-2026-' + String(Math.floor(1000 + Math.random() * 9000));
+
+            await fetch('/api/patients', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    patient_no: patNo,
+                    name: name,
+                    age: parseInt(age) || 30,
+                    gender: gender,
+                    phone: phone,
+                    address: address,
+                    blood_group: blood,
+                    insurance_no: 'PH-' + String(Math.floor(10000 + Math.random() * 90000))
+                })
+            });
+
+            closeModal('modal-new-patient');
+            showToast(`✅ Patient ${name} (${patNo}) registered and saved to persistent database!`);
+            setActivePatient(name);
+            loadLiveEMRState();
+        }
+
+        async function saveNewAppointment() {
+            const pat = document.getElementById('appt-pat-name') ? document.getElementById('appt-pat-name').value : 'Juan Dela Cruz';
+            const doc = document.getElementById('appt-doctor') ? document.getElementById('appt-doctor').value : 'Dr. Roberto Tan, MD';
+            const dept = document.getElementById('appt-dept') ? document.getElementById('appt-dept').value : 'Cardiology';
+            const date = document.getElementById('appt-date') ? document.getElementById('appt-date').value : '2026-08-25';
+            const time = document.getElementById('appt-time') ? document.getElementById('appt-time').value : '10:00 AM';
+
+            await fetch('/api/appointments', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    patient_name: pat,
+                    doctor_name: doc,
+                    department: dept,
+                    appointment_date: date,
+                    appointment_time: time
+                })
+            });
+
+            closeModal('modal-new-appointment');
+            showToast(`✅ Appointment with ${doc} booked for ${pat}!`);
+            loadLiveEMRState();
+        }
+
+        async function updateBedStatusLive(bedId, newStatus, patName, diag, doc) {
+            await fetch('/api/beds/status', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    id: bedId,
+                    status: newStatus,
+                    patient_name: patName || null,
+                    diagnosis: diag || null,
+                    doctor: doc || null
+                })
+            });
+            loadLiveEMRState();
+        }
+    
         function performSecureLogout(event) {
             if (event) {
                 event.preventDefault();
@@ -6664,6 +6935,37 @@ class G1HealthRequestHandler(http.server.BaseHTTPRequestHandler):
         parsed = urllib.parse.urlparse(self.path)
         path = parsed.path
 
+        # REST API DATA GATEWAY (Live SQLite Persistence)
+        if path.startswith("/api/"):
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json; charset=utf-8")
+            self.send_security_headers(is_html=False)
+            self.end_headers()
+
+            if path == "/api/state":
+                data = db_manager.get_full_emr_state()
+            elif path == "/api/patients":
+                data = db_manager.get_all_patients()
+            elif path == "/api/appointments":
+                data = db_manager.get_all_appointments()
+            elif path == "/api/beds":
+                data = db_manager.get_all_beds()
+            elif path == "/api/er":
+                data = db_manager.get_all_er_cases()
+            elif path == "/api/billing":
+                data = db_manager.get_all_billing_invoices()
+            elif path == "/api/accounting":
+                data = db_manager.get_all_accounting_vouchers()
+            elif path == "/api/crm":
+                data = db_manager.get_all_crm_leads()
+            elif path == "/api/audit":
+                data = db_manager.get_all_audit_logs()
+            else:
+                data = {"error": "Not Found"}
+
+            self.wfile.write(json.dumps(data).encode("utf-8"))
+            return
+
         # 1. PUBLIC DIRECT ASSET WHITELIST (Accessible without login as requested)
         clean_path = path.lstrip("/")
         base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) if "api" in __file__ else PROJECT_ROOT
@@ -6728,6 +7030,57 @@ class G1HealthRequestHandler(http.server.BaseHTTPRequestHandler):
     def do_POST(self):
         parsed = urllib.parse.urlparse(self.path)
         path = parsed.path
+
+        # REST API MUTATION GATEWAY (Live SQLite Persistence)
+        if path.startswith("/api/") and path not in ["/api/ai/chat", "/api/ai/triage"]:
+            content_length = int(self.headers.get('Content-Length', 0))
+            post_data = self.rfile.read(content_length).decode('utf-8')
+            try:
+                req_data = json.loads(post_data) if post_data else {}
+            except Exception:
+                req_data = {}
+
+            res_payload = {"success": True}
+
+            if path == "/api/patients":
+                new_id = db_manager.insert_patient(req_data)
+                db_manager.log_audit_event(req_data.get('user', 'admin'), f"REGISTER_PATIENT ({req_data.get('patient_no')})")
+                res_payload["id"] = new_id
+            elif path == "/api/appointments":
+                new_id = db_manager.insert_appointment(req_data)
+                db_manager.log_audit_event(req_data.get('user', 'reception'), f"BOOK_APPOINTMENT ({req_data.get('patient_name')})")
+                res_payload["id"] = new_id
+            elif path in ["/api/beds/status", "/api/beds"]:
+                db_manager.update_bed_record(
+                    req_data.get('id'),
+                    req_data.get('status'),
+                    req_data.get('patient_name'),
+                    req_data.get('diagnosis'),
+                    req_data.get('doctor')
+                )
+                db_manager.log_audit_event(req_data.get('user', 'nurse'), f"UPDATE_BED ({req_data.get('id')} -> {req_data.get('status')})")
+            elif path == "/api/er":
+                new_id = db_manager.insert_er_case(req_data)
+                db_manager.log_audit_event(req_data.get('user', 'doctor'), f"REGISTER_ER_CASE ({req_data.get('case_no')})")
+                res_payload["id"] = new_id
+            elif path == "/api/billing":
+                new_id = db_manager.insert_billing_invoice(req_data)
+                db_manager.log_audit_event(req_data.get('user', 'billing'), f"CREATE_INVOICE ({req_data.get('invoice_no')})")
+                res_payload["id"] = new_id
+            elif path == "/api/accounting":
+                new_id = db_manager.insert_accounting_voucher(req_data)
+                db_manager.log_audit_event(req_data.get('user', 'accountant'), f"POST_JOURNAL_VOUCHER ({req_data.get('voucher_no')})")
+                res_payload["id"] = new_id
+            elif path == "/api/crm":
+                new_id = db_manager.insert_crm_lead(req_data)
+                res_payload["id"] = new_id
+
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json; charset=utf-8")
+            self.send_security_headers(is_html=False)
+            self.end_headers()
+            self.wfile.write(json.dumps(res_payload).encode('utf-8'))
+            return
 
         # 5. SECURE ZERO-KEY CLINICAL MEDICAL LLM ENGINE (/api/ai/chat)
         if path in ["/api/ai/chat", "/api/ai/triage"]:
