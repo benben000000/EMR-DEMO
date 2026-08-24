@@ -367,6 +367,7 @@
                 btn.innerHTML = '<span><i class="fa-solid fa-circle-notch fa-spin"></i> Authenticating...</span>';
                 btn.disabled = true;
 
+                sessionStorage.removeItem('g1_logged_out');
                 sessionStorage.setItem('g1_auth_token', 'active_' + Date.now());
                 sessionStorage.setItem('g1_user', userInp);
                 sessionStorage.setItem('g1_user_name', matched.name);
@@ -377,7 +378,7 @@
                 document.cookie = "g1_session=sess_" + userInp + "_" + Date.now() + "; Path=/; Max-Age=86400; SameSite=Lax;";
 
                 setTimeout(() => {
-                    window.location.href = '/dashboard';
+                    window.location.replace('/dashboard');
                 }, 100);
                 return false;
             } else {
@@ -395,15 +396,19 @@
             const params = new URLSearchParams(window.location.search);
             const container = document.getElementById('auth-alert-container');
 
-            if (params.get('logout') === 'success') {
+            if (params.get('logout') === 'success' || sessionStorage.getItem('g1_logged_out') === 'true') {
                 sessionStorage.clear();
+                sessionStorage.removeItem('g1_auth_token');
                 localStorage.clear();
-                container.innerHTML = `
-                    <div class="security-alert alert-success">
-                        <i class="fa-solid fa-circle-check"></i>
-                        <span>You have been securely signed out. Session destroyed.</span>
-                    </div>
-                `;
+                document.cookie = "g1_session=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Max-Age=0;";
+                if (container) {
+                    container.innerHTML = `
+                        <div class="security-alert alert-success">
+                            <i class="fa-solid fa-circle-check"></i>
+                            <span>You have been securely signed out. Session destroyed.</span>
+                        </div>
+                    `;
+                }
             } else if (params.get('error') === 'unauthorized') {
                 container.innerHTML = `
                     <div class="security-alert alert-danger">

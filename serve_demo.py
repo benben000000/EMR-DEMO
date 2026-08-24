@@ -456,6 +456,7 @@ LOGIN_HTML = """<!DOCTYPE html>
                 btn.innerHTML = '<span><i class="fa-solid fa-circle-notch fa-spin"></i> Authenticating...</span>';
                 btn.disabled = true;
 
+                sessionStorage.removeItem('g1_logged_out');
                 sessionStorage.setItem('g1_auth_token', 'active_' + Date.now());
                 sessionStorage.setItem('g1_user', userInp);
                 sessionStorage.setItem('g1_user_name', matched.name);
@@ -466,7 +467,7 @@ LOGIN_HTML = """<!DOCTYPE html>
                 document.cookie = "g1_session=sess_" + userInp + "_" + Date.now() + "; Path=/; Max-Age=86400; SameSite=Lax;";
 
                 setTimeout(() => {
-                    window.location.href = '/dashboard';
+                    window.location.replace('/dashboard');
                 }, 100);
                 return false;
             } else {
@@ -484,15 +485,19 @@ LOGIN_HTML = """<!DOCTYPE html>
             const params = new URLSearchParams(window.location.search);
             const container = document.getElementById('auth-alert-container');
 
-            if (params.get('logout') === 'success') {
+            if (params.get('logout') === 'success' || sessionStorage.getItem('g1_logged_out') === 'true') {
                 sessionStorage.clear();
+                sessionStorage.removeItem('g1_auth_token');
                 localStorage.clear();
-                container.innerHTML = `
-                    <div class="security-alert alert-success">
-                        <i class="fa-solid fa-circle-check"></i>
-                        <span>You have been securely signed out. Session destroyed.</span>
-                    </div>
-                `;
+                document.cookie = "g1_session=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Max-Age=0;";
+                if (container) {
+                    container.innerHTML = `
+                        <div class="security-alert alert-success">
+                            <i class="fa-solid fa-circle-check"></i>
+                            <span>You have been securely signed out. Session destroyed.</span>
+                        </div>
+                    `;
+                }
             } else if (params.get('error') === 'unauthorized') {
                 container.innerHTML = `
                     <div class="security-alert alert-danger">
@@ -540,20 +545,33 @@ APP_HTML = """<!DOCTYPE html>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
-    <!-- CLIENT-SIDE AUTH GUARD -->
+    <!-- STRICT IMMEDIATE AUTH & BFCACHE BACK-BUTTON GUARD -->
     <script>
-        (function() {
-            const hasAuthToken = sessionStorage.getItem('g1_auth_token');
-            const hasCookie = document.cookie.includes('g1_session=');
-            if (!hasAuthToken && !hasCookie) {
-                window.location.replace('/Account/Login?error=unauthorized');
+        function enforceAuthGuard() {
+            const token = sessionStorage.getItem('g1_auth_token');
+            const isLoggedOut = sessionStorage.getItem('g1_logged_out');
+            if (!token || isLoggedOut === 'true') {
+                document.documentElement.style.display = 'none';
+                window.location.replace('/index.html?error=unauthorized');
+                return false;
             }
-            window.addEventListener('pageshow', function(event) {
-                if (event.persisted && !sessionStorage.getItem('g1_auth_token') && !document.cookie.includes('g1_session=')) {
-                    window.location.replace('/Account/Login?error=unauthorized');
-                }
-            });
-        })();
+            document.documentElement.style.display = '';
+            return true;
+        }
+
+        enforceAuthGuard();
+
+        window.addEventListener('pageshow', function(event) {
+            enforceAuthGuard();
+        });
+
+        window.addEventListener('popstate', function() {
+            enforceAuthGuard();
+        });
+
+        window.addEventListener('focus', function() {
+            enforceAuthGuard();
+        });
     </script>
 
     <style>
@@ -1684,7 +1702,7 @@ APP_HTML = """<!DOCTYPE html>
                     <div style="font-size: 13px; font-weight: 700;" id="header-user-name">Administrator</div>
                     <div style="font-size: 11px; color: #cbd5e1;" id="header-user-role">Super Admin &bull; Session Secure</div>
                 </div>
-                <a href="/Account/Logout" class="btn-logout" onclick="performSecureLogout(event)">
+                <a href="javascript:void(0)" class="btn-logout" onclick="performSecureLogout(event)">
                     <i class="fa-solid fa-right-from-bracket"></i>
                     <span>Sign Out</span>
                 </a>
@@ -3816,11 +3834,21 @@ APP_HTML = """<!DOCTYPE html>
     <script>
         // Secure Logout Handler
         function performSecureLogout(event) {
-            if (event) event.preventDefault();
+            if (event) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
             sessionStorage.clear();
+            sessionStorage.setItem('g1_logged_out', 'true');
+            sessionStorage.removeItem('g1_auth_token');
+            sessionStorage.removeItem('g1_user');
             localStorage.clear();
+
             document.cookie = "g1_session=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Max-Age=0;";
-            window.location.replace('/Account/Logout');
+            document.cookie = "g1_session=; Path=/dashboard; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Max-Age=0;";
+
+            document.documentElement.style.display = 'none';
+            window.location.replace('/index.html?logout=success');
         }
 
         // Inactivity Idle Monitor (15 Minutes)
