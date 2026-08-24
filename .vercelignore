@@ -1,0 +1,13 @@
+# Vercel Ignore File
+# Exclude legacy .NET codebase, database dumps, and heavy archive files from Serverless function bundle
+
+Code/
+Database/
+Print/
+*.zip
+*.bak
+*.mdf
+*.ldf
+.vs/
+.git/
+.agents/

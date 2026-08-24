@@ -4333,8 +4333,6 @@ class handler(http.server.BaseHTTPRequestHandler):
         file_path = os.path.join(base_dir, clean_path)
         if not os.path.exists(file_path):
             file_path = os.path.join(base_dir, "public", clean_path)
-        if not os.path.exists(file_path):
-            file_path = os.path.join(base_dir, "Code", "Websites", "DanpheEMR", "wwwroot", clean_path)
 
         if os.path.isfile(file_path):
             self.send_response(200)
