@@ -1234,6 +1234,7 @@
         </header>
 
         <main class="content-area">
+            <div id="active-workspace-banner"></div>
             
             <!-- 1. DASHBOARD VIEW -->
             <section id="view-dashboard" class="module-view active">
@@ -3401,19 +3402,50 @@
             ]
         };
 
-        // Filter Sidebar Menu by Role
+        // Filter Sidebar Menu & Workspace Actions Strictly by Role
         function applyRolePermissions() {
             const roleKey = sessionStorage.getItem('g1_role_key') || 'admin';
             const allowed = ROLE_PERMISSIONS[roleKey] || ROLE_PERMISSIONS['admin'];
+            const userBadge = sessionStorage.getItem('g1_user_badge') || '👑 Super Admin';
 
+            // 1. Filter Sidebar Nav items strictly
             document.querySelectorAll('#sidebar-nav-list .nav-item').forEach(item => {
                 const mod = item.getAttribute('data-module');
                 if (!mod || mod === 'dashboard' || allowed.includes(mod)) {
-                    item.style.display = 'block';
+                    item.style.setProperty('display', 'block', 'important');
                 } else {
-                    item.style.display = 'none';
+                    item.style.setProperty('display', 'none', 'important');
                 }
             });
+
+            // 2. Filter Role-Specific elements tagged with data-roles
+            document.querySelectorAll('[data-roles]').forEach(el => {
+                const rolesList = el.getAttribute('data-roles').split(',').map(r => r.trim());
+                if (rolesList.includes(roleKey) || roleKey === 'admin') {
+                    el.style.display = '';
+                } else {
+                    el.style.display = 'none';
+                }
+            });
+
+            // 3. Update active workspace banner
+            const roleBanner = document.getElementById('active-workspace-banner');
+            if (roleBanner) {
+                roleBanner.innerHTML = `
+                    <div style="background: linear-gradient(90deg, #1e293b, #253545); color:#fff; padding:12px 18px; border-radius:10px; margin-bottom:20px; display:flex; align-items:center; justify-content:space-between; border-left:4px solid var(--brand-cyan); box-shadow:0 2px 6px rgba(0,0,0,0.06);">
+                        <div style="display:flex; align-items:center; gap:12px;">
+                            <span style="font-size:18px;">${userBadge.split(' ')[0]}</span>
+                            <div>
+                                <div style="font-size:13.5px; font-weight:800;">${userBadge} Active Workspace</div>
+                                <div style="font-size:11.5px; color:#cbd5e1;">Options and tools outside your departmental role have been hidden for operational focus and security.</div>
+                            </div>
+                        </div>
+                        <button class="btn-switch-pat" style="padding:6px 12px; font-size:12px;" onclick="openModal('modal-switch-role')">
+                            <i class="fa-solid fa-arrows-rotate"></i> Switch Role
+                        </button>
+                    </div>
+                `;
+            }
         }
 
         // Real-time Sidebar Search ("Search Menu Items...")
