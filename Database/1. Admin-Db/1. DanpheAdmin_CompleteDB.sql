@@ -715,12 +715,11 @@ SET @DynamicQuery='SELECT *
        AND CONVERT(DATE,'''+CONVERT(Varchar(20),@ToDate)+''') 
        and tbl1.Table_Name = '''+@Table_Name+''' and tbl2.UserName = '''+@UserName+''')'	
        
---PRINT(@DynamicQuery)
 EXEC (@DynamicQuery) 
 	       
 end
 GO
----end: sud-10Nov'19--- for audit trail---
+-- Audit trail complete --
 
 SET ANSI_NULLS ON
 GO

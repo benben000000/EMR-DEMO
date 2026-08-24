@@ -378,10 +378,13 @@
                 sessionStorage.removeItem('g1_logged_out');
                 sessionStorage.setItem('g1_auth_token', 'active_' + Date.now());
                 sessionStorage.setItem('g1_user', userInp);
+                sessionStorage.setItem('g1_role_key', matched.role_key || userInp);
                 sessionStorage.setItem('g1_user_name', matched.name);
                 sessionStorage.setItem('g1_user_role', matched.role);
                 sessionStorage.setItem('g1_user_avatar', matched.avatar);
+                sessionStorage.setItem('g1_user_badge', matched.badge);
                 localStorage.setItem('g1_user', userInp);
+                localStorage.setItem('g1_role_key', matched.role_key || userInp);
 
                 document.cookie = "g1_session=sess_" + userInp + "_" + Date.now() + "; Path=/; Max-Age=86400; SameSite=Lax;";
 

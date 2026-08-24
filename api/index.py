@@ -471,10 +471,13 @@ LOGIN_HTML = """<!DOCTYPE html>
                 sessionStorage.removeItem('g1_logged_out');
                 sessionStorage.setItem('g1_auth_token', 'active_' + Date.now());
                 sessionStorage.setItem('g1_user', userInp);
+                sessionStorage.setItem('g1_role_key', matched.role_key || userInp);
                 sessionStorage.setItem('g1_user_name', matched.name);
                 sessionStorage.setItem('g1_user_role', matched.role);
                 sessionStorage.setItem('g1_user_avatar', matched.avatar);
+                sessionStorage.setItem('g1_user_badge', matched.badge);
                 localStorage.setItem('g1_user', userInp);
+                localStorage.setItem('g1_role_key', matched.role_key || userInp);
 
                 document.cookie = "g1_session=sess_" + userInp + "_" + Date.now() + "; Path=/; Max-Age=86400; SameSite=Lax;";
 
@@ -1792,7 +1795,7 @@ APP_HTML = """<!DOCTYPE html>
                         <h1>Executive Healthcare Dashboard</h1>
                         <p>Welcome to G1 Health EMR &bull; Powered by Global 1 OneTech</p>
                     </div>
-                    <div style="display:flex; gap:10px;">
+                    <div style="display:flex; gap:10px;" id="dash-action-buttons">
                         <button class="btn-primary-action" onclick="openModal('modal-new-patient')">
                             <i class="fa-solid fa-user-plus"></i> + Quick Register
                         </button>
@@ -3908,155 +3911,199 @@ APP_HTML = """<!DOCTYPE html>
     <script>
         // Secure Logout Handler
         
-        // Departmental RBAC Access Permissions Map
-        const ROLE_PERMISSIONS = {
-            'admin': [
-                'dashboard', 'clinical', 'clinicalsettings', 'appointment', 'patient', 
-                'procurement', 'billing', 'claimmgmt', 'utilities', 'mktreferral', 
-                'reports', 'laboratory', 'radiology', 'adt', 'vaccination', 'queuemngmt', 
-                'inventory', 'accounting', 'emergency', 'helpdesk', 'nursing', 
-                'medicalrecords', 'settings', 'systemadmin', 'pharmacy', 'substore', 
-                'cssd', 'incentive', 'verification', 'fixedassets', 'aicrm', 'patient360', 'ehs'
-            ],
-            'doctor': [
-                'dashboard', 'clinical', 'clinicalsettings', 'appointment', 'patient', 
-                'emergency', 'adt', 'nursing', 'laboratory', 'radiology', 
-                'medicalrecords', 'vaccination', 'telehealth', 'aicrm', 'patient360', 
-                'incentive', 'reports'
-            ],
-            'nurse': [
-                'dashboard', 'nursing', 'adt', 'emergency', 'appointment', 
-                'patient', 'vaccination', 'queuemngmt', 'cssd', 'substore', 
-                'pharmacy', 'laboratory', 'patient360', 'ehs', 'helpdesk'
-            ],
-            'accountant': [
-                'dashboard', 'accounting', 'billing', 'claimmgmt', 'incentive', 
-                'fixedassets', 'procurement', 'reports', 'verification', 'utilities'
-            ],
-            'billing': [
-                'dashboard', 'billing', 'claimmgmt', 'patient', 'queuemngmt', 
-                'reports', 'helpdesk'
-            ],
-            'pharmacy': [
-                'dashboard', 'pharmacy', 'substore', 'inventory', 'procurement', 
-                'verification', 'reports'
-            ],
-            'labtech': [
-                'dashboard', 'laboratory', 'radiology', 'verification', 'patient', 
-                'patient360', 'reports'
-            ],
-            'reception': [
-                'dashboard', 'patient', 'appointment', 'queuemngmt', 'helpdesk', 
-                'billing', 'mktreferral', 'patient360'
-            ]
+        
+                const VALID_USERS = {
+            'admin': { pass: 'pass123', name: 'Administrator', role: 'Super Admin &bull; Full Access', role_key: 'admin', avatar: 'AD', badge: '👑 Super Admin' },
+            'doctor': { pass: 'pass123', name: 'Dr. Roberto Tan, MD', role: 'Attending Cardiologist &bull; Clinical Desk', role_key: 'doctor', avatar: 'RT', badge: '🩺 Doctor (MD)' },
+            'nurse': { pass: 'pass123', name: 'Nurse Clara Dizon', role: 'Charge Nurse &bull; Ward Station', role_key: 'nurse', avatar: 'CD', badge: '💉 Nurse (RN)' },
+            'accountant': { pass: 'pass123', name: 'Elena Villar, CPA', role: 'Chief Accountant &bull; Finance Dept', role_key: 'accountant', avatar: 'EV', badge: '💰 Accountant' },
+            'billing': { pass: 'pass123', name: 'Mark Mendoza', role: 'Billing & Claims Officer &bull; Cashier', role_key: 'billing', avatar: 'MM', badge: '💳 Billing' },
+            'pharmacy': { pass: 'pass123', name: 'Pharm. Leo Santos, RPh', role: 'Chief Pharmacist &bull; Dispensary', role_key: 'pharmacy', avatar: 'LS', badge: '💊 Pharmacist' },
+            'labtech': { pass: 'pass123', name: 'Sarah Cruz, RMT', role: 'Diagnostic & Imaging Technologist', role_key: 'labtech', avatar: 'SC', badge: '🔬 Lab Tech' },
+            'reception': { pass: 'pass123', name: 'Joy Pascual', role: 'Front Desk & Admissions Officer', role_key: 'reception', avatar: 'JP', badge: '📋 Reception' }
         };
 
-        // Filter Sidebar Menu & Workspace Actions Strictly by Role
+        // Full 33 HMIS Modules Master Specification with Departmental RBAC Rules
+        const ALL_HMIS_MODULES = [
+            { id: 'view-dashboard', key: 'dashboard', title: 'Dashboard', icon: 'fa-chart-pie', roles: ['admin', 'doctor', 'nurse', 'accountant', 'billing', 'pharmacy', 'labtech', 'reception'] },
+            { id: 'view-clinical', key: 'clinical', title: 'Clinical (Doctor Desk)', icon: 'fa-stethoscope', roles: ['admin', 'doctor'] },
+            { id: 'view-clinicalsettings', key: 'clinicalsettings', title: 'ClinicalSettings', icon: 'fa-gear', roles: ['admin', 'doctor'] },
+            { id: 'view-appointments', key: 'appointment', title: 'Appointment', icon: 'fa-calendar-check', roles: ['admin', 'doctor', 'nurse', 'reception'] },
+            { id: 'view-patient-reg', key: 'patient', title: 'Patient', icon: 'fa-user', roles: ['admin', 'doctor', 'nurse', 'reception', 'billing'] },
+            { id: 'view-procurement', key: 'procurement', title: 'Procurement', icon: 'fa-clipboard-list', roles: ['admin', 'accountant', 'pharmacy'] },
+            { id: 'view-billing', key: 'billing', title: 'Billing', icon: 'fa-file-invoice-dollar', roles: ['admin', 'accountant', 'billing', 'reception'] },
+            { id: 'view-claimmgmt', key: 'claimmgmt', title: 'ClaimMgmt', icon: 'fa-file-shield', roles: ['admin', 'accountant', 'billing'] },
+            { id: 'view-utilities', key: 'utilities', title: 'Utilities', icon: 'fa-wrench', roles: ['admin', 'accountant'] },
+            { id: 'view-mktreferral', key: 'mktreferral', title: 'MktReferral', icon: 'fa-diagram-project', roles: ['admin', 'reception'] },
+            { id: 'view-reports', key: 'reports', title: 'Reports', icon: 'fa-chart-line', roles: ['admin', 'accountant', 'doctor', 'billing', 'pharmacy', 'labtech'] },
+            { id: 'view-laboratory', key: 'laboratory', title: 'Laboratory', icon: 'fa-flask', roles: ['admin', 'doctor', 'nurse', 'labtech'] },
+            { id: 'view-radiology', key: 'radiology', title: 'Radiology', icon: 'fa-x-ray', roles: ['admin', 'doctor', 'labtech'] },
+            { id: 'view-adt', key: 'adt', title: 'ADT (Inpatient)', icon: 'fa-bed', roles: ['admin', 'doctor', 'nurse'] },
+            { id: 'view-vaccination', key: 'vaccination', title: 'Vaccination', icon: 'fa-syringe', roles: ['admin', 'doctor', 'nurse', 'reception'] },
+            { id: 'view-queue', key: 'queuemngmt', title: 'QueueMngmt', icon: 'fa-users', roles: ['admin', 'nurse', 'reception', 'billing'] },
+            { id: 'view-pharmacy', key: 'inventory', title: 'Inventory', icon: 'fa-boxes-stacked', roles: ['admin', 'pharmacy'] },
+            { id: 'view-accounting', key: 'accounting', title: 'Accounting', icon: 'fa-calculator', roles: ['admin', 'accountant'] },
+            { id: 'view-emergency', key: 'emergency', title: 'Emergency', icon: 'fa-truck-medical', roles: ['admin', 'doctor', 'nurse'] },
+            { id: 'view-helpdesk', key: 'helpdesk', title: 'Helpdesk', icon: 'fa-circle-question', roles: ['admin', 'nurse', 'reception', 'billing'] },
+            { id: 'view-nursing', key: 'nursing', title: 'Nursing', icon: 'fa-user-nurse', roles: ['admin', 'doctor', 'nurse'] },
+            { id: 'view-medicalrecords', key: 'medicalrecords', title: 'MedicalRecords', icon: 'fa-book-medical', roles: ['admin', 'doctor'] },
+            { id: 'view-whitelabel', key: 'settings', title: 'Settings', icon: 'fa-sliders', roles: ['admin'] },
+            { id: 'view-systemadmin', key: 'systemadmin', title: 'SystemAdmin', icon: 'fa-user-shield', roles: ['admin'] },
+            { id: 'view-pharmacy', key: 'pharmacy', title: 'Pharmacy', icon: 'fa-pills', roles: ['admin', 'pharmacy', 'nurse'] },
+            { id: 'view-substore', key: 'substore', title: 'SubStore', icon: 'fa-store', roles: ['admin', 'nurse', 'pharmacy'] },
+            { id: 'view-cssd', key: 'cssd', title: 'CSSD', icon: 'fa-hand-sparkles', roles: ['admin', 'nurse'] },
+            { id: 'view-incentive', key: 'incentive', title: 'Incentive', icon: 'fa-hand-holding-dollar', roles: ['admin', 'accountant', 'doctor'] },
+            { id: 'view-verification', key: 'verification', title: 'Verification', icon: 'fa-clipboard-check', roles: ['admin', 'accountant', 'labtech', 'pharmacy'] },
+            { id: 'view-fixedassets', key: 'fixedassets', title: 'FixedAssets', icon: 'fa-hospital-user', roles: ['admin', 'accountant'] },
+            { id: 'view-aicrm', key: 'aicrm', title: 'AI CRM & Leads', icon: 'fa-robot', roles: ['admin', 'doctor', 'reception'] },
+            { id: 'view-patient360', key: 'patient360', title: 'Patient 360 (PIS)', icon: 'fa-id-card-clip', roles: ['admin', 'doctor', 'nurse', 'reception', 'labtech'] },
+            { id: 'view-ehs', key: 'ehs', title: 'Employee Health', icon: 'fa-heart-pulse', roles: ['admin', 'nurse', 'doctor'] }
+        ];
+
+        // Dynamically Render ONLY the Permitted Sidebar Modules for Active Role
+        function renderDynamicSidebar(searchQuery = '') {
+            const roleKey = sessionStorage.getItem('g1_role_key') || 'admin';
+            const navList = document.getElementById('sidebar-nav-list');
+            if (!navList) return;
+
+            const q = searchQuery.toLowerCase().trim();
+            navList.innerHTML = '';
+
+            // Filter modules by role
+            const allowedModules = ALL_HMIS_MODULES.filter(m => {
+                if (roleKey === 'admin') return true;
+                return m.roles.includes(roleKey);
+            });
+
+            // Filter by search query if any
+            const matchedModules = allowedModules.filter(m => {
+                if (!q) return true;
+                return m.title.toLowerCase().includes(q) || m.key.toLowerCase().includes(q);
+            });
+
+            if (matchedModules.length === 0) {
+                navList.innerHTML = '<li style="padding:16px 20px; font-size:12px; color:#94a3b8; text-align:center;">No matching tools found for your role.</li>';
+                return;
+            }
+
+            matchedModules.forEach((m, idx) => {
+                const li = document.createElement('li');
+                li.className = 'nav-item';
+                li.setAttribute('data-target', m.id);
+                li.setAttribute('data-module', m.key);
+
+                // Check if currently active
+                const currentActiveView = document.querySelector('.module-view.active');
+                if (currentActiveView && currentActiveView.id === m.id) {
+                    li.classList.add('active');
+                } else if (!currentActiveView && idx === 0) {
+                    li.classList.add('active');
+                }
+
+                li.innerHTML = `
+                    <a onclick="switchTab('${m.id}', this)">
+                        <i class="fa-solid ${m.icon}"></i>
+                        <span>${m.title}</span>
+                    </a>
+                `;
+                navList.appendChild(li);
+            });
+        }
+
+        // Real-time Sidebar Search ("Search Menu Items...")
+        function filterSidebarMenu(input) {
+            const query = input ? input.value : '';
+            renderDynamicSidebar(query);
+        }
+
+        // Apply Strict Role Permissions & Rebuild DOM
         function applyRolePermissions() {
             const roleKey = sessionStorage.getItem('g1_role_key') || 'admin';
-            const allowed = ROLE_PERMISSIONS[roleKey] || ROLE_PERMISSIONS['admin'];
             const userBadge = sessionStorage.getItem('g1_user_badge') || '👑 Super Admin';
 
-            // 1. Filter Sidebar Nav items strictly
-            document.querySelectorAll('#sidebar-nav-list .nav-item').forEach(item => {
-                const mod = item.getAttribute('data-module');
-                if (!mod || mod === 'dashboard' || allowed.includes(mod)) {
-                    item.style.setProperty('display', 'block', 'important');
-                } else {
-                    item.style.setProperty('display', 'none', 'important');
-                }
-            });
+            // 1. Re-render dynamic sidebar with ONLY permitted modules
+            renderDynamicSidebar();
 
-            // 2. Filter Role-Specific elements tagged with data-roles
-            document.querySelectorAll('[data-roles]').forEach(el => {
-                const rolesList = el.getAttribute('data-roles').split(',').map(r => r.trim());
-                if (rolesList.includes(roleKey) || roleKey === 'admin') {
-                    el.style.display = '';
-                } else {
-                    el.style.display = 'none';
-                }
-            });
-
-            // 3. Update active workspace banner
+            // 2. Update active workspace banner
             const roleBanner = document.getElementById('active-workspace-banner');
             if (roleBanner) {
+                let roleDesc = "All 33 Hospital Modules & Configurations Unlocked.";
+                if (roleKey === 'accountant') roleDesc = "Financial & Accounting Tools Only (General Ledger, Invoicing, Claims, Incentives & POs). Clinical/Care modules hidden.";
+                else if (roleKey === 'doctor') roleDesc = "Clinical & Diagnostic Tools Only (Doctor Consultation, E-Prescriptions, Appointments, ER, LIS & RIS). Accounting & Store tools hidden.";
+                else if (roleKey === 'nurse') roleDesc = "Ward Inpatient Station (Nursing e-MAR, Bed Matrix, Emergency Trauma, Vaccination & CSSD). Finance tools hidden.";
+                else if (roleKey === 'billing') roleDesc = "Cashier & Invoicing Station (OPD/IPD Billing, Receipts, Claims & Queue Calling). Clinical records hidden.";
+                else if (roleKey === 'pharmacy') roleDesc = "Hospital Pharmacy & Supply Chain (Drug Dispensary, SubStore & Central Warehouse). Patient clinical charts hidden.";
+                else if (roleKey === 'labtech') roleDesc = "Diagnostic Laboratory & PACS Imaging (LIS Analyzers, DICOM & Critical Sign-off). Inpatient/Finance tools hidden.";
+                else if (roleKey === 'reception') roleDesc = "Front Desk & Admissions (Patient Master Index, Appointment Scheduling, Queue Tokens & Helpdesk).";
+
                 roleBanner.innerHTML = `
                     <div style="background: linear-gradient(90deg, #1e293b, #253545); color:#fff; padding:12px 18px; border-radius:10px; margin-bottom:20px; display:flex; align-items:center; justify-content:space-between; border-left:4px solid var(--brand-cyan); box-shadow:0 2px 6px rgba(0,0,0,0.06);">
                         <div style="display:flex; align-items:center; gap:12px;">
-                            <span style="font-size:18px;">${userBadge.split(' ')[0]}</span>
+                            <span style="font-size:22px;">${userBadge.split(' ')[0]}</span>
                             <div>
-                                <div style="font-size:13.5px; font-weight:800;">${userBadge} Active Workspace</div>
-                                <div style="font-size:11.5px; color:#cbd5e1;">Options and tools outside your departmental role have been hidden for operational focus and security.</div>
+                                <div style="font-size:14px; font-weight:800; color:#ffffff;">${userBadge} Active Workspace</div>
+                                <div style="font-size:12px; color:#cbd5e1; margin-top:2px;">${roleDesc}</div>
                             </div>
                         </div>
-                        <button class="btn-switch-pat" style="padding:6px 12px; font-size:12px;" onclick="openModal('modal-switch-role')">
+                        <button class="btn-switch-pat" style="padding:6px 14px; font-size:12px;" onclick="openModal('modal-switch-role')">
                             <i class="fa-solid fa-arrows-rotate"></i> Switch Role
                         </button>
                     </div>
                 `;
             }
-        }
 
-        // Real-time Sidebar Search ("Search Menu Items...")
-        function filterSidebarMenu(input) {
-            const query = input.value.toLowerCase().trim();
-            const roleKey = sessionStorage.getItem('g1_role_key') || 'admin';
-            const allowed = ROLE_PERMISSIONS[roleKey] || ROLE_PERMISSIONS['admin'];
-
-            document.querySelectorAll('#sidebar-nav-list .nav-item').forEach(item => {
-                const mod = item.getAttribute('data-module');
-                const title = item.innerText.toLowerCase();
-                const isAllowed = !mod || mod === 'dashboard' || allowed.includes(mod);
-
-                if (isAllowed && (query === '' || title.includes(query) || (mod && mod.includes(query)))) {
-                    item.style.display = 'block';
+            // 3. Customize Dashboard Action Buttons for Active Role
+            const dashActions = document.getElementById('dash-action-buttons');
+            if (dashActions) {
+                if (roleKey === 'accountant') {
+                    dashActions.innerHTML = `
+                        <button class="btn-primary-action" onclick="showToast('New Journal Voucher Entry Drafted')"><i class="fa-solid fa-plus"></i> + New Journal Voucher</button>
+                        <button class="btn-accent-action" onclick="switchTab('view-accounting', null)"><i class="fa-solid fa-calculator"></i> Open General Ledger</button>
+                    `;
+                } else if (roleKey === 'doctor') {
+                    dashActions.innerHTML = `
+                        <button class="btn-primary-action" onclick="switchTab('view-clinical', null)"><i class="fa-solid fa-stethoscope"></i> Open Doctor Desk</button>
+                        <button class="btn-accent-action" onclick="switchTab('view-appointments', null)"><i class="fa-solid fa-calendar-check"></i> View OPD Appointments</button>
+                    `;
+                } else if (roleKey === 'nurse') {
+                    dashActions.innerHTML = `
+                        <button class="btn-primary-action" onclick="switchTab('view-adt', null)"><i class="fa-solid fa-bed"></i> Inpatient Bed Matrix</button>
+                        <button class="btn-accent-action" onclick="switchTab('view-nursing', null)"><i class="fa-solid fa-user-nurse"></i> Nursing Station</button>
+                    `;
+                } else if (roleKey === 'pharmacy') {
+                    dashActions.innerHTML = `
+                        <button class="btn-primary-action" onclick="switchTab('view-pharmacy', null)"><i class="fa-solid fa-pills"></i> Dispense Prescriptions</button>
+                        <button class="btn-accent-action" onclick="switchTab('view-substore', null)"><i class="fa-solid fa-store"></i> Ward Indents</button>
+                    `;
+                } else if (roleKey === 'billing') {
+                    dashActions.innerHTML = `
+                        <button class="btn-primary-action" onclick="openModal('modal-generate-invoice')"><i class="fa-solid fa-receipt"></i> + Create Invoice</button>
+                        <button class="btn-accent-action" onclick="switchTab('view-billing', null)"><i class="fa-solid fa-file-invoice-dollar"></i> Open Invoicing Hub</button>
+                    `;
+                } else if (roleKey === 'reception') {
+                    dashActions.innerHTML = `
+                        <button class="btn-primary-action" onclick="openModal('modal-new-patient')"><i class="fa-solid fa-user-plus"></i> + Quick Register</button>
+                        <button class="btn-accent-action" onclick="switchTab('view-queue', null)"><i class="fa-solid fa-ticket"></i> Issue Queue Token</button>
+                    `;
                 } else {
-                    item.style.display = 'none';
+                    dashActions.innerHTML = `
+                        <button class="btn-primary-action" onclick="openModal('modal-new-patient')"><i class="fa-solid fa-user-plus"></i> + Quick Register</button>
+                        <button class="btn-accent-action" onclick="switchTab('view-aicrm', null)"><i class="fa-solid fa-robot"></i> Open AI CRM Assistant</button>
+                    `;
                 }
-            });
-        }
-
-        // Instant 1-Click Role Switcher
-        function switchActiveRole(roleKey) {
-            const roleData = VALID_USERS[roleKey];
-            if (!roleData) return;
-
-            sessionStorage.setItem('g1_role_key', roleKey);
-            sessionStorage.setItem('g1_user', roleKey);
-            sessionStorage.setItem('g1_user_name', roleData.name);
-            sessionStorage.setItem('g1_user_role', roleData.role);
-            sessionStorage.setItem('g1_user_avatar', roleData.avatar);
-            sessionStorage.setItem('g1_user_badge', roleData.badge);
-
-            document.getElementById('header-user-name').textContent = roleData.name;
-            document.getElementById('header-user-role').innerHTML = roleData.role;
-            document.getElementById('header-user-avatar').textContent = roleData.avatar;
-            document.getElementById('header-user-badge').textContent = roleData.badge;
-
-            applyRolePermissions();
-            closeModal('modal-switch-role');
-
-            // Switch to appropriate default landing view for this role
-            if (roleKey === 'doctor') {
-                switchTab('view-clinical', document.querySelector('[data-target=view-clinical]'));
-            } else if (roleKey === 'nurse') {
-                switchTab('view-nursing', document.querySelector('[data-target=view-nursing]'));
-            } else if (roleKey === 'accountant') {
-                switchTab('view-accounting', document.querySelector('[data-target=view-accounting]'));
-            } else if (roleKey === 'billing') {
-                switchTab('view-billing', document.querySelector('[data-target=view-billing]'));
-            } else if (roleKey === 'pharmacy') {
-                switchTab('view-pharmacy', document.querySelector('[data-target=view-pharmacy]'));
-            } else if (roleKey === 'labtech') {
-                switchTab('view-laboratory', document.querySelector('[data-target=view-laboratory]'));
-            } else if (roleKey === 'reception') {
-                switchTab('view-patient-reg', document.querySelector('[data-target=view-patient-reg]'));
-            } else {
-                switchTab('view-dashboard', document.querySelector('[data-target=view-dashboard]'));
             }
 
-            showToast(`Workspace switched to ${roleData.badge} (${roleData.name}). Tools filtered!`);
+            // 4. Hide/Show Active Patient Bar based on clinical relevance
+            const patBar = document.getElementById('global-active-patient-bar');
+            if (patBar) {
+                if (['doctor', 'nurse', 'reception', 'labtech', 'admin'].includes(roleKey)) {
+                    patBar.style.display = 'flex';
+                } else {
+                    patBar.style.display = 'none';
+                }
+            }
         }
+    
 
         function performSecureLogout(event) {
             if (event) {
