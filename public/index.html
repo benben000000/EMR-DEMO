@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sign in - G1 Health EMR (Global 1 OneTech)</title>
+    <link rel="icon" href="/Personalization/logos/favicon.ico" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+        :root {
+            --brand-primary: #253545;
+            --brand-primary-hover: #1b2838;
+            --brand-cyan: #00ffa1;
+            --brand-accent: #00bfa5;
+            --brand-blue: #0284c7;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Nunito', 'Inter', sans-serif; }
+
+        body {
+            background-color: #0f172a;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background-image: radial-gradient(#1e293b 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+
+        .auth-container {
+            display: flex;
+            width: 1040px;
+            max-width: 96vw;
+            min-height: 620px;
+            background: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+        }
+
+        .hero-panel {
+            flex: 1.15;
+            background: linear-gradient(145deg, #1b2838 0%, #253545 100%);
+            color: #ffffff;
+            padding: 48px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        .hero-panel::before {
+            content: '';
+            position: absolute;
+            top: -20%;
+            right: -20%;
+            width: 80%;
+            height: 80%;
+            background: radial-gradient(circle, rgba(0, 255, 161, 0.15) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .brand-logo-hero {
+            max-height: 52px;
+            filter: brightness(0) invert(1);
+            margin-bottom: 24px;
+        }
+
+        .hero-title {
+            font-size: 32px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            margin-bottom: 10px;
+            color: #ffffff;
+        }
+
+        .hero-tagline {
+            font-size: 15px;
+            color: #cbd5e1;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .hero-tagline b { color: var(--brand-cyan); }
+
+        .feature-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #f8fafc;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 10px 14px;
+            border-radius: 8px;
+            border-left: 3.5px solid var(--brand-cyan);
+            backdrop-filter: blur(8px);
+        }
+
+        .feature-item i { color: var(--brand-cyan); font-size: 15px; width: 20px; text-align: center; }
+
+        .hero-footer {
+            font-size: 12px;
+            color: #94a3b8;
+            margin-top: 32px;
+        }
+
+        .hero-footer a { color: var(--brand-cyan); text-decoration: none; font-weight: 600; }
+
+        .form-panel {
+            flex: 1;
+            padding: 48px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background: #ffffff;
+        }
+
+        .form-logo { text-align: center; margin-bottom: 28px; }
+        .form-logo img { max-height: 50px; }
+
+        .form-header { text-align: center; margin-bottom: 28px; }
+        .form-header h2 { font-size: 24px; font-weight: 800; color: #1e293b; }
+        .form-header p { font-size: 13px; color: #64748b; margin-top: 4px; }
+
+        .input-group { margin-bottom: 20px; }
+        .input-group label { display: block; font-size: 13px; font-weight: 700; color: #334155; margin-bottom: 6px; }
+
+        .input-wrapper { position: relative; display: flex; align-items: center; }
+        .input-wrapper i { position: absolute; left: 14px; color: #94a3b8; font-size: 15px; }
+
+        .input-wrapper input {
+            width: 100%;
+            padding: 13px 14px 13px 42px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 14px;
+            color: #1e293b;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .input-wrapper input:focus {
+            border-color: var(--brand-primary);
+            box-shadow: 0 0 0 3.5px rgba(37, 53, 69, 0.12);
+        }
+
+        .form-options {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 13px;
+            margin-bottom: 24px;
+        }
+
+        .remember-me { display: flex; align-items: center; gap: 6px; color: #475569; cursor: pointer; }
+        .forgot-link { color: var(--brand-primary); text-decoration: none; font-weight: 700; }
+
+        .btn-submit {
+            width: 100%;
+            padding: 14px;
+            background-color: var(--brand-primary);
+            color: #ffffff;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-submit:hover {
+            background-color: var(--brand-primary-hover);
+            color: var(--brand-cyan);
+            transform: translateY(-1px);
+            box-shadow: 0 10px 20px -5px rgba(37, 53, 69, 0.35);
+        }
+
+        .demo-credentials-badge {
+            margin-top: 24px;
+            background: #f8fafc;
+            border: 1px dashed #cbd5e1;
+            border-radius: 8px;
+            padding: 10px 14px;
+            font-size: 12px;
+            color: #475569;
+            text-align: center;
+        }
+
+        .demo-credentials-badge code {
+            background: #e2e8f0;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        @media (max-width: 768px) {
+            .auth-container { flex-direction: column; }
+            .hero-panel, .form-panel { padding: 32px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <div class="hero-panel">
+            <div>
+                <img src="/Personalization/logos/logo-main.png" alt="Global 1 OneTech" class="brand-logo-hero" />
+                <h1 class="hero-title">G1 Health EMR</h1>
+                <p class="hero-tagline">
+                    A Smart <b>Healthcare Management Solution</b> powered by Global 1 OneTech.
+                </p>
+                <ul class="feature-list">
+                    <li class="feature-item">
+                        <i class="fa-solid fa-notes-medical"></i>
+                        <span>Electronic Medical Records (EMR & EHR)</span>
+                    </li>
+                    <li class="feature-item">
+                        <i class="fa-solid fa-boxes-stacked"></i>
+                        <span>Hospital ERP & Pharmacy Supply Chain</span>
+                    </li>
+                    <li class="feature-item">
+                        <i class="fa-solid fa-robot"></i>
+                        <span>AI CRM & Intelligent Patient Triage</span>
+                    </li>
+                    <li class="feature-item">
+                        <i class="fa-solid fa-id-card-clip"></i>
+                        <span>Patient 360 Information System (PIS)</span>
+                    </li>
+                    <li class="feature-item">
+                        <i class="fa-solid fa-heart-pulse"></i>
+                        <span>Employee Health & Safety (EHS)</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="hero-footer">
+                &copy; 2026 <a href="https://global1onetech.com/" target="_blank">Global 1 OneTech</a> &bull; All Rights Reserved.
+            </div>
+        </div>
+
+        <div class="form-panel">
+            <div class="form-logo">
+                <img src="/Personalization/logos/logo-main.png" alt="Global 1 OneTech" />
+            </div>
+            <div class="form-header">
+                <h2>Sign in to G1 Health EMR</h2>
+                <p>Enter system credentials to launch executive demo</p>
+            </div>
+            <form action="/dashboard" method="POST" onsubmit="event.preventDefault(); window.location.href='/dashboard';">
+                <div class="input-group">
+                    <label for="username">Username</label>
+                    <div class="input-wrapper">
+                        <i class="fa-solid fa-user"></i>
+                        <input type="text" id="username" name="username" value="admin" required />
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <div class="input-wrapper">
+                        <i class="fa-solid fa-lock"></i>
+                        <input type="password" id="password" name="password" value="pass123" required />
+                    </div>
+                </div>
+                <div class="form-options">
+                    <label class="remember-me">
+                        <input type="checkbox" name="remember" checked />
+                        <span>Remember me</span>
+                    </label>
+                    <a href="#" class="forgot-link">Forgot password?</a>
+                </div>
+                <button type="submit" class="btn-submit" id="btn-login-submit">
+                    <span>Sign In to Dashboard</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+                <div class="demo-credentials-badge">
+                    Default Credentials: <code>admin</code> / <code>pass123</code>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

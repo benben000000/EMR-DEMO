@@ -9,41 +9,57 @@
 
 Once the system is launched, access the portal in your browser:
 
-- **Login URL**: `http://localhost:5000/Account/Login`
+- **Local URL**: `http://localhost:5000`
 - **Username**: `admin`
 - **Password**: `pass123`
 
 ---
 
-## 🚀 How to Run and Access
+## ☁️ How to Deploy to Vercel (1-Click Setup)
 
-### 1. Prerequisites
-- **Operating System**: Windows 10 / 11 / Windows Server
-- **IDE**: Visual Studio 2019 / 2022 (with *.NET Desktop and Web Development* workload)
-- **Framework**: .NET Framework 4.6.1 Developer Pack
-- **Database**: Microsoft SQL Server 2016+ (or SQL Server Express)
-- **Frontend**: Node.js (v10.x – v12.x) & npm
+This repository is pre-configured with `vercel.json` and serverless Python / static edge routing.
+
+### Option A: Via Vercel Web Dashboard (Easiest)
+1. Go to [https://vercel.com/new](https://vercel.com/new) and log in with your GitHub account.
+2. Select and import the repository: **`benben000000/EMR-DEMO`**.
+3. Leave all default build settings as configured (Vercel automatically detects `vercel.json` and `api/index.py`).
+4. Click **Deploy**.
+5. Your live G1 Health EMR site will be accessible immediately at `https://emr-demo.vercel.app` (or your assigned Vercel URL)!
+
+### Option B: Via Vercel CLI
+```bash
+npm i -g vercel
+vercel login
+vercel --prod
+```
 
 ---
 
-### 2. Setup Steps
+## 💻 How to Run Locally
 
-#### Step 1: Restore Databases
-1. Open SQL Server Management Studio (SSMS).
-2. Extract and restore `Database/2. EMR-Db/DanpheInternationalDB/Dev_DanpheEMR_INT1.zip` as database **`DEV_DanpheEMR_INT`**.
-3. Execute `Database/1. Admin-Db/1. DanpheAdmin_CompleteDB.sql` to create database **`DanpheAdmin`**.
-4. Verify connection strings in `Code/Websites/DanpheEMR/appsettings.json`.
-
-#### Step 2: Build Frontend
-Navigate to the Angular directory and build the client bundle:
+### macOS / Linux / Windows (Instant Runner)
 ```bash
-cd Code/Websites/DanpheEMR/wwwroot/DanpheApp
-npm install
-npm run build
+python3 serve_demo.py
 ```
+Open **`http://localhost:5000`** in your browser.
 
-#### Step 3: Launch Application
-1. Open `Code/Solutions/DanpheEMR.sln` in Visual Studio.
-2. Set `DanpheEMR` as the Startup Project.
-3. Press **`F5`** (or `Ctrl + F5`) to run via IIS Express / Kestrel.
-4. Navigate to `http://localhost:5000` and sign in with the credentials above.
+---
+
+## 🏥 Interactive Departments Included
+- **Executive Dashboard** (`/dashboard`)
+- **Patient Registration & Master Index**
+- **Doctor Appointments & OPD Queue**
+- **Inpatient ADT & Editable Ward Bed Matrix** (1-Click Vacate/Admit/Cleaning toggles)
+- **Emergency Department (ER & Trauma Triage)** (Level 1 to 5 Acuities, Bay tracking, STAT clinical orders)
+- **Clinical Doctor Consultation Desk** (Vitals, ICD-10, Dynamic Prescription Builder)
+- **Nursing Station & Inpatient Care** (e-MAR)
+- **Operation Theater (OT) Surgical Scheduling**
+- **Laboratory Information System (LIS)**
+- **Radiology & PACS DICOM Viewer**
+- **Pharmacy & Inventory Supply Chain**
+- **AI CRM & Intelligent Lead Triage**
+- **Patient 360 Information System (PIS)**
+- **Employee Health & Safety (EHS Occupational Health)**
+- **Telehealth & Virtual Consultations**
+- **Billing & Invoicing with Branded Printable Receipts**
+- **White-Label & Personalization Settings**

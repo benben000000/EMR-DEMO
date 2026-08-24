@@ -4305,7 +4305,7 @@ APP_HTML = """<!DOCTYPE html>
 </html>
 """
 
-class G1HealthRequestHandler(http.server.BaseHTTPRequestHandler):
+class handler(http.server.BaseHTTPRequestHandler):
     def do_HEAD(self):
         self.do_GET()
 
@@ -4313,25 +4313,28 @@ class G1HealthRequestHandler(http.server.BaseHTTPRequestHandler):
         parsed = urllib.parse.urlparse(self.path)
         path = parsed.path
 
-        if path in ["/", "/Account/Login", "/account/login"]:
+        if path in ["/", "/Account/Login", "/account/login", "/index.html", "/login"]:
             self.send_response(200)
             self.send_header("Content-Type", "text/html; charset=utf-8")
             self.end_headers()
             self.wfile.write(LOGIN_HTML.encode("utf-8"))
             return
 
-        if path in ["/dashboard", "/Home/Index", "/home/index", "/app"]:
+        if path in ["/dashboard", "/Home/Index", "/home/index", "/app", "/dashboard.html"]:
             self.send_response(200)
             self.send_header("Content-Type", "text/html; charset=utf-8")
             self.end_headers()
             self.wfile.write(APP_HTML.encode("utf-8"))
             return
 
-        # Static assets
+        # Static assets (Personalization, logos, images)
         clean_path = path.lstrip("/")
-        file_path = os.path.join(PROJECT_ROOT, clean_path)
+        base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        file_path = os.path.join(base_dir, clean_path)
         if not os.path.exists(file_path):
-            file_path = os.path.join(BASE_DIR, "wwwroot", clean_path)
+            file_path = os.path.join(base_dir, "public", clean_path)
+        if not os.path.exists(file_path):
+            file_path = os.path.join(base_dir, "Code", "Websites", "DanpheEMR", "wwwroot", clean_path)
 
         if os.path.isfile(file_path):
             self.send_response(200)
@@ -4342,10 +4345,11 @@ class G1HealthRequestHandler(http.server.BaseHTTPRequestHandler):
                 self.wfile.write(f.read())
             return
 
-        self.send_response(404)
-        self.send_header("Content-Type", "text/plain")
+        # Fallback to login
+        self.send_response(200)
+        self.send_header("Content-Type", "text/html; charset=utf-8")
         self.end_headers()
-        self.wfile.write(b"Not Found")
+        self.wfile.write(LOGIN_HTML.encode("utf-8"))
 
     def do_POST(self):
         parsed = urllib.parse.urlparse(self.path)
@@ -4355,11 +4359,14 @@ class G1HealthRequestHandler(http.server.BaseHTTPRequestHandler):
             self.end_headers()
             return
 
+G1HealthRequestHandler = handler
+
 def run_server():
     socketserver.TCPServer.allow_reuse_address = True
-    with socketserver.TCPServer(("", PORT), G1HealthRequestHandler) as httpd:
+    with socketserver.TCPServer(("", PORT), handler) as httpd:
         print(f"G1 Health EMR Full Application running on http://localhost:{PORT}")
         httpd.serve_forever()
 
 if __name__ == "__main__":
     run_server()
+
