@@ -757,38 +757,7 @@ GO
 		@UserName varchar(100)= null,
 		@Action varchar(50) = null
 AS
-/*
-EXEC SP_Danphe_Audit '2019-10-10','2019-12-12','BIL_TXN_BillingTransaction','admin'
-
-Description: We needed dynamic query in this stored proc since the LiveDatabaseName-
-             is a variable stored in SysAdminParameter table and can be different for different hospitals.
-----------------------------------------------------------
-S.No.    UpdatedBy/Date					Remarks
-----------------------------------------------------------
-3.      Sud/10Nov'19                Made dynamic sql to use variable database name for different hospitals.
-									currently removed the join between RBAC_User table.
-----------------------------------------------------------
-*/
 BEGIN
-
---Declare @databaseName varchar(200);
---SET @databaseName=(select TOP(1) ParameterValue
---from SysAdmin_Parameters
---where ParameterGroupName='Admin' and ParameterName='LiveDBName');
-
---DECLARE @DynamicQuery Varchar(8000)
---SET @DynamicQuery='SELECT *
---       FROM [dbo].[Fn_Danphe_Audit]() tbl1
---    INNER JOIN ['+@databaseName+'].[dbo].[RBAC_User] tbl2
---	on tbl1.ChangedByUserName = tbl2.UserName
---	WHERE (  
---        CONVERT(DATE,tbl1.InsertedDate) BETWEEN CONVERT(DATE,'''+CONVERT(Varchar(20),@FromDate)+''') 
---       AND CONVERT(DATE,'''+CONVERT(Varchar(20),@ToDate)+''') 
---       and tbl1.Table_Name = '''+@Table_Name+''' and tbl2.UserName = '''+@UserName+''')'	
-       
-----PRINT(@DynamicQuery)
---EXEC (@DynamicQuery) 
-
 	DECLARE @Tables TABLE (TableName VARCHAR(MAX))
 	DECLARE	@Users TABLE (UserName VARCHAR(MAX))
 

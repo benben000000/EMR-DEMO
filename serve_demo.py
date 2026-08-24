@@ -4,18 +4,17 @@ G1 Health EMR - macOS Complete Interactive Enterprise Suite & Demo Runner
 Organization: Global 1 OneTech (https://global1onetech.com/)
 Product: G1 Health EMR Enterprise Cloud
 
-Features Included & Fully Interactive:
-- Core EMR: Dashboard, Patient Registration, OPD Appointments, Inpatient ADT & Interactive Bed Matrix, Emergency (ER), Clinical Doctor Desk, Nursing Station, Operation Theater (OT)
-- Ward Bed Matrix Engine:
-  * 1-Click Status Toggling (Available / Occupied / Cleaning / Reserved)
-  * Patient Admission & 1-Click Discharge / Vacate Bed
-  * Add New Beds dynamically
-  * Filter by Ward (ICU, General Male, General Female, Deluxe, Pediatric) & Status
-  * Live KPI statistics synchronization (Total Beds, Occupied, Available, Occupancy Rate %)
-- Diagnostics & Meds: Laboratory (LIS), Radiology & PACS, Pharmacy & Dispensary
-- Smart Cloud Extensions: AI CRM & Patient Leads, Patient 360 (PIS), Employee Health & Safety (EHS), Telehealth
-- Finance & Administration: Billing & Invoicing, White-Label & Personalization Settings
-- Global UX: Universal Active Patient context pill in top navbar + Patient Switcher in Doctor Desk + Back to Dashboard on every view + Universal Search + Toast alerts + ESC key modal closing.
+Fully Interactive Departments:
+- Inpatient ADT & Editable Ward Bed Matrix (1-Click Vacate/Admit, Add Bed, Filter Wards & Status)
+- Emergency Department (ER & Trauma Triage):
+  * Register New ER Cases (Level 1 to Level 5 Triage)
+  * Edit & Update ER Case details (Vitals, Bay assignment, Complaints, Doctor, Disposition)
+  * 1-Click Clinical Dispositions (Cath Lab Transfer, STAT CT/Ultrasound, ICU Admission)
+  * Filter Acuities & Search ER Cases
+  * Real-Time ER KPIs Synchronization
+- Clinical Doctor Desk (Interactive Patient Queue, Vitals, ICD-10, Dynamic Prescription Builder)
+- Nursing Station (e-MAR), Operation Theater (OT), Laboratory (LIS), Radiology (PACS), Pharmacy
+- AI CRM & Leads, Patient 360 (PIS), Employee Health (EHS), Telehealth, Billing & White-Label Settings
 """
 
 import http.server
@@ -1830,13 +1829,13 @@ APP_HTML = """<!DOCTYPE html>
                 </div>
             </section>
 
-            <!-- 5. EMERGENCY (ER) VIEW -->
+            <!-- 5. EMERGENCY (ER) VIEW - FULLY EDITABLE -->
             <section id="view-emergency" class="module-view">
                 <div class="ux-navigation-bar">
                     <div class="breadcrumbs">
                         <a onclick="switchTab('view-dashboard', document.querySelector('[data-target=view-dashboard]'))"><i class="fa-solid fa-house"></i> Home</a>
                         <i class="fa-solid fa-chevron-right" style="font-size:10px;"></i>
-                        <span class="current">Emergency Room (ER)</span>
+                        <span class="current">Emergency Room (ER & Trauma Triage)</span>
                     </div>
                     <button class="btn-back-dashboard" onclick="switchTab('view-dashboard', document.querySelector('[data-target=view-dashboard]'))">
                         <i class="fa-solid fa-arrow-left"></i> Back to Dashboard
@@ -1846,47 +1845,74 @@ APP_HTML = """<!DOCTYPE html>
                 <div class="view-header">
                     <div>
                         <h1>Emergency Department & Trauma Triage</h1>
-                        <p>Acuity triage tracking (Level 1 Resuscitation to Level 5 Non-Urgent)</p>
+                        <p>Real-time ER acuity triage (Level 1 to 5), bay tracking, and immediate patient admissions</p>
                     </div>
-                    <div>
-                        <button class="btn-accent-action" style="background:#ef4444; color:#fff;" onclick="showToast('Code Blue Trauma Team Activated in Bay 1!')">
-                            <i class="fa-solid fa-bell"></i> Activate Trauma Team
+                    <div style="display:flex; gap:10px;">
+                        <button class="btn-accent-action" style="background:#ef4444; color:#fff;" onclick="callTraumaTeam()">
+                            <i class="fa-solid fa-bell"></i> Code Blue / Activate Trauma Team
+                        </button>
+                        <button class="btn-primary-action" onclick="openModal('modal-new-er-patient')">
+                            <i class="fa-solid fa-user-plus"></i> + Register ER Emergency Case
                         </button>
                     </div>
                 </div>
 
+                <!-- ER KPIs -->
+                <div class="stats-grid">
+                    <div class="stat-card" style="border-left-color:#ef4444;">
+                        <div class="stat-icon" style="color:#ef4444;"><i class="fa-solid fa-truck-medical"></i></div>
+                        <div class="stat-content"><h3 id="er-total-cases" style="color:#b91c1c;">4</h3><p>Active ER Cases</p></div>
+                    </div>
+                    <div class="stat-card" style="border-left-color:#dc2626;">
+                        <div class="stat-icon" style="color:#dc2626;"><i class="fa-solid fa-heart-pulse"></i></div>
+                        <div class="stat-content"><h3 id="er-critical-cases" style="color:#dc2626;">2</h3><p>Level 1/2 Critical STAT</p></div>
+                    </div>
+                    <div class="stat-card cyan">
+                        <div class="stat-icon"><i class="fa-solid fa-bed-pulse"></i></div>
+                        <div class="stat-content"><h3 id="er-bays-occupied">4 / 6</h3><p>ER Bays Occupied</p></div>
+                    </div>
+                    <div class="stat-card teal">
+                        <div class="stat-icon"><i class="fa-solid fa-stopwatch"></i></div>
+                        <div class="stat-content"><h3>4.2 min</h3><p>Avg Door-to-Doctor Time</p></div>
+                    </div>
+                </div>
+
+                <!-- ER Table & Filter Toolbar -->
                 <div class="table-card">
-                    <table class="emr-table">
+                    <div class="table-toolbar">
+                        <div>
+                            <span style="font-size:12px; font-weight:800; color:#475569; margin-right:8px;">FILTER ACUITY:</span>
+                            <div class="ward-filter-pills" id="er-pills-list" style="display:inline-flex;">
+                                <button class="filter-pill active" onclick="filterERByLevel('ALL', this)">All Acuities</button>
+                                <button class="filter-pill" onclick="filterERByLevel('Level 1', this)">🔴 Level 1 Resuscitation</button>
+                                <button class="filter-pill" onclick="filterERByLevel('Level 2', this)">🟠 Level 2 Emergent</button>
+                                <button class="filter-pill" onclick="filterERByLevel('Level 3', this)">🟡 Level 3 Urgent</button>
+                                <button class="filter-pill" onclick="filterERByLevel('Level 4', this)">🟢 Level 4/5 Non-Urgent</button>
+                            </div>
+                        </div>
+                        <div class="search-box">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="text" id="er-search-box" placeholder="Search ER case by Patient, Bay, or Diagnosis..." onkeyup="renderERCases()" />
+                        </div>
+                    </div>
+
+                    <table class="emr-table" id="er-master-table">
                         <thead>
                             <tr>
+                                <th>ER Case ID</th>
                                 <th>Triage Level</th>
                                 <th>Patient Name</th>
                                 <th>Age/Sex</th>
                                 <th>Chief Complaint</th>
                                 <th>Vitals</th>
                                 <th>ER Bay</th>
-                                <th>Action</th>
+                                <th>Doctor / Nurse</th>
+                                <th>Clinical Disposition</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr>
-                                <td><span class="status-badge status-urgent" style="background:#fee2e2; color:#b91c1c; font-weight:800;">Level 1 - Resuscitation</span></td>
-                                <td>Victor Ramos</td>
-                                <td>42 Y / M</td>
-                                <td>Acute myocardial infarction / Chest crushing</td>
-                                <td>BP: 85/50 &bull; HR: 120</td>
-                                <td>Bay 01 (Crash Cart)</td>
-                                <td><button class="btn-primary-action" style="padding:4px 8px; font-size:11px;" onclick="showToast('Direct Transfer to Cath Lab Initiated')">Cath Lab Transfer</button></td>
-                            </tr>
-                            <tr>
-                                <td><span class="status-badge status-pending">Level 3 - Urgent</span></td>
-                                <td>Sofia Manalo</td>
-                                <td>19 Y / F</td>
-                                <td>Acute lower right quadrant abdominal pain (R/O Appendicitis)</td>
-                                <td>BP: 110/70 &bull; HR: 88</td>
-                                <td>Bay 04</td>
-                                <td><button class="btn-primary-action" style="padding:4px 8px; font-size:11px;" onclick="showToast('Abdominal Ultrasound STAT Requested')">STAT Ultrasound</button></td>
-                            </tr>
+                        <tbody id="er-table-body">
+                            <!-- Dynamically populated by renderERCases() -->
                         </tbody>
                     </table>
                 </div>
@@ -2836,6 +2862,220 @@ APP_HTML = """<!DOCTYPE html>
         </div>
     </div>
 
+    <!-- MODAL: REGISTER NEW ER PATIENT CASE -->
+    <div id="modal-new-er-patient" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-header" style="background: #991b1b;">
+                <h3><i class="fa-solid fa-truck-medical"></i> Register Emergency (ER) Encounter</h3>
+                <button class="modal-close" onclick="closeModal('modal-new-er-patient')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Patient Full Name *</label>
+                        <input type="text" id="er-new-name" class="form-control" placeholder="e.g. Victor Ramos" />
+                    </div>
+                    <div class="form-group">
+                        <label>Age *</label>
+                        <input type="number" id="er-new-age" class="form-control" placeholder="e.g. 42" />
+                    </div>
+                    <div class="form-group">
+                        <label>Gender *</label>
+                        <select id="er-new-gender" class="form-control">
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Contact Phone</label>
+                        <input type="text" id="er-new-phone" class="form-control" placeholder="+63 9xx xxx xxxx" />
+                    </div>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Triage Acuity Level *</label>
+                        <select id="er-new-level" class="form-control" style="font-weight:700;">
+                            <option value="Level 1 - Resuscitation">🔴 Level 1 - Resuscitation (Immediate STAT)</option>
+                            <option value="Level 2 - Emergent">🟠 Level 2 - Emergent (<15 min)</option>
+                            <option value="Level 3 - Urgent" selected>🟡 Level 3 - Urgent (<30 min)</option>
+                            <option value="Level 4 - Less Urgent">🟢 Level 4 - Less Urgent (<60 min)</option>
+                            <option value="Level 5 - Non-Urgent">🔵 Level 5 - Non-Urgent</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>ER Bay Assignment *</label>
+                        <select id="er-new-bay" class="form-control">
+                            <option value="Bay 01 (Crash Cart)">Bay 01 (Crash Cart / Resus)</option>
+                            <option value="Bay 02 (Resuscitation)">Bay 02 (Resuscitation)</option>
+                            <option value="Bay 03 (Acute Trauma)">Bay 03 (Acute Trauma)</option>
+                            <option value="Bay 04 (Acute)">Bay 04 (Acute Medical)</option>
+                            <option value="Bay 05 (Observation)">Bay 05 (Observation)</option>
+                            <option value="Bay 06 (Observation)">Bay 06 (Observation)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-bottom:16px;">
+                    <label>Chief Complaints & Emergency History *</label>
+                    <textarea id="er-new-complaint" class="form-control" rows="2" placeholder="e.g. Acute crushing chest pain, dyspnea, diaphoresis"></textarea>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>BP (mmHg)</label>
+                        <input type="text" id="er-new-bp" class="form-control" placeholder="120/80" value="120/80" />
+                    </div>
+                    <div class="form-group">
+                        <label>Heart Rate (bpm)</label>
+                        <input type="text" id="er-new-hr" class="form-control" placeholder="80" value="80" />
+                    </div>
+                    <div class="form-group">
+                        <label>SpO2 (%)</label>
+                        <input type="text" id="er-new-spo2" class="form-control" placeholder="98%" value="98%" />
+                    </div>
+                    <div class="form-group">
+                        <label>Temp (°C)</label>
+                        <input type="text" id="er-new-temp" class="form-control" placeholder="36.8" value="36.8" />
+                    </div>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Attending ER Doctor</label>
+                        <select id="er-new-doctor" class="form-control">
+                            <option value="Dr. Roberto Tan, MD">Dr. Roberto Tan, MD (Interventionalist)</option>
+                            <option value="Dr. Edward Hernandez, MD">Dr. Edward Hernandez, MD (Trauma Surgeon)</option>
+                            <option value="Dr. Vincent Lim, MD">Dr. Vincent Lim, MD (Neurologist)</option>
+                            <option value="Dr. Alicia Gomez, MD">Dr. Alicia Gomez, MD (Internal Med)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Immediate Disposition Plan</label>
+                        <select id="er-new-disposition" class="form-control">
+                            <option value="Cath Lab Transfer">Cath Lab Transfer (STAT STEMI)</option>
+                            <option value="Emergency OR / Surgery">Emergency OR / Surgery</option>
+                            <option value="STAT Non-Contrast Brain CT">STAT Non-Contrast Brain CT</option>
+                            <option value="STAT Ultrasound & Surgery Consult">STAT Ultrasound & Surgery Consult</option>
+                            <option value="Admit to ICU">Admit to ICU</option>
+                            <option value="ER Observation & Vitals Monitoring">ER Observation & Vitals Monitoring</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeModal('modal-new-er-patient')">Cancel</button>
+                <button class="btn-primary-action" style="background:#991b1b;" onclick="submitNewERCase()"><i class="fa-solid fa-truck-medical"></i> Admit to Emergency Bay</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: EDIT & UPDATE ER CASE -->
+    <div id="modal-manage-er-case" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-header" style="background: #991b1b;">
+                <h3><i class="fa-solid fa-pen-to-square"></i> Edit Emergency Case Details</h3>
+                <button class="modal-close" onclick="closeModal('modal-manage-er-case')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="edit-er-id" />
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>ER Case ID</label>
+                        <input type="text" id="edit-er-code" class="form-control" readonly style="background:#f1f5f9; font-weight:800;" />
+                    </div>
+                    <div class="form-group">
+                        <label>Patient Name</label>
+                        <input type="text" id="edit-er-name" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label>Age / Sex</label>
+                        <input type="text" id="edit-er-agesex" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label>ER Bay</label>
+                        <select id="edit-er-bay" class="form-control">
+                            <option value="Bay 01 (Crash Cart)">Bay 01 (Crash Cart / Resus)</option>
+                            <option value="Bay 02 (Resuscitation)">Bay 02 (Resuscitation)</option>
+                            <option value="Bay 03 (Acute Trauma)">Bay 03 (Acute Trauma)</option>
+                            <option value="Bay 04 (Acute)">Bay 04 (Acute Medical)</option>
+                            <option value="Bay 05 (Observation)">Bay 05 (Observation)</option>
+                            <option value="Bay 06 (Observation)">Bay 06 (Observation)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Triage Acuity Level</label>
+                        <select id="edit-er-level" class="form-control" style="font-weight:700;">
+                            <option value="Level 1 - Resuscitation">🔴 Level 1 - Resuscitation</option>
+                            <option value="Level 2 - Emergent">🟠 Level 2 - Emergent</option>
+                            <option value="Level 3 - Urgent">🟡 Level 3 - Urgent</option>
+                            <option value="Level 4 - Less Urgent">🟢 Level 4 - Less Urgent</option>
+                            <option value="Level 5 - Non-Urgent">🔵 Level 5 - Non-Urgent</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Encounter Status</label>
+                        <select id="edit-er-status" class="form-control">
+                            <option value="critical">Critical / Resuscitation</option>
+                            <option value="urgent">Urgent</option>
+                            <option value="stable">Stable / Observation</option>
+                            <option value="discharged">Transferred / Discharged</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-bottom:16px;">
+                    <label>Chief Complaints & Emergency Notes</label>
+                    <textarea id="edit-er-complaint" class="form-control" rows="2"></textarea>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>BP</label>
+                        <input type="text" id="edit-er-bp" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label>Heart Rate</label>
+                        <input type="text" id="edit-er-hr" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label>SpO2</label>
+                        <input type="text" id="edit-er-spo2" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label>GCS Score</label>
+                        <input type="text" id="edit-er-gcs" class="form-control" placeholder="15/15" />
+                    </div>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Attending ER Doctor</label>
+                        <select id="edit-er-doctor" class="form-control">
+                            <option value="Dr. Roberto Tan, MD">Dr. Roberto Tan, MD</option>
+                            <option value="Dr. Edward Hernandez, MD">Dr. Edward Hernandez, MD</option>
+                            <option value="Dr. Vincent Lim, MD">Dr. Vincent Lim, MD</option>
+                            <option value="Dr. Alicia Gomez, MD">Dr. Alicia Gomez, MD</option>
+                            <option value="Dr. Miguel Garcia, MD">Dr. Miguel Garcia, MD</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Clinical Disposition / Plan</label>
+                        <input type="text" id="edit-er-disposition" class="form-control" />
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeModal('modal-manage-er-case')">Cancel</button>
+                <button class="btn-primary-action" style="background:#991b1b;" onclick="saveERCaseDetails()"><i class="fa-solid fa-floppy-disk"></i> Save ER Updates</button>
+            </div>
+        </div>
+    </div>
+
     <!-- MODAL: MANAGE & EDIT BED ALLOCATION -->
     <div id="modal-manage-bed" class="modal-overlay">
         <div class="modal-box">
@@ -2880,7 +3120,6 @@ APP_HTML = """<!DOCTYPE html>
                     </div>
                 </div>
 
-                <!-- Patient Inpatient Assignment Section -->
                 <div style="background:#f8fafc; border:1px solid var(--border-color); border-radius:10px; padding:16px; margin-bottom:16px;">
                     <div style="font-size:13px; font-weight:800; color:#0f172a; margin-bottom:12px; display:flex; align-items:center; justify-content:space-between;">
                         <span><i class="fa-solid fa-user-injured" style="color:var(--brand-primary);"></i> Inpatient Allocation</span>
@@ -3371,6 +3610,193 @@ APP_HTML = """<!DOCTYPE html>
         let activeWardFilter = 'ALL';
         let currentEditingDraftStatus = 'available';
 
+        // Emergency Department (ER Cases State)
+        let ER_RECORDS = [
+            { id: 'ER-2026-001', name: 'Victor Ramos', age: '42 Y', gender: 'Male', phone: '+63 917 111 2233', level: 'Level 1 - Resuscitation', complaint: 'Acute myocardial infarction / Crushing retrosternal chest pain radiating to left jaw', bp: '85/50', hr: '120', spo2: '92%', temp: '37.2', gcs: '14/15', bay: 'Bay 01 (Crash Cart)', doctor: 'Dr. Roberto Tan, MD', nurse: 'Nurse Clara Dizon', disposition: 'Cath Lab Transfer', status: 'critical', time: '10:15 AM' },
+            { id: 'ER-2026-002', name: 'Sofia Manalo', age: '19 Y', gender: 'Female', phone: '+63 918 222 3344', level: 'Level 3 - Urgent', complaint: 'Acute lower right quadrant abdominal pain with rebound tenderness (R/O Appendicitis)', bp: '110/70', hr: '88', spo2: '99%', temp: '38.4', gcs: '15/15', bay: 'Bay 04 (Acute)', doctor: 'Dr. Edward Hernandez, MD', nurse: 'Nurse Ronald Valdez', disposition: 'STAT Ultrasound & Surgery Consult', status: 'urgent', time: '10:45 AM' },
+            { id: 'ER-2026-003', name: 'Danilo Cruz', age: '58 Y', gender: 'Male', phone: '+63 920 333 4455', level: 'Level 2 - Emergent', complaint: 'Right-sided facial droop and acute slurred speech for 45 minutes (STAT Stroke Code)', bp: '160/95', hr: '94', spo2: '98%', temp: '36.9', gcs: '13/15', bay: 'Bay 02 (Resuscitation)', doctor: 'Dr. Vincent Lim, MD', nurse: 'Nurse Clara Dizon', disposition: 'STAT Non-Contrast Brain CT', status: 'critical', time: '11:00 AM' },
+            { id: 'ER-2026-004', name: 'Grace Bautista', age: '24 Y', gender: 'Female', phone: '+63 922 444 5566', level: 'Level 4 - Less Urgent', complaint: 'Right ankle inversion injury with localized swelling after slipping on steps', bp: '118/76', hr: '78', spo2: '99%', temp: '36.6', gcs: '15/15', bay: 'Bay 06 (Observation)', doctor: 'Dr. Miguel Garcia, MD', nurse: 'Nurse Ronald Valdez', disposition: 'Ankle X-Ray & Splinting', status: 'stable', time: '11:20 AM' }
+        ];
+
+        let activeERLevelFilter = 'ALL';
+
+        // Render Dynamic Emergency Cases Table
+        function renderERCases() {
+            const tbody = document.getElementById('er-table-body');
+            if (!tbody) return;
+
+            const searchQuery = document.getElementById('er-search-box') ? document.getElementById('er-search-box').value.toLowerCase().trim() : '';
+
+            // Calculate KPIs
+            const totalCases = ER_RECORDS.length;
+            const criticalCases = ER_RECORDS.filter(c => c.level.includes('Level 1') || c.level.includes('Level 2')).length;
+            const baysOccupied = `${totalCases} / 6`;
+
+            if (document.getElementById('er-total-cases')) document.getElementById('er-total-cases').textContent = totalCases;
+            if (document.getElementById('er-critical-cases')) document.getElementById('er-critical-cases').textContent = criticalCases;
+            if (document.getElementById('er-bays-occupied')) document.getElementById('er-bays-occupied').textContent = baysOccupied;
+
+            let filtered = ER_RECORDS.filter(c => {
+                if (activeERLevelFilter !== 'ALL' && !c.level.toLowerCase().includes(activeERLevelFilter.toLowerCase())) return false;
+                if (searchQuery) {
+                    const matchId = c.id.toLowerCase().includes(searchQuery);
+                    const matchName = c.name.toLowerCase().includes(searchQuery);
+                    const matchBay = c.bay.toLowerCase().includes(searchQuery);
+                    const matchComp = c.complaint.toLowerCase().includes(searchQuery);
+                    if (!matchId && !matchName && !matchBay && !matchComp) return false;
+                }
+                return true;
+            });
+
+            tbody.innerHTML = '';
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="10" style="text-align:center; padding:24px; color:#64748b;">No emergency encounters matching the selected acuity filter.</td></tr>`;
+                return;
+            }
+
+            filtered.forEach(c => {
+                const tr = document.createElement('tr');
+                
+                let badgeStyle = 'background:#fee2e2; color:#b91c1c; font-weight:800;';
+                if (c.level.includes('Level 2')) badgeStyle = 'background:#ffedd5; color:#c2410c; font-weight:800;';
+                if (c.level.includes('Level 3')) badgeStyle = 'background:#fef9c3; color:#a16207; font-weight:700;';
+                if (c.level.includes('Level 4') || c.level.includes('Level 5')) badgeStyle = 'background:#dcfce7; color:#15803d; font-weight:700;';
+
+                tr.innerHTML = `
+                    <td><strong>${c.id}</strong><div style="font-size:10.5px; color:#64748b;">${c.time || '10:00 AM'}</div></td>
+                    <td><span class="status-badge" style="${badgeStyle}">${c.level}</span></td>
+                    <td><strong>${c.name}</strong></td>
+                    <td>${c.age} / ${c.gender}</td>
+                    <td style="max-width:280px; font-size:12.5px;">${c.complaint}</td>
+                    <td><span style="font-size:11.5px; font-weight:700;">BP: ${c.bp} &bull; HR: ${c.hr} &bull; SpO2: ${c.spo2}</span></td>
+                    <td><strong style="color:var(--brand-primary);">${c.bay}</strong></td>
+                    <td style="font-size:12px;">${c.doctor}</td>
+                    <td><span class="status-badge status-completed">${c.disposition}</span></td>
+                    <td>
+                        <div style="display:flex; gap:4px;">
+                            <button class="btn-primary-action" style="padding:4px 8px; font-size:11px;" onclick="openManageERCase('${c.id}')">
+                                <i class="fa-solid fa-pen"></i> Edit
+                            </button>
+                            <button class="btn-secondary" style="padding:4px 8px; font-size:11px;" onclick="dispatchERAction('${c.id}')">
+                                <i class="fa-solid fa-bolt"></i> Action
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Filter ER by Level
+        function filterERByLevel(levelKey, buttonEl) {
+            activeERLevelFilter = levelKey;
+            document.querySelectorAll('#er-pills-list .filter-pill').forEach(btn => btn.classList.remove('active'));
+            if (buttonEl) buttonEl.classList.add('active');
+            renderERCases();
+        }
+
+        // Open ER Case Edit Modal
+        function openManageERCase(caseId) {
+            const c = ER_RECORDS.find(item => item.id === caseId);
+            if (!c) return;
+
+            document.getElementById('edit-er-id').value = c.id;
+            document.getElementById('edit-er-code').value = c.id;
+            document.getElementById('edit-er-name').value = c.name;
+            document.getElementById('edit-er-agesex').value = `${c.age} / ${c.gender}`;
+            document.getElementById('edit-er-bay').value = c.bay;
+            document.getElementById('edit-er-level').value = c.level;
+            document.getElementById('edit-er-status').value = c.status || 'urgent';
+            document.getElementById('edit-er-complaint').value = c.complaint;
+            document.getElementById('edit-er-bp').value = c.bp;
+            document.getElementById('edit-er-hr').value = c.hr;
+            document.getElementById('edit-er-spo2').value = c.spo2;
+            document.getElementById('edit-er-gcs').value = c.gcs || '15/15';
+            document.getElementById('edit-er-doctor').value = c.doctor;
+            document.getElementById('edit-er-disposition').value = c.disposition;
+
+            openModal('modal-manage-er-case');
+        }
+
+        // Save ER Case Edits
+        function saveERCaseDetails() {
+            const caseId = document.getElementById('edit-er-id').value;
+            const c = ER_RECORDS.find(item => item.id === caseId);
+            if (!c) return;
+
+            c.name = document.getElementById('edit-er-name').value;
+            c.bay = document.getElementById('edit-er-bay').value;
+            c.level = document.getElementById('edit-er-level').value;
+            c.status = document.getElementById('edit-er-status').value;
+            c.complaint = document.getElementById('edit-er-complaint').value;
+            c.bp = document.getElementById('edit-er-bp').value;
+            c.hr = document.getElementById('edit-er-hr').value;
+            c.spo2 = document.getElementById('edit-er-spo2').value;
+            c.gcs = document.getElementById('edit-er-gcs').value;
+            c.doctor = document.getElementById('edit-er-doctor').value;
+            c.disposition = document.getElementById('edit-er-disposition').value;
+
+            closeModal('modal-manage-er-case');
+            renderERCases();
+            showToast(`Emergency Case ${c.id} (${c.name}) updated successfully!`);
+        }
+
+        // Submit New ER Case
+        function submitNewERCase() {
+            const name = document.getElementById('er-new-name').value.trim() || 'Emergency Patient';
+            const age = document.getElementById('er-new-age').value.trim() || '35';
+            const gender = document.getElementById('er-new-gender').value;
+            const phone = document.getElementById('er-new-phone').value.trim() || '+63 900 000 0000';
+            const level = document.getElementById('er-new-level').value;
+            const bay = document.getElementById('er-new-bay').value;
+            const complaint = document.getElementById('er-new-complaint').value.trim() || 'Acute emergency triage case';
+            const bp = document.getElementById('er-new-bp').value.trim() || '120/80';
+            const hr = document.getElementById('er-new-hr').value.trim() || '80';
+            const spo2 = document.getElementById('er-new-spo2').value.trim() || '98%';
+            const temp = document.getElementById('er-new-temp').value.trim() || '36.8';
+            const doctor = document.getElementById('er-new-doctor').value;
+            const disposition = document.getElementById('er-new-disposition').value;
+
+            const caseId = 'ER-2026-00' + (ER_RECORDS.length + 1);
+
+            ER_RECORDS.unshift({
+                id: caseId,
+                name: name,
+                age: age + ' Y',
+                gender: gender,
+                phone: phone,
+                level: level,
+                complaint: complaint,
+                bp: bp,
+                hr: hr,
+                spo2: spo2,
+                temp: temp,
+                gcs: '15/15',
+                bay: bay,
+                doctor: doctor,
+                nurse: 'Nurse Clara Dizon',
+                disposition: disposition,
+                status: level.includes('Level 1') ? 'critical' : 'urgent',
+                time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            });
+
+            closeModal('modal-new-er-patient');
+            renderERCases();
+            showToast(`Emergency Case ${caseId} (${name}) registered to ${bay}!`);
+        }
+
+        // Dispatch ER Action
+        function dispatchERAction(caseId) {
+            const c = ER_RECORDS.find(item => item.id === caseId);
+            if (!c) return;
+            showToast(`Order dispatched: ${c.disposition} for ${c.name} in ${c.bay}`);
+        }
+
+        function callTraumaTeam() {
+            showToast('🚨 CODE BLUE / LEVEL 1 TRAUMA TEAM ACTIVATED: Resuscitation Team dispatched to ER Bay 01 & 02!');
+        }
+
         // Render Dynamic Ward Bed Matrix
         function renderBedMatrix() {
             const container = document.getElementById('bed-matrix-container');
@@ -3379,21 +3805,17 @@ APP_HTML = """<!DOCTYPE html>
             const statusFilter = document.getElementById('bed-status-filter') ? document.getElementById('bed-status-filter').value : 'ALL';
             const searchQuery = document.getElementById('bed-search-box') ? document.getElementById('bed-search-box').value.toLowerCase().trim() : '';
 
-            // Calculate KPIs
             const totalBeds = BED_RECORDS.length;
             const occupiedBeds = BED_RECORDS.filter(b => b.status === 'occupied').length;
             const availableBeds = BED_RECORDS.filter(b => b.status === 'available').length;
-            const cleaningBeds = BED_RECORDS.filter(b => b.status === 'cleaning').length;
             const occupancyRate = totalBeds > 0 ? ((occupiedBeds / totalBeds) * 100).toFixed(1) + '%' : '0%';
 
-            // Update KPI elements
             if (document.getElementById('adt-total-beds')) document.getElementById('adt-total-beds').textContent = totalBeds;
             if (document.getElementById('adt-occupied-beds')) document.getElementById('adt-occupied-beds').textContent = occupiedBeds;
             if (document.getElementById('adt-available-beds')) document.getElementById('adt-available-beds').textContent = availableBeds;
             if (document.getElementById('adt-occupancy-rate')) document.getElementById('adt-occupancy-rate').textContent = occupancyRate;
             if (document.getElementById('dash-occupancy-kpi')) document.getElementById('dash-occupancy-kpi').textContent = occupancyRate;
 
-            // Filter beds
             let filtered = BED_RECORDS.filter(bed => {
                 if (activeWardFilter !== 'ALL' && !bed.ward.toLowerCase().includes(activeWardFilter.toLowerCase())) return false;
                 if (statusFilter !== 'ALL' && bed.status !== statusFilter) return false;
@@ -3504,7 +3926,6 @@ APP_HTML = """<!DOCTYPE html>
             });
         }
 
-        // Ward Filter Switcher
         function filterBedsByWard(wardKey, buttonEl) {
             activeWardFilter = wardKey;
             document.querySelectorAll('#ward-pills-list .filter-pill').forEach(btn => btn.classList.remove('active'));
@@ -3512,7 +3933,6 @@ APP_HTML = """<!DOCTYPE html>
             renderBedMatrix();
         }
 
-        // Open Manage Bed Dialog
         function openManageBed(bedId) {
             let bed = BED_RECORDS.find(b => b.id === bedId);
             if (!bed) bed = BED_RECORDS[0];
@@ -3529,7 +3949,6 @@ APP_HTML = """<!DOCTYPE html>
             openModal('modal-manage-bed');
         }
 
-        // Draft Status Selection in Modal
         function setBedStatusDraft(status) {
             currentEditingDraftStatus = status;
             document.querySelectorAll('.btn-status-opt').forEach(b => b.classList.remove('active'));
@@ -3551,7 +3970,6 @@ APP_HTML = """<!DOCTYPE html>
             }
         }
 
-        // Save Bed Modifications
         function saveBedDetails() {
             const bedId = document.getElementById('edit-bed-id').value;
             const bed = BED_RECORDS.find(b => b.id === bedId);
@@ -3577,7 +3995,6 @@ APP_HTML = """<!DOCTYPE html>
             showToast(`Bed ${bed.id} updated successfully: ${bed.status.toUpperCase()} ${newPatient ? '(' + newPatient + ')' : '(Empty)'}!`);
         }
 
-        // Quick Actions from Matrix Card
         function quickVacateBed(bedId, event) {
             if (event) event.stopPropagation();
             const bed = BED_RECORDS.find(b => b.id === bedId);
@@ -3604,14 +4021,12 @@ APP_HTML = """<!DOCTYPE html>
         function quickAdmitBed(bedId, event) {
             if (event) event.stopPropagation();
             openManageBed(bedId);
-            // Default to first patient if empty
             if (!document.getElementById('edit-bed-patient').value) {
                 document.getElementById('edit-bed-patient').value = 'Juan Dela Cruz';
                 setBedStatusDraft('occupied');
             }
         }
 
-        // Submit New Bed
         function submitNewBed() {
             const code = document.getElementById('add-bed-code').value.trim() || ('BED-' + Math.floor(100 + Math.random() * 900));
             const ward = document.getElementById('add-bed-ward').value;
@@ -3641,12 +4056,10 @@ APP_HTML = """<!DOCTYPE html>
             const pat = PATIENT_RECORDS[patientName];
             if (!pat) return;
 
-            // 1. Update Global Header Bar
             document.getElementById('global-pat-name').textContent = pat.name;
             document.getElementById('global-pat-code').textContent = pat.code;
             document.getElementById('global-pat-meta').innerHTML = pat.meta;
 
-            // 2. Update Clinical EMR Desk
             const emrTitle = document.getElementById('emr-patient-title');
             if (emrTitle) emrTitle.textContent = `${pat.name} (${pat.age} / ${pat.gender})`;
             const emrBadge = document.getElementById('emr-hospital-badge');
@@ -3659,7 +4072,6 @@ APP_HTML = """<!DOCTYPE html>
             if (document.getElementById('emr-complaints')) document.getElementById('emr-complaints').value = pat.complaints;
             if (document.getElementById('emr-diagnosis')) document.getElementById('emr-diagnosis').value = pat.diagnosis;
 
-            // Update prescription table
             const rxTbody = document.querySelector('#rx-table tbody');
             if (rxTbody) {
                 rxTbody.innerHTML = '';
@@ -3676,12 +4088,10 @@ APP_HTML = """<!DOCTYPE html>
                 });
             }
 
-            // 3. Update Queue Selection Highlight in Doctor Desk
             document.querySelectorAll('.queue-item').forEach(qi => qi.classList.remove('active'));
             const activeQueueEl = document.getElementById(pat.queueId);
             if (activeQueueEl) activeQueueEl.classList.add('active');
 
-            // 4. Update Patient 360 View
             if (document.getElementById('p360-name')) document.getElementById('p360-name').textContent = pat.name;
             if (document.getElementById('p360-code')) document.getElementById('p360-code').textContent = pat.code;
             if (document.getElementById('p360-submeta')) document.getElementById('p360-submeta').innerHTML = pat.meta;
@@ -3711,10 +4121,11 @@ APP_HTML = """<!DOCTYPE html>
 
             if (viewId === 'view-adt') {
                 renderBedMatrix();
+            } else if (viewId === 'view-emergency') {
+                renderERCases();
             }
         }
 
-        // Add Rx row dynamically
         function addPrescriptionRow() {
             const rxTbody = document.querySelector('#rx-table tbody');
             const row = document.createElement('tr');
@@ -3729,7 +4140,6 @@ APP_HTML = """<!DOCTYPE html>
             showToast('Added new prescription item slot.');
         }
 
-        // Modal Controls
         function openModal(modalId) {
             const modal = document.getElementById(modalId);
             if (modal) modal.classList.add('active');
@@ -3740,7 +4150,6 @@ APP_HTML = """<!DOCTYPE html>
             if (modal) modal.classList.remove('active');
         }
 
-        // Close on Backdrop Click & ESC Key
         document.addEventListener('click', function(e) {
             if (e.target.classList.contains('modal-overlay')) {
                 e.target.classList.remove('active');
@@ -3753,7 +4162,6 @@ APP_HTML = """<!DOCTYPE html>
             }
         });
 
-        // Toast Feedback
         function showToast(message) {
             const toast = document.getElementById('toast-notification');
             const msgEl = document.getElementById('toast-message');
@@ -3762,7 +4170,6 @@ APP_HTML = """<!DOCTYPE html>
             setTimeout(() => toast.classList.remove('show'), 3500);
         }
 
-        // Global Patient Quick Search in Header
         function handleGlobalPatientSearch(input) {
             const query = input.value.toLowerCase().trim();
             if (!query) return;
@@ -3782,7 +4189,6 @@ APP_HTML = """<!DOCTYPE html>
             });
         }
 
-        // Patient Registration
         function submitNewPatient() {
             const fname = document.getElementById('np-fname').value || 'New';
             const lname = document.getElementById('np-lname').value || 'Patient';
@@ -3836,7 +4242,6 @@ APP_HTML = """<!DOCTYPE html>
             showToast(`Patient ${fullName} registered & set as Active Patient!`);
         }
 
-        // Search Filter
         function filterPatientTable() {
             const query = document.getElementById('patient-search-input').value.toLowerCase();
             document.querySelectorAll('#patient-master-table tbody tr').forEach(tr => {
@@ -3845,14 +4250,12 @@ APP_HTML = """<!DOCTYPE html>
             });
         }
 
-        // Patient 360 View Jump
         function viewPatient360(name, code) {
             setActivePatient(name);
             switchTab('view-patient360', document.querySelector('[data-target=view-patient360]'));
             showToast(`Viewing 360° longitudinal medical record for ${name}`);
         }
 
-        // Print Invoice Dialog
         function openPrintInvoice(invNo, patient, total) {
             document.getElementById('rcpt-no').textContent = invNo;
             document.getElementById('rcpt-patient').textContent = patient;
@@ -3860,7 +4263,6 @@ APP_HTML = """<!DOCTYPE html>
             openModal('modal-print-invoice');
         }
 
-        // AI Triage Simulator
         function runAITriageTest() {
             const query = document.getElementById('ai-symptom-text').value.toLowerCase();
             let dept = "General Outpatient Medicine";
@@ -3888,16 +4290,15 @@ APP_HTML = """<!DOCTYPE html>
             showToast('AI Triage Match Complete: ' + dept);
         }
 
-        // White-Label Settings Save
         function savePersonalizationSettings() {
             const hospName = document.getElementById('cfg-hospital-name').value;
             document.getElementById('header-facility-name').textContent = hospName;
             showToast('Branding & White-Label configuration updated successfully!');
         }
 
-        // Initialize on load
         window.addEventListener('DOMContentLoaded', () => {
             renderBedMatrix();
+            renderERCases();
         });
     </script>
 </body>
