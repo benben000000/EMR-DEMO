@@ -2668,6 +2668,615 @@
                 </div>
             </section>
 
+        
+            <!-- 3. CLINICAL SETTINGS & TEMPLATES -->
+            <section id="view-clinicalsettings" class="module-view">
+                <div class="ux-navigation-bar">
+                    <div class="breadcrumbs">
+                        <a onclick="switchTab('view-dashboard', null)"><i class="fa-solid fa-house"></i> Home</a>
+                        <i class="fa-solid fa-chevron-right" style="font-size:10px;"></i>
+                        <span class="current">Clinical Settings & Templates</span>
+                    </div>
+                    <button class="btn-back-dashboard" onclick="switchTab('view-dashboard', null)"><i class="fa-solid fa-arrow-left"></i> Back to Dashboard</button>
+                </div>
+                <div class="view-header">
+                    <div>
+                        <h1>Doctor Consultation Templates & Drug Formulary Sets</h1>
+                        <p>Configure doctor clinical templates, favorite drug regimens, chief complaint macros, and ICD-10 shortcuts</p>
+                    </div>
+                    <button class="btn-primary-action" onclick="openModal('modal-new-template')"><i class="fa-solid fa-plus"></i> + Create New Template</button>
+                </div>
+                <div class="grid-2col">
+                    <div class="card-box">
+                        <div class="card-box-header"><h3><i class="fa-solid fa-notes-medical"></i> Doctor Consultation Macros</h3></div>
+                        <table class="emr-table" id="table-macros">
+                            <thead><tr><th>Macro Code</th><th>Clinical Scenario</th><th>Default ICD-10</th><th>Actions</th></tr></thead>
+                            <tbody>
+                                <tr><td><strong>.HTN-FOLLOWUP</strong></td><td>Hypertension Routine Review</td><td>I10 - Essential HTN</td><td><button class="btn-secondary" style="padding:4px 8px; font-size:11px;" onclick="loadMacroToEMR('HTN')">Use in Chart</button></td></tr>
+                                <tr><td><strong>.DM-PANEL</strong></td><td>Type 2 Diabetes Screening</td><td>E11.9 - DM Type 2</td><td><button class="btn-secondary" style="padding:4px 8px; font-size:11px;" onclick="loadMacroToEMR('DM')">Use in Chart</button></td></tr>
+                                <tr><td><strong>.ASTHMA-STAT</strong></td><td>Acute Bronchospasm Protocol</td><td>J45.9 - Bronchial Asthma</td><td><button class="btn-secondary" style="padding:4px 8px; font-size:11px;" onclick="loadMacroToEMR('ASTHMA')">Use in Chart</button></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="card-box">
+                        <div class="card-box-header"><h3><i class="fa-solid fa-pills"></i> Favorite Prescription Sets</h3></div>
+                        <table class="emr-table">
+                            <thead><tr><th>Regimen Name</th><th>Department</th><th>Item Count</th><th>Action</th></tr></thead>
+                            <tbody>
+                                <tr><td><strong>Standard Triple Therapy (H. Pylori)</strong></td><td>Gastroenterology</td><td>3 Meds</td><td><button class="btn-primary-action" style="padding:4px 8px; font-size:11px;" onclick="attachRxSetToChart('Triple Therapy')">Attach to Chart</button></td></tr>
+                                <tr><td><strong>Pediatric URI Starter Pack</strong></td><td>Pediatrics</td><td>2 Meds</td><td><button class="btn-primary-action" style="padding:4px 8px; font-size:11px;" onclick="attachRxSetToChart('Pediatric URI')">Attach to Chart</button></td></tr>
+                                <tr><td><strong>Post-Op Pain Management</strong></td><td>Orthopedics</td><td>3 Meds</td><td><button class="btn-primary-action" style="padding:4px 8px; font-size:11px;" onclick="attachRxSetToChart('Post-Op Pain')">Attach to Chart</button></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+    
+        
+            <!-- 13. CENTRAL INVENTORY & WAREHOUSE -->
+            <section id="view-inventory" class="module-view">
+                <div class="ux-navigation-bar">
+                    <div class="breadcrumbs">
+                        <a onclick="switchTab('view-dashboard', null)"><i class="fa-solid fa-house"></i> Home</a>
+                        <i class="fa-solid fa-chevron-right" style="font-size:10px;"></i>
+                        <span class="current">Central Inventory & Warehouse</span>
+                    </div>
+                    <button class="btn-back-dashboard" onclick="switchTab('view-dashboard', null)"><i class="fa-solid fa-arrow-left"></i> Back to Dashboard</button>
+                </div>
+                <div class="view-header">
+                    <div>
+                        <h1>Central Medical Warehouse & Supply Chain Inventory</h1>
+                        <p>Track warehouse stock levels, bin locations, batch expiration dates, minimum reorder thresholds, and internal transfer indents</p>
+                    </div>
+                    <div style="display:flex; gap:10px;">
+                        <button class="btn-secondary" onclick="showToast('Reorder PO generated for all items below safety threshold')"><i class="fa-solid fa-calculator"></i> Auto-Generate Reorder</button>
+                        <button class="btn-primary-action" onclick="openModal('modal-new-stock-item')"><i class="fa-solid fa-boxes-packing"></i> + Add Warehouse Item</button>
+                    </div>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-card"><div class="stat-icon"><i class="fa-solid fa-boxes-stacked"></i></div><div class="stat-content"><h3>1,420 Items</h3><p>Total Active SKUs</p></div></div>
+                    <div class="stat-card cyan"><div class="stat-icon"><i class="fa-solid fa-triangle-exclamation"></i></div><div class="stat-content"><h3>4 Items</h3><p>Below Safety Reorder Level</p></div></div>
+                    <div class="stat-card teal"><div class="stat-icon"><i class="fa-solid fa-warehouse"></i></div><div class="stat-content"><h3>₱ 4,850,000</h3><p>Total Inventory Asset Value</p></div></div>
+                </div>
+                <div class="table-card">
+                    <div class="table-toolbar">
+                        <div class="search-box-table">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="text" placeholder="Search inventory by Item Code, Generic Name, Bin Location..." onkeyup="filterGenericTable(this, 'table-inventory')" />
+                        </div>
+                        <button class="btn-accent-action" onclick="showToast('Inventory valuation statement exported')"><i class="fa-solid fa-file-excel"></i> Stock Audit Sheet</button>
+                    </div>
+                    <table class="emr-table" id="table-inventory">
+                        <thead><tr><th>SKU Code</th><th>Item Name & Description</th><th>Category</th><th>Bin Location</th><th>Current Stock</th><th>Min Threshold</th><th>Unit Price</th><th>Status</th><th>Actions</th></tr></thead>
+                        <tbody>
+                            <tr><td><strong>INV-MED-001</strong></td><td>Amoxicillin 500mg Trihydrate Cap</td><td>Antibiotics</td><td>Shelf A-04</td><td>2,450 Caps</td><td>500 Caps</td><td>₱ 6.50</td><td><span class="status-badge status-active">Optimal</span></td><td><button class="btn-secondary" style="padding:4px 8px; font-size:11px;" onclick="showToast('Stock transfer modal opened')">Transfer</button></td></tr>
+                            <tr><td><strong>INV-SURG-014</strong></td><td>Surgical Latex Gloves Size 7.5</td><td>Consumables</td><td>Shelf B-12</td><td>18 Boxes</td><td>25 Boxes</td><td>₱ 320.00</td><td><span class="status-badge status-urgent">Low Stock</span></td><td><button class="btn-primary-action" style="padding:4px 8px; font-size:11px;" onclick="showToast('Requisition dispatched to Procurement')">Reorder PO</button></td></tr>
+                            <tr><td><strong>INV-IV-002</strong></td><td>0.9% Normal Saline 500mL IV</td><td>IV Fluids</td><td>Pallet C-01</td><td>840 Bags</td><td>200 Bags</td><td>₱ 45.00</td><td><span class="status-badge status-active">Optimal</span></td><td><button class="btn-secondary" style="padding:4px 8px; font-size:11px;" onclick="showToast('Stock transfer modal opened')">Transfer</button></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+    
+        
+            <!-- 15. PROCUREMENT & PURCHASE ORDERS -->
+            <section id="view-procurement" class="module-view">
+                <div class="ux-navigation-bar">
+                    <div class="breadcrumbs">
+                        <a onclick="switchTab('view-dashboard', null)"><i class="fa-solid fa-house"></i> Home</a>
+                        <i class="fa-solid fa-chevron-right" style="font-size:10px;"></i>
+                        <span class="current">Procurement & Purchase Orders</span>
+                    </div>
+                    <button class="btn-back-dashboard" onclick="switchTab('view-dashboard', null)"><i class="fa-solid fa-arrow-left"></i> Back to Dashboard</button>
+                </div>
+                <div class="view-header">
+                    <div>
+                        <h1>Hospital Procurement & Vendor Purchase Orders</h1>
+                        <p>Manage purchase requisitions, supplier quotation comparisons, Goods Receipt Notes (GRN), and invoice verification</p>
+                    </div>
+                    <button class="btn-primary-action" onclick="openModal('modal-new-po')"><i class="fa-solid fa-cart-plus"></i> + Create Purchase Order (PO)</button>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-card"><div class="stat-icon"><i class="fa-solid fa-file-signature"></i></div><div class="stat-content"><h3>₱ 420,500</h3><p>Active Open PO Value</p></div></div>
+                    <div class="stat-card cyan"><div class="stat-icon"><i class="fa-solid fa-truck-ramp-box"></i></div><div class="stat-content"><h3>6 POs</h3><p>Pending Deliveries</p></div></div>
+                    <div class="stat-card teal"><div class="stat-icon"><i class="fa-solid fa-handshake"></i></div><div class="stat-content"><h3>24</h3><p>Approved Medical Vendors</p></div></div>
+                </div>
+                <div class="table-card">
+                    <table class="emr-table">
+                        <thead><tr><th>PO Number</th><th>Vendor Supplier</th><th>Requisition Items</th><th>Total Amount</th><th>Delivery Status</th><th>Actions</th></tr></thead>
+                        <tbody>
+                            <tr><td><strong>PO-2026-088</strong></td><td>Metro Pharma Supplies Inc.</td><td>Amoxicillin 500mg, IV Cannula 20G</td><td>₱ 85,000.00</td><td><span class="status-badge status-active">Goods Received (GRN Verified)</span></td><td><button class="btn-secondary" style="padding:4px 8px; font-size:11px;" onclick="showToast('Viewing Goods Receipt Note (GRN)...')">View GRN</button></td></tr>
+                            <tr><td><strong>PO-2026-089</strong></td><td>Allied Biomedical Instruments</td><td>ECG Thermal Paper, SpO2 Probes</td><td>₱ 42,500.00</td><td><span class="status-badge status-pending">In Transit / Delivery Expected</span></td><td><button class="btn-primary-action" style="padding:4px 8px; font-size:11px;" onclick="showToast('Shipment Tracked: ETA 24-Aug 16:00')">Track Delivery</button></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+    
+        
+            <!-- 14. SUB-STORE INVENTORY -->
+            <section id="view-substore" class="module-view">
+                <div class="ux-navigation-bar">
+                    <div class="breadcrumbs">
+                        <a onclick="switchTab('view-dashboard', null)"><i class="fa-solid fa-house"></i> Home</a>
+                        <i class="fa-solid fa-chevron-right" style="font-size:10px;"></i>
+                        <span class="current">Sub-Store Inventory</span>
+                    </div>
+                    <button class="btn-back-dashboard" onclick="switchTab('view-dashboard', null)"><i class="fa-solid fa-arrow-left"></i> Back to Dashboard</button>
+                </div>
+                <div class="view-header">
+                    <div>
+                        <h1>Sub-Store & Departmental Floor Stock Requisitions</h1>
+                        <p>Floor stocks for ICU, Emergency Room, Operating Theater, consumable indents, and internal dispensary transfers</p>
+                    </div>
+                    <button class="btn-primary-action" onclick="showToast('Floor stock requisition indent drafted for Main Pharmacy')"><i class="fa-solid fa-cart-shopping"></i> + Create Floor Stock Indent</button>
+                </div>
+                <div class="table-card">
+                    <table class="emr-table">
+                        <thead><tr><th>SubStore Department</th><th>Item Name & Strength</th><th>Floor Stock Level</th><th>Minimum Safety Level</th><th>Status</th><th>Actions</th></tr></thead>
+                        <tbody>
+                            <tr><td><strong>ICU SubStore (3rd Floor)</strong></td><td>0.9% Normal Saline 500mL IV</td><td>48 Bags</td><td>20 Bags</td><td><span class="status-badge status-active">Optimal Floor Stock</span></td><td><button class="btn-secondary" style="padding:4px 8px; font-size:11px;" onclick="showToast('Stock Issued to ICU Patient Bed 101')">Issue to Bed</button></td></tr>
+                            <tr><td><strong>ER SubStore (Crash Cart)</strong></td><td>Epinephrine 1mg/mL Ampules</td><td>12 Ampules</td><td>10 Ampules</td><td><span class="status-badge status-active">Optimal Floor Stock</span></td><td><button class="btn-secondary" style="padding:4px 8px; font-size:11px;" onclick="showToast('Crash cart checklist signed by Charge Nurse')">Audit Check</button></td></tr>
+                            <tr><td><strong>OR SubStore (Suite 1)</strong></td><td>Surgical Gloves Size 7.5 Sterile</td><td>6 Boxes</td><td>10 Boxes</td><td><span class="status-badge status-urgent">Reorder Required</span></td><td><button class="btn-primary-action" style="padding:4px 8px; font-size:11px;" onclick="showToast('STAT Indent dispatched to Central Store')">Reorder STAT</button></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+    
+        
+            <!-- 16. FIXED ASSETS & BIOMEDICAL -->
+            <section id="view-fixedassets" class="module-view">
+                <div class="ux-navigation-bar">
+                    <div class="breadcrumbs">
+                        <a onclick="switchTab('view-dashboard', null)"><i class="fa-solid fa-house"></i> Home</a>
+                        <i class="fa-solid fa-chevron-right" style="font-size:10px;"></i>
+                        <span class="current">Fixed Assets & Biomedical</span>
+                    </div>
+                    <button class="btn-back-dashboard" onclick="switchTab('view-dashboard', null)"><i class="fa-solid fa-arrow-left"></i> Back to Dashboard</button>
+                </div>
+                <div class="view-header">
+                    <div>
+                        <h1>Fixed Assets, Biomedical Equipment & Maintenance (AMC)</h1>
+                        <p>Hospital medical equipment register, calibration certificates, Annual Maintenance Contracts (AMC), and depreciation schedules</p>
+                    </div>
+                    <button class="btn-primary-action" onclick="showToast('Biomedical asset registration form opened')"><i class="fa-solid fa-plus"></i> + Register New Asset</button>
+                </div>
+                <div class="table-card">
+                    <table class="emr-table">
+                        <thead><tr><th>Asset Tag No</th><th>Equipment Name & Model</th><th>Department</th><th>Purchase Cost</th><th>Next Calibration Date</th><th>AMC Status</th><th>Actions</th></tr></thead>
+                        <tbody>
+                            <tr><td><strong>EQ-RAD-001</strong></td><td>GE Revolution 128-Slice CT Scanner</td><td>Radiology</td><td>₱ 18,500,000</td><td>15-Nov-2026</td><td><span class="status-badge status-active">Under GE OEM AMC</span></td><td><button class="btn-secondary" style="padding:4px 8px; font-size:11px;" onclick="showToast('Calibration cert #CAL-8921 verified')">View Cert</button></td></tr>
+                            <tr><td><strong>EQ-ICU-004</strong></td><td>Hamilton-C6 Mechanical Ventilator</td><td>ICU</td><td>₱ 1,850,000</td><td>10-Dec-2026</td><td><span class="status-badge status-active">Calibrated & Certified</span></td><td><button class="btn-secondary" style="padding:4px 8px; font-size:11px;" onclick="showToast('Service log sheet printed')">Service Log</button></td></tr>
+                            <tr><td><strong>EQ-OT-002</strong></td><td>Drager Perseus A500 Anesthesia Workstation</td><td>Operating Room</td><td>₱ 3,200,000</td><td>20-Jan-2027</td><td><span class="status-badge status-active">Preventive Maint Pass</span></td><td><button class="btn-secondary" style="padding:4px 8px; font-size:11px;" onclick="showToast('Service log sheet printed')">Service Log</button></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+    
+        
+            <!-- 18. GENERAL LEDGER & ACCOUNTING -->
+            <section id="view-accounting" class="module-view">
+                <div class="ux-navigation-bar">
+                    <div class="breadcrumbs">
+                        <a onclick="switchTab('view-dashboard', null)"><i class="fa-solid fa-house"></i> Home</a>
+                        <i class="fa-solid fa-chevron-right" style="font-size:10px;"></i>
+                        <span class="current">General Ledger & Accounting</span>
+                    </div>
+                    <button class="btn-back-dashboard" onclick="switchTab('view-dashboard', null)"><i class="fa-solid fa-arrow-left"></i> Back to Dashboard</button>
+                </div>
+                <div class="view-header">
+                    <div>
+                        <h1>Hospital Accounting, General Ledger & Daybook</h1>
+                        <p>Double-entry accounting, chart of accounts, journal vouchers, trial balance, and audited balance sheets</p>
+                    </div>
+                    <button class="btn-primary-action" onclick="openModal('modal-new-voucher')"><i class="fa-solid fa-plus"></i> + New Journal Voucher</button>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-card"><div class="stat-icon"><i class="fa-solid fa-building-columns"></i></div><div class="stat-content"><h3>₱ 5,420,000</h3><p>Cash at Bank (Operating)</p></div></div>
+                    <div class="stat-card cyan"><div class="stat-icon"><i class="fa-solid fa-file-invoice-dollar"></i></div><div class="stat-content"><h3>₱ 840,500</h3><p>Accounts Receivable (HMOs)</p></div></div>
+                    <div class="stat-card teal"><div class="stat-icon"><i class="fa-solid fa-book"></i></div><div class="stat-content"><h3>₱ 310,200</h3><p>Doctor Incentive Payable</p></div></div>
+                </div>
+                <div class="table-card">
+                    <div class="table-toolbar"><h3 style="font-size:15px; font-weight:700;">Daybook Journal Transactions (24-Aug-2026)</h3></div>
+                    <table class="emr-table">
+                        <thead><tr><th>Voucher ID</th><th>Transaction Description</th><th>Debit Account</th><th>Credit Account</th><th>Amount (PHP)</th><th>Status</th><th>Actions</th></tr></thead>
+                        <tbody>
+                            <tr><td><strong>JV-2026-041</strong></td><td>OPD Consultation Fee Receipt (Cash)</td><td>1010 - Cash on Hand</td><td>4010 - OPD Consultation Revenue</td><td>₱ 2,850.00</td><td><span class="status-badge status-active">Posted</span></td><td><button class="btn-secondary" style="padding:4px 8px; font-size:11px;" onclick="showToast('Voucher JV-2026-041 audited')">View Voucher</button></td></tr>
+                            <tr><td><strong>JV-2026-042</strong></td><td>Pharmacy Drug Sales Daily Batch</td><td>1020 - Cash at Bank</td><td>4020 - Pharmacy Sales Revenue</td><td>₱ 18,450.00</td><td><span class="status-badge status-active">Posted</span></td><td><button class="btn-secondary" style="padding:4px 8px; font-size:11px;" onclick="showToast('Voucher JV-2026-042 audited')">View Voucher</button></td></tr>
+                            <tr><td><strong>JV-2026-043</strong></td><td>Purchase of Sterile Medical Consumables</td><td>5020 - Medical Supplies Exp</td><td>2010 - Accounts Payable (Metro Pharma)</td><td>₱ 85,000.00</td><td><span class="status-badge status-active">Posted</span></td><td><button class="btn-secondary" style="padding:4px 8px; font-size:11px;" onclick="showToast('Voucher JV-2026-043 audited')">View Voucher</button></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+    
+        
+            <!-- 19. INSURANCE & CLAIM MANAGEMENT -->
+            <section id="view-claimmgmt" class="module-view">
+                <div class="ux-navigation-bar">
+                    <div class="breadcrumbs">
+                        <a onclick="switchTab('view-dashboard', null)"><i class="fa-solid fa-house"></i> Home</a>
+                        <i class="fa-solid fa-chevron-right" style="font-size:10px;"></i>
+                        <span class="current">Insurance & Claim Management</span>
+                    </div>
+                    <button class="btn-back-dashboard" onclick="switchTab('view-dashboard', null)"><i class="fa-solid fa-arrow-left"></i> Back to Dashboard</button>
+                </div>
+                <div class="view-header">
+                    <div>
+                        <h1>PhilHealth & HMO Insurance Claim Management</h1>
+                        <p>Submit electronic claims, track pre-authorizations, and reconcile remittance vouchers</p>
+                    </div>
+                    <button class="btn-primary-action" onclick="showToast('Claim Pre-Authorization Request Dispatched')"><i class="fa-solid fa-shield-halved"></i> + Submit HMO Claim</button>
+                </div>
+                <div class="table-card">
+                    <table class="emr-table">
+                        <thead><tr><th>Claim ID</th><th>Patient Name</th><th>Provider / HMO</th><th>Case Rate / Policy</th><th>Claim Amount</th><th>Adjudication Status</th><th>Actions</th></tr></thead>
+                        <tbody>
+                            <tr><td><strong>CLM-2026-101</strong></td><td>Maria Santos</td><td>Maxicare Gold</td><td>Cardiology Inpatient Case Rate</td><td>₱ 32,400.00</td><td><span class="status-badge status-active">Approved & Reimbursed</span></td><td><button class="btn-secondary" style="padding:4px 8px; font-size:11px;" onclick="showToast('Remittance voucher downloaded')">Voucher</button></td></tr>
+                            <tr><td><strong>CLM-2026-102</strong></td><td>Juan Dela Cruz</td><td>PhilHealth Primary</td><td>First Case Rate (Pneumonia)</td><td>₱ 15,000.00</td><td><span class="status-badge status-pending">Under Pre-Auth Review</span></td><td><button class="btn-primary-action" style="padding:4px 8px; font-size:11px;" onclick="showToast('Pre-Auth inquiry dispatched to PhilHealth')">Follow Up</button></td></tr>
+                            <tr><td><strong>CLM-2026-103</strong></td><td>Antonio Gonzales</td><td>Intellicare Corporate</td><td>Occupational Physical Therapy</td><td>₱ 8,500.00</td><td><span class="status-badge status-completed">Voucher Paid</span></td><td><button class="btn-secondary" style="padding:4px 8px; font-size:11px;" onclick="showToast('Remittance voucher downloaded')">Voucher</button></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+    
+        
+            <!-- 20. DOCTOR INCENTIVES & FEE SPLIT -->
+            <section id="view-incentive" class="module-view">
+                <div class="ux-navigation-bar">
+                    <div class="breadcrumbs">
+                        <a onclick="switchTab('view-dashboard', null)"><i class="fa-solid fa-house"></i> Home</a>
+                        <i class="fa-solid fa-chevron-right" style="font-size:10px;"></i>
+                        <span class="current">Doctor Incentives & Fee Split</span>
+                    </div>
+                    <button class="btn-back-dashboard" onclick="switchTab('view-dashboard', null)"><i class="fa-solid fa-arrow-left"></i> Back to Dashboard</button>
+                </div>
+                <div class="view-header">
+                    <div>
+                        <h1>Doctor Incentive Schemes & Professional Fee Split</h1>
+                        <p>Automated consultation fee split, surgical case cut calculation, referral shares, and doctor payout ledgers</p>
+                    </div>
+                    <button class="btn-primary-action" onclick="showToast('Doctor Monthly Incentive Statement Generated')"><i class="fa-solid fa-file-invoice-dollar"></i> Generate Monthly Statement</button>
+                </div>
+                <div class="table-card">
+                    <table class="emr-table">
+                        <thead><tr><th>Consultant Doctor</th><th>Specialty</th><th>Total Cases Handled</th><th>Gross Professional Fee</th><th>Hospital Split (30%)</th><th>Net Doctor Payout (70%)</th><th>Status</th><th>Actions</th></tr></thead>
+                        <tbody>
+                            <tr><td><strong>Dr. Roberto Tan, MD</strong></td><td>Cardiology</td><td>48 OPD + 8 Cath</td><td>₱ 240,000.00</td><td>₱ 72,000.00</td><td><strong style="color:#15803d;">₱ 168,000.00</strong></td><td><span class="status-badge status-completed">Processed</span></td><td><button class="btn-secondary" style="padding:4px 8px; font-size:11px;" onclick="showToast('Payout slip printed')">Payout Slip</button></td></tr>
+                            <tr><td><strong>Dr. Edward Hernandez, MD</strong></td><td>General Surgery</td><td>14 Surgeries</td><td>₱ 180,000.00</td><td>₱ 54,000.00</td><td><strong style="color:#15803d;">₱ 126,000.00</strong></td><td><span class="status-badge status-active">Approved</span></td><td><button class="btn-primary-action" style="padding:4px 8px; font-size:11px;" onclick="showToast('Direct bank transfer initiated')">Release Pay</button></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+    
+        
+            <!-- 21. CLINICAL ORDER VERIFICATION -->
+            <section id="view-verification" class="module-view">
+                <div class="ux-navigation-bar">
+                    <div class="breadcrumbs">
+                        <a onclick="switchTab('view-dashboard', null)"><i class="fa-solid fa-house"></i> Home</a>
+                        <i class="fa-solid fa-chevron-right" style="font-size:10px;"></i>
+                        <span class="current">Clinical Order Verification</span>
+                    </div>
+                    <button class="btn-back-dashboard" onclick="switchTab('view-dashboard', null)"><i class="fa-solid fa-arrow-left"></i> Back to Dashboard</button>
+                </div>
+                <div class="view-header">
+                    <div>
+                        <h1>Clinical Verification, Dual Sign-off & Discount Authorization</h1>
+                        <p>Senior pathologist dual sign-off for critical lab panic values, high-risk medication dual checks, and cashier discount approvals</p>
+                    </div>
+                </div>
+                <div class="table-card">
+                    <table class="emr-table">
+                        <thead><tr><th>Verification Item</th><th>Department</th><th>Requested By</th><th>Values / Justification</th><th>Dual Signoff Status</th><th>Actions</th></tr></thead>
+                        <tbody>
+                            <tr><td><strong>Critical Lab Panic Value</strong></td><td>Laboratory (LIS)</td><td>Sarah Cruz, RMT</td><td>Serum Potassium 6.8 mmol/L (STAT Panic)</td><td><span class="status-badge status-urgent">Awaiting Senior Pathologist</span></td><td><button class="btn-accent-action" style="padding:4px 8px; font-size:11px;" onclick="showToast('Critical Result Dual-Signed & Urgent Notification pushed to Attending Doctor!')"><i class="fa-solid fa-check-double"></i> Authorize & Sign</button></td></tr>
+                            <tr><td><strong>Senior Citizen 20% Discount</strong></td><td>Billing & Cashier</td><td>Mark Mendoza</td><td>Official Senior ID Verification (Elena Reyes)</td><td><span class="status-badge status-active">Approved</span></td><td><button class="btn-secondary" style="padding:4px 8px; font-size:11px;" onclick="showToast('Discount Verified')">View</button></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+    
+        
+            <!-- 22. VACCINATION & IMMUNIZATION -->
+            <section id="view-vaccination" class="module-view">
+                <div class="ux-navigation-bar">
+                    <div class="breadcrumbs">
+                        <a onclick="switchTab('view-dashboard', null)"><i class="fa-solid fa-house"></i> Home</a>
+                        <i class="fa-solid fa-chevron-right" style="font-size:10px;"></i>
+                        <span class="current">Vaccination & Immunization</span>
+                    </div>
+                    <button class="btn-back-dashboard" onclick="switchTab('view-dashboard', null)"><i class="fa-solid fa-arrow-left"></i> Back to Dashboard</button>
+                </div>
+                <div class="view-header">
+                    <div>
+                        <h1>National Immunization Program & Vaccine Registry</h1>
+                        <p>Record pediatric and adult immunizations, booster doses, batch lot numbers, and cold-chain temperature logs</p>
+                    </div>
+                    <button class="btn-primary-action" onclick="showToast('Vaccination Dose Recorded in National Registry')"><i class="fa-solid fa-syringe"></i> + Record Vaccine Dose</button>
+                </div>
+                <div class="grid-3col">
+                    <div class="stat-card"><div class="stat-icon"><i class="fa-solid fa-temperature-arrow-down"></i></div><div class="stat-content"><h3>+3.8 °C</h3><p>Vaccine Refrigerator (Safe +2 to +8°C)</p></div></div>
+                    <div class="stat-card cyan"><div class="stat-icon"><i class="fa-solid fa-child-reaching"></i></div><div class="stat-content"><h3>98.2%</h3><p>Pediatric EPI On-Time Coverage</p></div></div>
+                    <div class="stat-card teal"><div class="stat-icon"><i class="fa-solid fa-shield-virus"></i></div><div class="stat-content"><h3>185</h3><p>Doses Administered This Month</p></div></div>
+                </div>
+                <div class="table-card">
+                    <table class="emr-table">
+                        <thead><tr><th>Patient Name</th><th>Age / Sex</th><th>Vaccine Antigen</th><th>Dose / Route</th><th>Batch & Lot No</th><th>Next Due Date</th><th>Administered By</th></tr></thead>
+                        <tbody>
+                            <tr><td><strong>Lucas Gabriel Santos</strong></td><td>6 Months / M</td><td>Pentavalent (DTP-HepB-Hib)</td><td>Dose 3 &bull; IM Anterolateral Thigh</td><td>LOT-PV-9012 (Exp: 2027)</td><td><span class="status-badge status-completed">Completed</span></td><td>Nurse Clara Dizon</td></tr>
+                            <tr><td><strong>Elena Reyes</strong></td><td>28 Y / F</td><td>Influenza Quadrivalent 2026</td><td>0.5 mL &bull; IM Deltoid</td><td>LOT-FLU-3312 (Exp: 2027)</td><td>Aug-2027 (Annual)</td><td>Nurse Clara Dizon</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+    
+        
+            <!-- 23. QUEUE MANAGEMENT (SMART OPD) -->
+            <section id="view-queue" class="module-view">
+                <div class="ux-navigation-bar">
+                    <div class="breadcrumbs">
+                        <a onclick="switchTab('view-dashboard', null)"><i class="fa-solid fa-house"></i> Home</a>
+                        <i class="fa-solid fa-chevron-right" style="font-size:10px;"></i>
+                        <span class="current">Queue Management (Smart OPD)</span>
+                    </div>
+                    <button class="btn-back-dashboard" onclick="switchTab('view-dashboard', null)"><i class="fa-solid fa-arrow-left"></i> Back to Dashboard</button>
+                </div>
+                <div class="view-header">
+                    <div>
+                        <h1>Smart OPD Token Calling & Queue Management</h1>
+                        <p>Real-time token dispenser, automated voice calling, doctor consultation room routing, and hall display</p>
+                    </div>
+                    <div style="display:flex; gap:10px;">
+                        <button class="btn-accent-action" onclick="showToast('📢 Voice Calling: Token A-104 please proceed to Consultation Room 201')"><i class="fa-solid fa-volume-high"></i> Call Next Token (A-104)</button>
+                        <button class="btn-primary-action" onclick="showToast('Issued Token A-106 for OPD General Medicine')"><i class="fa-solid fa-ticket"></i> + Issue Token</button>
+                    </div>
+                </div>
+                <div class="grid-3col">
+                    <div class="stat-card cyan"><div class="stat-icon"><i class="fa-solid fa-bullhorn"></i></div><div class="stat-content"><h3 style="color:#0284c7;">A-103</h3><p>Now Serving in Room 201</p></div></div>
+                    <div class="stat-card teal"><div class="stat-icon"><i class="fa-solid fa-users"></i></div><div class="stat-content"><h3>4 Patients</h3><p>Waiting in OPD Waiting Hall</p></div></div>
+                    <div class="stat-card"><div class="stat-icon"><i class="fa-solid fa-clock"></i></div><div class="stat-content"><h3>8.4 min</h3><p>Average Wait Time</p></div></div>
+                </div>
+                <div class="table-card">
+                    <div class="table-toolbar"><h3 style="font-size:15px; font-weight:700;">Live Waiting Room Token Display</h3></div>
+                    <table class="emr-table">
+                        <thead><tr><th>Token No</th><th>Patient Name</th><th>Assigned Doctor</th><th>Room Number</th><th>Queue Status</th><th>Action</th></tr></thead>
+                        <tbody>
+                            <tr><td><strong style="font-size:16px; color:var(--brand-primary);">A-103</strong></td><td>Juan Dela Cruz</td><td>Dr. Roberto Tan, MD</td><td>Room 201 (Cardiology)</td><td><span class="status-badge status-active">Currently Inside Room</span></td><td><button class="btn-secondary" style="padding:4px 8px; font-size:11px;" onclick="showToast('Recall chime played in waiting area')">Recall</button></td></tr>
+                            <tr><td><strong style="font-size:16px;">A-104</strong></td><td>Elena Reyes</td><td>Dr. Vincent Lim, MD</td><td>Room 203 (Neurology)</td><td><span class="status-badge status-urgent">Next in Line</span></td><td><button class="btn-primary-action" style="padding:4px 8px; font-size:11px;" onclick="showToast('Calling Token A-104')">Call Now</button></td></tr>
+                            <tr><td><strong style="font-size:16px;">A-105</strong></td><td>Antonio Gonzales</td><td>Dr. Miguel Garcia, MD</td><td>Room 204 (Orthopedics)</td><td><span class="status-badge status-pending">Waiting</span></td><td><button class="btn-secondary" style="padding:4px 8px; font-size:11px;" onclick="showToast('Patient notified via SMS')">Notify</button></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+    
+        
+            <!-- 24. STERILIZATION SERVICES (CSSD) -->
+            <section id="view-cssd" class="module-view">
+                <div class="ux-navigation-bar">
+                    <div class="breadcrumbs">
+                        <a onclick="switchTab('view-dashboard', null)"><i class="fa-solid fa-house"></i> Home</a>
+                        <i class="fa-solid fa-chevron-right" style="font-size:10px;"></i>
+                        <span class="current">Sterilization Services (CSSD)</span>
+                    </div>
+                    <button class="btn-back-dashboard" onclick="switchTab('view-dashboard', null)"><i class="fa-solid fa-arrow-left"></i> Back to Dashboard</button>
+                </div>
+                <div class="view-header">
+                    <div>
+                        <h1>Central Sterile Services Department (CSSD)</h1>
+                        <p>Autoclave sterilization cycles, surgical instrument tray tracking, Bowie-Dick tests, and biological indicator validation</p>
+                    </div>
+                    <button class="btn-primary-action" onclick="showToast('Autoclave Cycle Batch #88 Started (134°C for 18 mins)')"><i class="fa-solid fa-play"></i> + Start Autoclave Cycle</button>
+                </div>
+                <div class="grid-3col">
+                    <div class="stat-card"><div class="stat-icon"><i class="fa-solid fa-temperature-high"></i></div><div class="stat-content"><h3>134.2 °C</h3><p>Autoclave Sterilizer 1 (Pass)</p></div></div>
+                    <div class="stat-card cyan"><div class="stat-icon"><i class="fa-solid fa-box-archive"></i></div><div class="stat-content"><h3>34 Sets</h3><p>Sterile Surgical Trays Ready</p></div></div>
+                    <div class="stat-card teal"><div class="stat-icon"><i class="fa-solid fa-circle-check"></i></div><div class="stat-content"><h3>100%</h3><p>Biological Indicator Pass Rate</p></div></div>
+                </div>
+                <div class="table-card">
+                    <table class="emr-table">
+                        <thead><tr><th>Batch / Tray Code</th><th>Instrument Set Description</th><th>Autoclave Unit</th><th>Sterilization Time</th><th>Biological Test</th><th>Expiry Date</th></tr></thead>
+                        <tbody>
+                            <tr><td><strong>CSSD-SET-101</strong></td><td>Laparoscopic Cholecystectomy Set</td><td>Autoclave 1 (Steam)</td><td>24-Aug-2026 09:00 AM</td><td><span class="status-badge status-active">Passed (Negative)</span></td><td>24-Nov-2026</td></tr>
+                            <tr><td><strong>CSSD-SET-102</strong></td><td>Major Orthopedic Knee Set</td><td>Autoclave 2 (Steam)</td><td>24-Aug-2026 10:30 AM</td><td><span class="status-badge status-active">Passed (Negative)</span></td><td>24-Nov-2026</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+    
+        
+            <!-- 25. MEDICAL RECORDS DEPARTMENT (MRD) -->
+            <section id="view-medicalrecords" class="module-view">
+                <div class="ux-navigation-bar">
+                    <div class="breadcrumbs">
+                        <a onclick="switchTab('view-dashboard', null)"><i class="fa-solid fa-house"></i> Home</a>
+                        <i class="fa-solid fa-chevron-right" style="font-size:10px;"></i>
+                        <span class="current">Medical Records Department (MRD)</span>
+                    </div>
+                    <button class="btn-back-dashboard" onclick="switchTab('view-dashboard', null)"><i class="fa-solid fa-arrow-left"></i> Back to Dashboard</button>
+                </div>
+                <div class="view-header">
+                    <div>
+                        <h1>Medical Records Department (MRD & Health Info Management)</h1>
+                        <p>Long-term clinical chart archiving, ICD-10 mortality coding, birth/death registries, and medico-legal archives</p>
+                    </div>
+                    <button class="btn-primary-action" onclick="showToast('MRD Archive File Indexed & Barcoded')"><i class="fa-solid fa-folder-plus"></i> + Archive Patient File</button>
+                </div>
+                <div class="table-card">
+                    <table class="emr-table">
+                        <thead><tr><th>Hospital No</th><th>Patient Name</th><th>Discharge Date</th><th>Primary ICD-10 Code</th><th>Physical Archive Shelf</th><th>Digital Status</th></tr></thead>
+                        <tbody>
+                            <tr><td><strong>G1-2026-0089</strong></td><td>Maria Santos</td><td>24-Aug-2026</td><td>I49.8 - Benign PACs</td><td>Rack A &bull; Bay 4 &bull; Box 12</td><td><span class="status-badge status-active">100% Digitized (PDF)</span></td></tr>
+                            <tr><td><strong>G1-2026-0090</strong></td><td>Juan Dela Cruz</td><td>Active OPD</td><td>G44.2 - Tension Headache</td><td>Rack B &bull; Bay 1 &bull; Box 04</td><td><span class="status-badge status-active">Active Live Chart</span></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+    
+        
+            <!-- 26. MARKETING & DOCTOR REFERRALS -->
+            <section id="view-mktreferral" class="module-view">
+                <div class="ux-navigation-bar">
+                    <div class="breadcrumbs">
+                        <a onclick="switchTab('view-dashboard', null)"><i class="fa-solid fa-house"></i> Home</a>
+                        <i class="fa-solid fa-chevron-right" style="font-size:10px;"></i>
+                        <span class="current">Marketing & Doctor Referrals</span>
+                    </div>
+                    <button class="btn-back-dashboard" onclick="switchTab('view-dashboard', null)"><i class="fa-solid fa-arrow-left"></i> Back to Dashboard</button>
+                </div>
+                <div class="view-header">
+                    <div>
+                        <h1>Marketing Campaigns & Doctor Referral Management</h1>
+                        <p>External referring clinics, corporate health packages, community outreach camps, and ROI tracking</p>
+                    </div>
+                    <button class="btn-primary-action" onclick="showToast('Corporate Health Tie-up Logged')"><i class="fa-solid fa-plus"></i> + Add Corporate Tie-Up</button>
+                </div>
+                <div class="table-card">
+                    <table class="emr-table">
+                        <thead><tr><th>Referral Source</th><th>Referring Doctor / Clinic</th><th>Patients Referred This Month</th><th>Primary Specialty</th><th>Referral Incentive Scheme</th></tr></thead>
+                        <tbody>
+                            <tr><td><strong>Makati Family Clinic</strong></td><td>Dr. Manuel Fernandez, MD</td><td>18 Patients</td><td>Cardiology & Echo</td><td><span class="status-badge status-active">Active (Standard Tier)</span></td></tr>
+                            <tr><td><strong>BGC Health Hub</strong></td><td>Dr. Patricia Santos, MD</td><td>12 Patients</td><td>Neurology & Brain MRI</td><td><span class="status-badge status-active">Active (Preferred Tier)</span></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+    
+        
+            <!-- 27. HELPDESK & PATIENT RELATIONS -->
+            <section id="view-helpdesk" class="module-view">
+                <div class="ux-navigation-bar">
+                    <div class="breadcrumbs">
+                        <a onclick="switchTab('view-dashboard', null)"><i class="fa-solid fa-house"></i> Home</a>
+                        <i class="fa-solid fa-chevron-right" style="font-size:10px;"></i>
+                        <span class="current">Helpdesk & Patient Relations</span>
+                    </div>
+                    <button class="btn-back-dashboard" onclick="switchTab('view-dashboard', null)"><i class="fa-solid fa-arrow-left"></i> Back to Dashboard</button>
+                </div>
+                <div class="view-header">
+                    <div>
+                        <h1>Information Helpdesk, Visitor Badges & Inquiries</h1>
+                        <p>Hospital information desk, patient room locator, visitor pass issuance, and ambulance dispatch</p>
+                    </div>
+                    <div style="display:flex; gap:10px;">
+                        <button class="btn-accent-action" style="background:#ef4444; color:#fff;" onclick="showToast('🚑 AMBULANCE DISPATCHED: Mobile ICU Unit 1 en route!')"><i class="fa-solid fa-truck-medical"></i> Dispatch Ambulance</button>
+                        <button class="btn-primary-action" onclick="showToast('Visitor Badge Pass V-892 Printed')"><i class="fa-solid fa-id-badge"></i> Issue Visitor Badge</button>
+                    </div>
+                </div>
+                <div class="table-card">
+                    <table class="emr-table">
+                        <thead><tr><th>Inquiry / Ticket</th><th>Visitor / Patient</th><th>Inquiry Category</th><th>Action Taken</th><th>Attending Staff</th><th>Status</th></tr></thead>
+                        <tbody>
+                            <tr><td><strong>HLP-901</strong></td><td>Rosa Mercado</td><td>ICU Inpatient Room Location</td><td>Guided to 3rd Floor ICU Room 101</td><td>Joy Pascual</td><td><span class="status-badge status-completed">Resolved</span></td></tr>
+                            <tr><td><strong>HLP-902</strong></td><td>Emergency Caller</td><td>STAT Ambulance Request (Quezon City)</td><td>Ambulance Unit 1 Dispatched</td><td>Joy Pascual</td><td><span class="status-badge status-urgent">En Route</span></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+    
+        
+            <!-- 28. MIS REPORTS & BI ANALYTICS -->
+            <section id="view-reports" class="module-view">
+                <div class="ux-navigation-bar">
+                    <div class="breadcrumbs">
+                        <a onclick="switchTab('view-dashboard', null)"><i class="fa-solid fa-house"></i> Home</a>
+                        <i class="fa-solid fa-chevron-right" style="font-size:10px;"></i>
+                        <span class="current">Hospital MIS Reports & BI Analytics</span>
+                    </div>
+                    <button class="btn-back-dashboard" onclick="switchTab('view-dashboard', null)"><i class="fa-solid fa-arrow-left"></i> Back to Dashboard</button>
+                </div>
+                <div class="view-header">
+                    <div>
+                        <h1>Executive Management Information System (MIS) Reports</h1>
+                        <p>Hospital revenue census, bed occupancy analytics, OPD doctor consultations, and pharmacy sales</p>
+                    </div>
+                    <button class="btn-accent-action" onclick="showToast('MIS Report Exported to Excel / PDF')"><i class="fa-solid fa-file-excel"></i> Export Analytics</button>
+                </div>
+                <div class="grid-3col">
+                    <div class="stat-card"><div class="stat-icon"><i class="fa-solid fa-sack-dollar"></i></div><div class="stat-content"><h3>₱ 1,480,250</h3><p>Monthly Total Revenue</p></div></div>
+                    <div class="stat-card cyan"><div class="stat-icon"><i class="fa-solid fa-users"></i></div><div class="stat-content"><h3>482</h3><p>Monthly OPD Consultations</p></div></div>
+                    <div class="stat-card teal"><div class="stat-icon"><i class="fa-solid fa-bed"></i></div><div class="stat-content"><h3>3.8 Days</h3><p>Average Length of Stay (ALOS)</p></div></div>
+                </div>
+                <div class="table-card">
+                    <div class="table-toolbar"><h3 style="font-size:15px; font-weight:700;">Departmental Revenue Breakdown (August 2026)</h3></div>
+                    <table class="emr-table">
+                        <thead><tr><th>Department</th><th>Patient Volume</th><th>Gross Revenue</th><th>Insurance HMO Share</th><th>Net Hospital Collection</th></tr></thead>
+                        <tbody>
+                            <tr><td><strong>Clinical OPD & Consultation</strong></td><td>482</td><td>₱ 482,000.00</td><td>₱ 192,800.00</td><td>₱ 289,200.00</td></tr>
+                            <tr><td><strong>Inpatient Ward & ICU (ADT)</strong></td><td>54</td><td>₱ 540,000.00</td><td>₱ 324,000.00</td><td>₱ 216,000.00</td></tr>
+                            <tr><td><strong>Laboratory & Diagnostics</strong></td><td>310</td><td>₱ 248,000.00</td><td>₱ 99,200.00</td><td>₱ 148,800.00</td></tr>
+                            <tr><td><strong>Pharmacy Dispensary</strong></td><td>620</td><td>₱ 210,250.00</td><td>₱ 42,050.00</td><td>₱ 168,200.00</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+    
+        
+            <!-- 29. SYSTEM UTILITIES & DIAGNOSTICS -->
+            <section id="view-utilities" class="module-view">
+                <div class="ux-navigation-bar">
+                    <div class="breadcrumbs">
+                        <a onclick="switchTab('view-dashboard', null)"><i class="fa-solid fa-house"></i> Home</a>
+                        <i class="fa-solid fa-chevron-right" style="font-size:10px;"></i>
+                        <span class="current">System Utilities & Diagnostics</span>
+                    </div>
+                    <button class="btn-back-dashboard" onclick="switchTab('view-dashboard', null)"><i class="fa-solid fa-arrow-left"></i> Back to Dashboard</button>
+                </div>
+                <div class="view-header">
+                    <div>
+                        <h1>System Utilities, Diagnostics & Hardware Printers</h1>
+                        <p>Barcode label designer, thermal receipt printer mappings, database maintenance, and diagnostic ping</p>
+                    </div>
+                    <button class="btn-accent-action" onclick="showToast('Database Diagnostic & Backup Test Passed with Zero Errors')"><i class="fa-solid fa-server"></i> Run System Diagnostic</button>
+                </div>
+                <div class="grid-3col">
+                    <div class="card-box">
+                        <div class="card-box-header"><h3><i class="fa-solid fa-barcode"></i> Barcode Hub</h3></div>
+                        <p style="font-size:12.5px; color:#64748b; margin-bottom:12px;">Zebra ZD420 Wristband & Specimen Label Format</p>
+                        <button class="btn-primary-action" style="width:100%; justify-content:center; font-size:12px;" onclick="showToast('Sample Test Barcode Sent to Printer')">Test Print Barcode</button>
+                    </div>
+                    <div class="card-box">
+                        <div class="card-box-header"><h3><i class="fa-solid fa-print"></i> Thermal Receipt</h3></div>
+                        <p style="font-size:12.5px; color:#64748b; margin-bottom:12px;">Epson TM-T88VI POS Receipt Printer (Billing)</p>
+                        <button class="btn-primary-action" style="width:100%; justify-content:center; font-size:12px;" onclick="showToast('Thermal Receipt Feed Test Successful')">Test Print Receipt</button>
+                    </div>
+                    <div class="card-box">
+                        <div class="card-box-header"><h3><i class="fa-solid fa-database"></i> DB Backup Hub</h3></div>
+                        <p style="font-size:12.5px; color:#64748b; margin-bottom:12px;">Automated Daily Encrypted Cloud Snapshot</p>
+                        <button class="btn-secondary" style="width:100%; justify-content:center; font-size:12px;" onclick="showToast('Cloud Snapshot Verified: 24-Aug-2026 14:00')">Verify Backup</button>
+                    </div>
+                </div>
+            </section>
+    
+        
+            <!-- 30. SYSTEM ADMINISTRATION -->
+            <section id="view-systemadmin" class="module-view">
+                <div class="ux-navigation-bar">
+                    <div class="breadcrumbs">
+                        <a onclick="switchTab('view-dashboard', null)"><i class="fa-solid fa-house"></i> Home</a>
+                        <i class="fa-solid fa-chevron-right" style="font-size:10px;"></i>
+                        <span class="current">System Administration</span>
+                    </div>
+                    <button class="btn-back-dashboard" onclick="switchTab('view-dashboard', null)"><i class="fa-solid fa-arrow-left"></i> Back to Dashboard</button>
+                </div>
+                <div class="view-header">
+                    <div>
+                        <h1>System Administration & User Role Permission Matrix</h1>
+                        <p>Manage hospital staff accounts, assign departmental RBAC privileges, and monitor real-time security events</p>
+                    </div>
+                    <button class="btn-primary-action" onclick="showToast('New Staff User Registered & Department RBAC Assigned')"><i class="fa-solid fa-user-shield"></i> + Create Staff User</button>
+                </div>
+                <div class="table-card">
+                    <div class="table-toolbar"><h3 style="font-size:15px; font-weight:700;">Departmental User Accounts & Security Matrix</h3></div>
+                    <table class="emr-table">
+                        <thead><tr><th>Username</th><th>Full Staff Name</th><th>Assigned Role</th><th>Allowed Modules</th><th>Session Status</th><th>Action</th></tr></thead>
+                        <tbody>
+                            <tr><td><strong>admin</strong></td><td>Administrator</td><td><span class="status-badge status-urgent">👑 Super Admin</span></td><td>All 33 Modules</td><td><span class="status-badge status-active">Online Active</span></td><td><button class="btn-secondary" style="padding:4px 8px; font-size:11px;" onclick="showToast('Admin Profile Secured')">Manage</button></td></tr>
+                            <tr><td><strong>doctor</strong></td><td>Dr. Roberto Tan, MD</td><td><span class="status-badge status-completed">🩺 Doctor (MD)</span></td><td>Clinical, Appointments, ER, OT, LIS, RIS, MRD</td><td><span class="status-badge status-active">Online Active</span></td><td><button class="btn-secondary" style="padding:4px 8px; font-size:11px;" onclick="showToast('Doctor Profile Edited')">Edit Role</button></td></tr>
+                            <tr><td><strong>nurse</strong></td><td>Nurse Clara Dizon</td><td><span class="status-badge status-active">💉 Nurse (RN)</span></td><td>Nursing, ADT Beds, ER, Vaccine, Queue, CSSD</td><td><span class="status-badge status-active">Online Active</span></td><td><button class="btn-secondary" style="padding:4px 8px; font-size:11px;" onclick="showToast('Nurse Profile Edited')">Edit Role</button></td></tr>
+                            <tr><td><strong>accountant</strong></td><td>Elena Villar, CPA</td><td><span class="status-badge status-pending">💰 Accountant</span></td><td>Accounting, Billing, Claims, Incentives, Fixed Assets</td><td><span class="status-badge status-active">Online Active</span></td><td><button class="btn-secondary" style="padding:4px 8px; font-size:11px;" onclick="showToast('Accountant Profile Edited')">Edit Role</button></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+    
         </main>
     </div>
 
@@ -3350,6 +3959,74 @@
         </div>
     </div>
 
+    
+    <!-- MODAL: NEW CLINICAL TEMPLATE -->
+    <div id="modal-new-template" class="modal-overlay">
+        <div class="modal-box" style="max-width:550px;">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-notes-medical"></i> Create Clinical Consultation Template</h3>
+                <button class="modal-close" onclick="closeModal('modal-new-template')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group"><label>Macro Trigger Code</label><input type="text" id="tpl-code" placeholder="e.g. .GERD-EVAL" value=".CHESTPAIN-STAT" /></div>
+                <div class="form-group"><label>Clinical Scenario Title</label><input type="text" id="tpl-title" placeholder="e.g. GERD Comprehensive Workup" value="Atypical Angina Screening" /></div>
+                <div class="form-group"><label>Default ICD-10 Diagnosis</label><input type="text" id="tpl-icd" placeholder="e.g. K21.9 - GERD" value="I20.9 - Angina Pectoris" /></div>
+                <div class="form-group"><label>Standard History & Plan Template</label><textarea id="tpl-body" rows="4" style="width:100%; border:1px solid #cbd5e1; border-radius:8px; padding:8px; font-size:13px;">Patient presents with substernal chest discomfort on exertion. ECG ordered stat. Troponin-I and 2D Echo scheduled.</textarea></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeModal('modal-new-template')">Cancel</button>
+                <button class="btn-primary-action" onclick="closeModal('modal-new-template'); showToast('New Clinical Template .CHESTPAIN-STAT Saved Successfully!')">Save Template</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: NEW PURCHASE ORDER -->
+    <div id="modal-new-po" class="modal-overlay">
+        <div class="modal-box" style="max-width:550px;">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-cart-plus"></i> Create Vendor Purchase Order (PO)</h3>
+                <button class="modal-close" onclick="closeModal('modal-new-po')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group"><label>Approved Medical Supplier / Vendor</label>
+                    <select id="po-vendor" style="width:100%; padding:8px; border:1px solid #cbd5e1; border-radius:8px; font-size:13px;">
+                        <option>Metro Pharma Supplies Inc.</option>
+                        <option>Allied Biomedical Instruments Corp</option>
+                        <option>Global SurgiTech Solutions</option>
+                    </select>
+                </div>
+                <div class="form-group"><label>Requisition Items & Quantities</label><textarea rows="3" style="width:100%; border:1px solid #cbd5e1; border-radius:8px; padding:8px; font-size:13px;">1. Amoxicillin 500mg Caps (10 Boxes x 100s)&#10;2. Sterile IV Cannula 20G (5 Boxes x 50s)</textarea></div>
+                <div class="form-group"><label>Estimated Purchase Order Total (PHP)</label><input type="text" value="₱ 58,200.00" /></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeModal('modal-new-po')">Cancel</button>
+                <button class="btn-primary-action" onclick="closeModal('modal-new-po'); showToast('Purchase Order PO-2026-090 Created & Dispatched to Supplier')">Create & Send PO</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: NEW JOURNAL VOUCHER -->
+    <div id="modal-new-voucher" class="modal-overlay">
+        <div class="modal-box" style="max-width:550px;">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-calculator"></i> New Accounting Journal Voucher Entry</h3>
+                <button class="modal-close" onclick="closeModal('modal-new-voucher')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group"><label>Transaction Description / Narration</label><input type="text" value="Direct Cash Settlement for Operating Room Supplies" /></div>
+                <div class="grid-2col">
+                    <div class="form-group"><label>Debit Account</label><input type="text" value="5020 - Medical Supplies Exp" /></div>
+                    <div class="form-group"><label>Credit Account</label><input type="text" value="1010 - Cash on Hand" /></div>
+                </div>
+                <div class="form-group"><label>Voucher Amount (PHP)</label><input type="text" value="₱ 14,500.00" /></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeModal('modal-new-voucher')">Cancel</button>
+                <button class="btn-primary-action" onclick="closeModal('modal-new-voucher'); showToast('Journal Voucher JV-2026-044 Posted into General Ledger')">Post Voucher</button>
+            </div>
+        </div>
+    </div>
+
     <!-- TOAST NOTIFICATION -->
     <div id="toast-notification" class="toast-notify">
         <i class="fa-solid fa-circle-check" style="color: var(--brand-cyan);"></i>
@@ -3554,6 +4231,70 @@
             }
         }
     
+
+        
+        // Generic Table Search Filter
+        function filterGenericTable(input, tableId) {
+            const query = input.value.toLowerCase();
+            const table = document.getElementById(tableId);
+            if (!table) return;
+            const rows = table.querySelectorAll('tbody tr');
+            rows.forEach(row => {
+                const text = row.innerText.toLowerCase();
+                row.style.display = text.includes(query) ? '' : 'none';
+            });
+        }
+
+        // Patient Table Search Filter
+        function filterPatientTable(input) {
+            filterGenericTable(input, 'patient-master-table');
+        }
+
+        // Clinical Macro Loader
+        function loadMacroToEMR(macroType) {
+            const historyArea = document.getElementById('clinical-history-input');
+            const diagSelect = document.getElementById('emr-diagnosis-select');
+            
+            if (macroType === 'HTN') {
+                if (historyArea) historyArea.value = "Patient presents for routine hypertension follow-up. Reports good compliance with Amlodipine 5mg OD. Denies chest pain, palpitation, orthopnea, or pedal edema. Home BP logs average 125-135/80-85 mmHg.";
+                if (diagSelect) diagSelect.value = "I10 - Essential (primary) hypertension";
+            } else if (macroType === 'DM') {
+                if (historyArea) historyArea.value = "Patient presents for 3-month Type 2 Diabetes Mellitus review. Fasting blood sugar monitored weekly, averaging 115-130 mg/dL. No polyuria, polydipsia, or peripheral numbness. Dietary compliance maintained.";
+                if (diagSelect) diagSelect.value = "E11.9 - Type 2 diabetes mellitus without complications";
+            } else if (macroType === 'ASTHMA') {
+                if (historyArea) historyArea.value = "Patient presents with acute onset shortness of breath and wheezing triggered by dust exposure. Responded moderately to initial Salbutamol nebulization.";
+                if (diagSelect) diagSelect.value = "J45.909 - Unspecified asthma, uncomplicated";
+            }
+
+            switchTab('view-clinical', null);
+            showToast(`Clinical Macro .${macroType} loaded into patient consultation note!`);
+        }
+
+        // Attach Prescription Set to Chart
+        function attachRxSetToChart(rxSetName) {
+            const rxTable = document.querySelector('#prescribed-meds-table tbody');
+            if (rxTable) {
+                if (rxSetName === 'Triple Therapy') {
+                    rxTable.innerHTML += `
+                        <tr><td>Omeprazole 20mg Cap</td><td>1 Cap BID</td><td>14 Days</td><td>PO Before Meals</td><td><button class="btn-secondary" style="padding:2px 6px; font-size:10px;" onclick="this.closest('tr').remove()">&times;</button></td></tr>
+                        <tr><td>Amoxicillin 500mg Cap</td><td>1 Cap BID</td><td>14 Days</td><td>PO After Meals</td><td><button class="btn-secondary" style="padding:2px 6px; font-size:10px;" onclick="this.closest('tr').remove()">&times;</button></td></tr>
+                        <tr><td>Clarithromycin 500mg Tab</td><td>1 Tab BID</td><td>14 Days</td><td>PO After Meals</td><td><button class="btn-secondary" style="padding:2px 6px; font-size:10px;" onclick="this.closest('tr').remove()">&times;</button></td></tr>
+                    `;
+                } else if (rxSetName === 'Pediatric URI') {
+                    rxTable.innerHTML += `
+                        <tr><td>Paracetamol 120mg/5mL Syrup</td><td>5 mL Q4H PRN</td><td>3 Days</td><td>PO for Fever</td><td><button class="btn-secondary" style="padding:2px 6px; font-size:10px;" onclick="this.closest('tr').remove()">&times;</button></td></tr>
+                        <tr><td>Saline Nasal Drops 0.65%</td><td>2 drops each nostril TID</td><td>5 Days</td><td>Intranasal</td><td><button class="btn-secondary" style="padding:2px 6px; font-size:10px;" onclick="this.closest('tr').remove()">&times;</button></td></tr>
+                    `;
+                } else {
+                    rxTable.innerHTML += `
+                        <tr><td>Celecoxib 200mg Cap</td><td>1 Cap OD</td><td>5 Days</td><td>PO After Meals</td><td><button class="btn-secondary" style="padding:2px 6px; font-size:10px;" onclick="this.closest('tr').remove()">&times;</button></td></tr>
+                        <tr><td>Tramadol 50mg Cap</td><td>1 Cap Q8H PRN Severe Pain</td><td>3 Days</td><td>PO</td><td><button class="btn-secondary" style="padding:2px 6px; font-size:10px;" onclick="this.closest('tr').remove()">&times;</button></td></tr>
+                    `;
+                }
+            }
+            switchTab('view-clinical', null);
+            showToast(`Prescription set '${rxSetName}' attached to active chart!`);
+        }
 
         function performSecureLogout(event) {
             if (event) {
