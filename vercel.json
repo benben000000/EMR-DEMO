@@ -7,15 +7,15 @@
     },
     {
       "source": "/dashboard",
-      "destination": "/api/index.py"
+      "destination": "/api"
     },
     {
       "source": "/Account/Login",
-      "destination": "/api/index.py"
+      "destination": "/api"
     },
     {
       "source": "/(.*)",
-      "destination": "/api/index.py"
+      "destination": "/api"
     }
   ]
 }
