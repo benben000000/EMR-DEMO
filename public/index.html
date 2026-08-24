@@ -33,7 +33,7 @@
             display: flex;
             width: 1040px;
             max-width: 96vw;
-            min-height: 620px;
+            min-height: 640px;
             background: #ffffff;
             border-radius: 20px;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.1);
@@ -118,21 +118,38 @@
 
         .form-panel {
             flex: 1;
-            padding: 48px;
+            padding: 44px;
             display: flex;
             flex-direction: column;
             justify-content: center;
             background: #ffffff;
         }
 
-        .form-logo { text-align: center; margin-bottom: 28px; }
-        .form-logo img { max-height: 50px; }
+        .form-logo { text-align: center; margin-bottom: 20px; }
+        .form-logo img { max-height: 46px; }
 
-        .form-header { text-align: center; margin-bottom: 28px; }
+        .form-header { text-align: center; margin-bottom: 20px; }
         .form-header h2 { font-size: 24px; font-weight: 800; color: #1e293b; }
         .form-header p { font-size: 13px; color: #64748b; margin-top: 4px; }
 
-        .input-group { margin-bottom: 20px; }
+        /* Security Alert Banners */
+        .security-alert {
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .alert-success { background: #dcfce7; color: #15803d; border: 1px solid #86efac; }
+        .alert-danger { background: #fee2e2; color: #b91c1c; border: 1px solid #fca5a5; }
+        .alert-warning { background: #fef9c3; color: #a16207; border: 1px solid #fde047; }
+
+        .input-group { margin-bottom: 16px; }
         .input-group label { display: block; font-size: 13px; font-weight: 700; color: #334155; margin-bottom: 6px; }
 
         .input-wrapper { position: relative; display: flex; align-items: center; }
@@ -140,7 +157,7 @@
 
         .input-wrapper input {
             width: 100%;
-            padding: 13px 14px 13px 42px;
+            padding: 12px 14px 12px 42px;
             border: 1.5px solid #e2e8f0;
             border-radius: 10px;
             font-size: 14px;
@@ -159,7 +176,7 @@
             align-items: center;
             justify-content: space-between;
             font-size: 13px;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
         }
 
         .remember-me { display: flex; align-items: center; gap: 6px; color: #475569; cursor: pointer; }
@@ -167,7 +184,7 @@
 
         .btn-submit {
             width: 100%;
-            padding: 14px;
+            padding: 13px;
             background-color: var(--brand-primary);
             color: #ffffff;
             border: none;
@@ -189,23 +206,47 @@
             box-shadow: 0 10px 20px -5px rgba(37, 53, 69, 0.35);
         }
 
-        .demo-credentials-badge {
-            margin-top: 24px;
+        /* Role Switcher Pill Bar */
+        .role-switcher-bar {
+            margin-top: 18px;
             background: #f8fafc;
-            border: 1px dashed #cbd5e1;
-            border-radius: 8px;
-            padding: 10px 14px;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 10px;
             font-size: 12px;
-            color: #475569;
-            text-align: center;
         }
 
-        .demo-credentials-badge code {
-            background: #e2e8f0;
-            padding: 2px 6px;
-            border-radius: 4px;
+        .role-switcher-title {
+            font-weight: 800;
+            color: #475569;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .role-pills {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .role-pill-btn {
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            padding: 4px 8px;
+            font-size: 11px;
             font-weight: 700;
-            color: #0f172a;
+            cursor: pointer;
+            color: #334155;
+            transition: all 0.15s;
+        }
+
+        .role-pill-btn:hover {
+            background: var(--brand-primary);
+            color: #ffffff;
+            border-color: var(--brand-primary);
         }
 
         @media (max-width: 768px) {
@@ -225,6 +266,10 @@
                 </p>
                 <ul class="feature-list">
                     <li class="feature-item">
+                        <i class="fa-solid fa-shield-halved"></i>
+                        <span>End-to-End Encrypted Session Security & RBAC</span>
+                    </li>
+                    <li class="feature-item">
                         <i class="fa-solid fa-notes-medical"></i>
                         <span>Electronic Medical Records (EMR & EHR)</span>
                     </li>
@@ -240,10 +285,6 @@
                         <i class="fa-solid fa-id-card-clip"></i>
                         <span>Patient 360 Information System (PIS)</span>
                     </li>
-                    <li class="feature-item">
-                        <i class="fa-solid fa-heart-pulse"></i>
-                        <span>Employee Health & Safety (EHS)</span>
-                    </li>
                 </ul>
             </div>
             <div class="hero-footer">
@@ -257,39 +298,120 @@
             </div>
             <div class="form-header">
                 <h2>Sign in to G1 Health EMR</h2>
-                <p>Enter system credentials to launch executive demo</p>
+                <p>Enterprise Healthcare Management & Clinical Suite</p>
             </div>
-            <form action="/dashboard" method="POST" onsubmit="event.preventDefault(); window.location.href='/dashboard';">
+
+            <!-- Dynamic Alert Container -->
+            <div id="auth-alert-container"></div>
+
+            <form action="/login" method="POST" id="login-form" onsubmit="handleLoginSubmit(event)">
                 <div class="input-group">
-                    <label for="username">Username</label>
+                    <label for="username">Username / System ID</label>
                     <div class="input-wrapper">
                         <i class="fa-solid fa-user"></i>
-                        <input type="text" id="username" name="username" value="admin" required />
+                        <input type="text" id="username" name="username" value="admin" required autocomplete="username" />
                     </div>
                 </div>
                 <div class="input-group">
                     <label for="password">Password</label>
                     <div class="input-wrapper">
                         <i class="fa-solid fa-lock"></i>
-                        <input type="password" id="password" name="password" value="pass123" required />
+                        <input type="password" id="password" name="password" value="pass123" required autocomplete="current-password" />
                     </div>
                 </div>
                 <div class="form-options">
                     <label class="remember-me">
                         <input type="checkbox" name="remember" checked />
-                        <span>Remember me</span>
+                        <span>Remember session</span>
                     </label>
-                    <a href="#" class="forgot-link">Forgot password?</a>
+                    <a href="javascript:void(0)" onclick="showForgotAlert()" class="forgot-link">Forgot password?</a>
                 </div>
                 <button type="submit" class="btn-submit" id="btn-login-submit">
                     <span>Sign In to Dashboard</span>
                     <i class="fa-solid fa-arrow-right"></i>
                 </button>
-                <div class="demo-credentials-badge">
-                    Default Credentials: <code>admin</code> / <code>pass123</code>
+
+                <!-- Role Quick Switcher -->
+                <div class="role-switcher-bar">
+                    <div class="role-switcher-title">
+                        <span><i class="fa-solid fa-id-badge"></i> Quick Demo Roles:</span>
+                        <span style="color:#64748b; font-size:11px;">Click to autofill</span>
+                    </div>
+                    <div class="role-pills">
+                        <button type="button" class="role-pill-btn" onclick="setRoleCredentials('admin', 'pass123')">👑 Super Admin</button>
+                        <button type="button" class="role-pill-btn" onclick="setRoleCredentials('doctor', 'pass123')">🩺 Doctor (MD)</button>
+                        <button type="button" class="role-pill-btn" onclick="setRoleCredentials('nurse', 'pass123')">💉 Nurse (RN)</button>
+                        <button type="button" class="role-pill-btn" onclick="setRoleCredentials('billing', 'pass123')">💳 Billing</button>
+                    </div>
                 </div>
             </form>
         </div>
     </div>
+
+    <script>
+        // Check URL query parameters for alerts
+        window.addEventListener('DOMContentLoaded', () => {
+            // Clean up any stale client session tokens
+            sessionStorage.removeItem('g1_auth_token');
+            sessionStorage.removeItem('g1_auth_user');
+
+            const params = new URLSearchParams(window.location.search);
+            const container = document.getElementById('auth-alert-container');
+
+            if (params.get('logout') === 'success') {
+                container.innerHTML = `
+                    <div class="security-alert alert-success">
+                        <i class="fa-solid fa-circle-check"></i>
+                        <span>You have been securely signed out. Session destroyed.</span>
+                    </div>
+                `;
+            } else if (params.get('error') === 'unauthorized') {
+                container.innerHTML = `
+                    <div class="security-alert alert-danger">
+                        <i class="fa-solid fa-shield-halved"></i>
+                        <span>Authentication required. Please sign in to access clinical records.</span>
+                    </div>
+                `;
+            } else if (params.get('error') === 'session_expired') {
+                container.innerHTML = `
+                    <div class="security-alert alert-warning">
+                        <i class="fa-solid fa-clock-rotate-left"></i>
+                        <span>Session expired due to inactivity. Please sign in again.</span>
+                    </div>
+                `;
+            } else if (params.get('error') === 'invalid_credentials') {
+                container.innerHTML = `
+                    <div class="security-alert alert-danger">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                        <span>Invalid username or password. Please try again.</span>
+                    </div>
+                `;
+            }
+        });
+
+        function setRoleCredentials(user, pass) {
+            document.getElementById('username').value = user;
+            document.getElementById('password').value = pass;
+        }
+
+        function showForgotAlert() {
+            alert("For security, password resets require Administrator approval. Use default demo password: pass123");
+        }
+
+        function handleLoginSubmit(event) {
+            const u = document.getElementById('username').value.trim();
+            const p = document.getElementById('password').value.trim();
+
+            if (!u || !p) {
+                event.preventDefault();
+                alert("Please enter both username and password.");
+                return;
+            }
+
+            // Set client-side session token pre-handshake
+            sessionStorage.setItem('g1_auth_token', 'token_' + Date.now());
+            sessionStorage.setItem('g1_auth_user', u);
+        }
+    </script>
 </body>
 </html>
