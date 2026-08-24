@@ -36,10 +36,14 @@ SESSION_EXPIRY_SECONDS = 86400 # 24 Hours
 
 # Valid User Accounts & Roles
 USERS_DB = {
-    'admin': {'password': 'pass123', 'name': 'Administrator', 'role': 'Super Admin', 'avatar': 'AD'},
-    'doctor': {'password': 'pass123', 'name': 'Dr. Roberto Tan, MD', 'role': 'Attending Cardiologist', 'avatar': 'RT'},
-    'nurse': {'password': 'pass123', 'name': 'Nurse Clara Dizon', 'role': 'Charge Nurse', 'avatar': 'CD'},
-    'billing': {'password': 'pass123', 'name': 'Mark Mendoza', 'role': 'Billing Officer', 'avatar': 'MM'}
+    'admin': {'password': 'pass123', 'name': 'Administrator', 'role': 'Super Admin &bull; Full Access', 'role_key': 'admin', 'avatar': 'AD', 'badge': '👑 Super Admin'},
+    'doctor': {'password': 'pass123', 'name': 'Dr. Roberto Tan, MD', 'role': 'Attending Cardiologist &bull; Clinical Desk', 'role_key': 'doctor', 'avatar': 'RT', 'badge': '🩺 Doctor (MD)'},
+    'nurse': {'password': 'pass123', 'name': 'Nurse Clara Dizon', 'role': 'Charge Nurse &bull; Ward Station', 'role_key': 'nurse', 'avatar': 'CD', 'badge': '💉 Nurse (RN)'},
+    'accountant': {'password': 'pass123', 'name': 'Elena Villar, CPA', 'role': 'Chief Accountant &bull; Finance Dept', 'role_key': 'accountant', 'avatar': 'EV', 'badge': '💰 Accountant'},
+    'billing': {'password': 'pass123', 'name': 'Mark Mendoza', 'role': 'Billing & Claims Officer &bull; Cashier', 'role_key': 'billing', 'avatar': 'MM', 'badge': '💳 Billing'},
+    'pharmacy': {'password': 'pass123', 'name': 'Pharm. Leo Santos, RPh', 'role': 'Chief Pharmacist &bull; Dispensary', 'role_key': 'pharmacy', 'avatar': 'LS', 'badge': '💊 Pharmacist'},
+    'labtech': {'password': 'pass123', 'name': 'Sarah Cruz, RMT', 'role': 'Diagnostic & Imaging Technologist', 'role_key': 'labtech', 'avatar': 'SC', 'badge': '🔬 Lab Tech'},
+    'reception': {'password': 'pass123', 'name': 'Joy Pascual', 'role': 'Front Desk & Admissions Officer', 'role_key': 'reception', 'avatar': 'JP', 'badge': '📋 Reception'}
 }
 
 # Audit Trail Log
@@ -425,11 +429,15 @@ LOGIN_HTML = """<!DOCTYPE html>
                         <span><i class="fa-solid fa-id-badge"></i> Quick Demo Roles:</span>
                         <span style="color:#64748b; font-size:11px;">Click to autofill</span>
                     </div>
-                    <div class="role-pills">
-                        <button type="button" class="role-pill-btn" onclick="setRoleCredentials('admin', 'pass123')">👑 Super Admin</button>
-                        <button type="button" class="role-pill-btn" onclick="setRoleCredentials('doctor', 'pass123')">🩺 Doctor (MD)</button>
-                        <button type="button" class="role-pill-btn" onclick="setRoleCredentials('nurse', 'pass123')">💉 Nurse (RN)</button>
+                    <div class="role-pills" style="display:grid; grid-template-columns:repeat(4, 1fr); gap:6px;">
+                        <button type="button" class="role-pill-btn" onclick="setRoleCredentials('admin', 'pass123')">👑 Admin</button>
+                        <button type="button" class="role-pill-btn" onclick="setRoleCredentials('doctor', 'pass123')">🩺 Doctor</button>
+                        <button type="button" class="role-pill-btn" onclick="setRoleCredentials('nurse', 'pass123')">💉 Nurse</button>
+                        <button type="button" class="role-pill-btn" onclick="setRoleCredentials('accountant', 'pass123')">💰 Accountant</button>
                         <button type="button" class="role-pill-btn" onclick="setRoleCredentials('billing', 'pass123')">💳 Billing</button>
+                        <button type="button" class="role-pill-btn" onclick="setRoleCredentials('pharmacy', 'pass123')">💊 Pharmacy</button>
+                        <button type="button" class="role-pill-btn" onclick="setRoleCredentials('labtech', 'pass123')">🔬 Lab Tech</button>
+                        <button type="button" class="role-pill-btn" onclick="setRoleCredentials('reception', 'pass123')">📋 Reception</button>
                     </div>
                 </div>
             </form>
@@ -438,10 +446,14 @@ LOGIN_HTML = """<!DOCTYPE html>
 
     <script>
         const VALID_USERS = {
-            'admin': { pass: 'pass123', name: 'Administrator', role: 'Super Admin &bull; Session Secure', avatar: 'AD' },
-            'doctor': { pass: 'pass123', name: 'Dr. Roberto Tan, MD', role: 'Attending Cardiologist &bull; Active Desk', avatar: 'RT' },
-            'nurse': { pass: 'pass123', name: 'Nurse Clara Dizon', role: 'Charge Nurse &bull; Inpatient Station', avatar: 'CD' },
-            'billing': { pass: 'pass123', name: 'Mark Mendoza', role: 'Billing Officer &bull; Finance Dept', avatar: 'MM' }
+            'admin': { pass: 'pass123', name: 'Administrator', role: 'Super Admin &bull; Full Access', role_key: 'admin', avatar: 'AD', badge: '👑 Super Admin' },
+            'doctor': { pass: 'pass123', name: 'Dr. Roberto Tan, MD', role: 'Attending Cardiologist &bull; Clinical Desk', role_key: 'doctor', avatar: 'RT', badge: '🩺 Doctor (MD)' },
+            'nurse': { pass: 'pass123', name: 'Nurse Clara Dizon', role: 'Charge Nurse &bull; Ward Station', role_key: 'nurse', avatar: 'CD', badge: '💉 Nurse (RN)' },
+            'accountant': { pass: 'pass123', name: 'Elena Villar, CPA', role: 'Chief Accountant &bull; Finance Dept', role_key: 'accountant', avatar: 'EV', badge: '💰 Accountant' },
+            'billing': { pass: 'pass123', name: 'Mark Mendoza', role: 'Billing & Claims Officer &bull; Cashier', role_key: 'billing', avatar: 'MM', badge: '💳 Billing' },
+            'pharmacy': { pass: 'pass123', name: 'Pharm. Leo Santos, RPh', role: 'Chief Pharmacist &bull; Dispensary', role_key: 'pharmacy', avatar: 'LS', badge: '💊 Pharmacist' },
+            'labtech': { pass: 'pass123', name: 'Sarah Cruz, RMT', role: 'Diagnostic & Imaging Technologist', role_key: 'labtech', avatar: 'SC', badge: '🔬 Lab Tech' },
+            'reception': { pass: 'pass123', name: 'Joy Pascual', role: 'Front Desk & Admissions Officer', role_key: 'reception', avatar: 'JP', badge: '📋 Reception' }
         };
 
         function handleLoginSubmit(event) {
@@ -1600,65 +1612,116 @@ APP_HTML = """<!DOCTYPE html>
         <div class="sidebar-brand">
             <img src="/Personalization/logos/logo-main.png" alt="G1 Health EMR" />
         </div>
+        <!-- Sidebar Search Bar matching screenshot -->
+        <div style="padding: 12px 16px 8px; background: rgba(0,0,0,0.15);">
+            <div style="position:relative; width:100%;">
+                <input type="text" id="sidebar-menu-search" placeholder="Search Menu Items..." onkeyup="filterSidebarMenu(this)" style="width:100%; background:rgba(255,255,255,0.12); border:1.5px solid rgba(255,255,255,0.25); border-radius:20px; padding:7px 32px 7px 14px; font-size:12.5px; color:#ffffff; outline:none; transition:all 0.2s;" />
+                <i class="fa-solid fa-magnifying-glass" style="position:absolute; right:12px; top:50%; transform:translateY(-50%); color:rgba(255,255,255,0.7); font-size:12px;"></i>
+            </div>
+        </div>
+
         <div class="nav-menu-wrapper">
-            <ul class="nav-menu">
-                <li class="nav-section-title">Core Operations</li>
-                <li class="nav-item active" data-target="view-dashboard">
+            <ul class="nav-menu" id="sidebar-nav-list">
+                <li class="nav-item active" data-target="view-dashboard" data-module="dashboard">
                     <a onclick="switchTab('view-dashboard', this)"><i class="fa-solid fa-chart-pie"></i><span>Dashboard</span></a>
                 </li>
-                <li class="nav-item" data-target="view-patient-reg">
-                    <a onclick="switchTab('view-patient-reg', this)"><i class="fa-solid fa-user-plus"></i><span>Patient Registration</span></a>
-                </li>
-                <li class="nav-item" data-target="view-appointments">
-                    <a onclick="switchTab('view-appointments', this)"><i class="fa-solid fa-calendar-check"></i><span>Appointments</span></a>
-                </li>
-                <li class="nav-item" data-target="view-adt">
-                    <a onclick="switchTab('view-adt', this)"><i class="fa-solid fa-bed"></i><span>Inpatient & Beds (ADT)</span></a>
-                </li>
-                <li class="nav-item" data-target="view-emergency">
-                    <a onclick="switchTab('view-emergency', this)"><i class="fa-solid fa-truck-medical"></i><span>Emergency (ER)</span></a>
-                </li>
 
-                <li class="nav-section-title">Clinical & Diagnostic</li>
-                <li class="nav-item" data-target="view-clinical">
-                    <a onclick="switchTab('view-clinical', this)"><i class="fa-solid fa-stethoscope"></i><span>Clinical EMR (Doctor)</span></a>
+                <!-- Legacy HMIS & G1 Modules matching Danphe + Cloud Suite -->
+                <li class="nav-item" data-target="view-clinical" data-module="clinical">
+                    <a onclick="switchTab('view-clinical', this)"><i class="fa-solid fa-stethoscope"></i><span>Clinical</span></a>
                 </li>
-                <li class="nav-item" data-target="view-nursing">
-                    <a onclick="switchTab('view-nursing', this)"><i class="fa-solid fa-user-nurse"></i><span>Nursing Station</span></a>
+                <li class="nav-item" data-target="view-clinicalsettings" data-module="clinicalsettings">
+                    <a onclick="switchTab('view-clinicalsettings', this)"><i class="fa-solid fa-gear"></i><span>ClinicalSettings</span></a>
                 </li>
-                <li class="nav-item" data-target="view-ot">
-                    <a onclick="switchTab('view-ot', this)"><i class="fa-solid fa-scalpel"></i><span>Operation Theater (OT)</span></a>
+                <li class="nav-item" data-target="view-appointments" data-module="appointment">
+                    <a onclick="switchTab('view-appointments', this)"><i class="fa-solid fa-bell"></i><span>Appointment</span></a>
                 </li>
-                <li class="nav-item" data-target="view-laboratory">
-                    <a onclick="switchTab('view-laboratory', this)"><i class="fa-solid fa-flask-vial"></i><span>Laboratory</span></a>
+                <li class="nav-item" data-target="view-patient-reg" data-module="patient">
+                    <a onclick="switchTab('view-patient-reg', this)"><i class="fa-solid fa-user"></i><span>Patient</span></a>
                 </li>
-                <li class="nav-item" data-target="view-radiology">
-                    <a onclick="switchTab('view-radiology', this)"><i class="fa-solid fa-x-ray"></i><span>Radiology & PACS</span></a>
+                <li class="nav-item" data-target="view-procurement" data-module="procurement">
+                    <a onclick="switchTab('view-procurement', this)"><i class="fa-solid fa-clipboard-list"></i><span>Procurement</span></a>
                 </li>
-                <li class="nav-item" data-target="view-pharmacy">
-                    <a onclick="switchTab('view-pharmacy', this)"><i class="fa-solid fa-pills"></i><span>Pharmacy & Inventory</span></a>
+                <li class="nav-item" data-target="view-billing" data-module="billing">
+                    <a onclick="switchTab('view-billing', this)"><i class="fa-solid fa-file-invoice-dollar"></i><span>Billing</span></a>
                 </li>
-
-                <li class="nav-section-title">Smart Cloud Extensions</li>
-                <li class="nav-item" data-target="view-aicrm">
+                <li class="nav-item" data-target="view-claimmgmt" data-module="claimmgmt">
+                    <a onclick="switchTab('view-claimmgmt', this)"><i class="fa-solid fa-file-shield"></i><span>ClaimMgmt</span></a>
+                </li>
+                <li class="nav-item" data-target="view-utilities" data-module="utilities">
+                    <a onclick="switchTab('view-utilities', this)"><i class="fa-solid fa-wrench"></i><span>Utilities</span></a>
+                </li>
+                <li class="nav-item" data-target="view-mktreferral" data-module="mktreferral">
+                    <a onclick="switchTab('view-mktreferral', this)"><i class="fa-solid fa-diagram-project"></i><span>MktReferral</span></a>
+                </li>
+                <li class="nav-item" data-target="view-reports" data-module="reports">
+                    <a onclick="switchTab('view-reports', this)"><i class="fa-solid fa-chart-line"></i><span>Reports</span></a>
+                </li>
+                <li class="nav-item" data-target="view-laboratory" data-module="laboratory">
+                    <a onclick="switchTab('view-laboratory', this)"><i class="fa-solid fa-flask"></i><span>Laboratory</span></a>
+                </li>
+                <li class="nav-item" data-target="view-radiology" data-module="radiology">
+                    <a onclick="switchTab('view-radiology', this)"><i class="fa-solid fa-x-ray"></i><span>Radiology</span></a>
+                </li>
+                <li class="nav-item" data-target="view-adt" data-module="adt">
+                    <a onclick="switchTab('view-adt', this)"><i class="fa-solid fa-bed"></i><span>ADT (Inpatient)</span></a>
+                </li>
+                <li class="nav-item" data-target="view-vaccination" data-module="vaccination">
+                    <a onclick="switchTab('view-vaccination', this)"><i class="fa-solid fa-syringe"></i><span>Vaccination</span></a>
+                </li>
+                <li class="nav-item" data-target="view-queue" data-module="queuemngmt">
+                    <a onclick="switchTab('view-queue', this)"><i class="fa-solid fa-users"></i><span>QueueMngmt</span></a>
+                </li>
+                <li class="nav-item" data-target="view-pharmacy" data-module="inventory">
+                    <a onclick="switchTab('view-pharmacy', this)"><i class="fa-solid fa-boxes-stacked"></i><span>Inventory</span></a>
+                </li>
+                <li class="nav-item" data-target="view-accounting" data-module="accounting">
+                    <a onclick="switchTab('view-accounting', this)"><i class="fa-solid fa-calculator"></i><span>Accounting</span></a>
+                </li>
+                <li class="nav-item" data-target="view-emergency" data-module="emergency">
+                    <a onclick="switchTab('view-emergency', this)"><i class="fa-solid fa-truck-medical"></i><span>Emergency</span></a>
+                </li>
+                <li class="nav-item" data-target="view-helpdesk" data-module="helpdesk">
+                    <a onclick="switchTab('view-helpdesk', this)"><i class="fa-solid fa-circle-question"></i><span>Helpdesk</span></a>
+                </li>
+                <li class="nav-item" data-target="view-nursing" data-module="nursing">
+                    <a onclick="switchTab('view-nursing', this)"><i class="fa-solid fa-user-nurse"></i><span>Nursing</span></a>
+                </li>
+                <li class="nav-item" data-target="view-medicalrecords" data-module="medicalrecords">
+                    <a onclick="switchTab('view-medicalrecords', this)"><i class="fa-solid fa-book-medical"></i><span>MedicalRecords</span></a>
+                </li>
+                <li class="nav-item" data-target="view-whitelabel" data-module="settings">
+                    <a onclick="switchTab('view-whitelabel', this)"><i class="fa-solid fa-sliders"></i><span>Settings</span></a>
+                </li>
+                <li class="nav-item" data-target="view-systemadmin" data-module="systemadmin">
+                    <a onclick="switchTab('view-systemadmin', this)"><i class="fa-solid fa-user-shield"></i><span>SystemAdmin</span></a>
+                </li>
+                <li class="nav-item" data-target="view-pharmacy" data-module="pharmacy">
+                    <a onclick="switchTab('view-pharmacy', this)"><i class="fa-solid fa-pills"></i><span>Pharmacy</span></a>
+                </li>
+                <li class="nav-item" data-target="view-substore" data-module="substore">
+                    <a onclick="switchTab('view-substore', this)"><i class="fa-solid fa-store"></i><span>SubStore</span></a>
+                </li>
+                <li class="nav-item" data-target="view-cssd" data-module="cssd">
+                    <a onclick="switchTab('view-cssd', this)"><i class="fa-solid fa-hand-sparkles"></i><span>CSSD</span></a>
+                </li>
+                <li class="nav-item" data-target="view-incentive" data-module="incentive">
+                    <a onclick="switchTab('view-incentive', this)"><i class="fa-solid fa-hand-holding-dollar"></i><span>Incentive</span></a>
+                </li>
+                <li class="nav-item" data-target="view-verification" data-module="verification">
+                    <a onclick="switchTab('view-verification', this)"><i class="fa-solid fa-clipboard-check"></i><span>Verification</span></a>
+                </li>
+                <li class="nav-item" data-target="view-fixedassets" data-module="fixedassets">
+                    <a onclick="switchTab('view-fixedassets', this)"><i class="fa-solid fa-hospital-user"></i><span>FixedAssets</span></a>
+                </li>
+                <li class="nav-item" data-target="view-aicrm" data-module="aicrm">
                     <a onclick="switchTab('view-aicrm', this)"><i class="fa-solid fa-robot"></i><span>AI CRM & Leads</span><span class="badge-new">NEW</span></a>
                 </li>
-                <li class="nav-item" data-target="view-patient360">
+                <li class="nav-item" data-target="view-patient360" data-module="patient360">
                     <a onclick="switchTab('view-patient360', this)"><i class="fa-solid fa-id-card-clip"></i><span>Patient 360 (PIS)</span><span class="badge-new">NEW</span></a>
                 </li>
-                <li class="nav-item" data-target="view-ehs">
-                    <a onclick="switchTab('view-ehs', this)"><i class="fa-solid fa-heart-pulse"></i><span>Employee Health (EHS)</span><span class="badge-new">NEW</span></a>
-                </li>
-                <li class="nav-item" data-target="view-telehealth">
-                    <a onclick="switchTab('view-telehealth', this)"><i class="fa-solid fa-video"></i><span>Telehealth Consult</span><span class="badge-new">NEW</span></a>
-                </li>
-                
-                <li class="nav-section-title">Finance & Security</li>
-                <li class="nav-item" data-target="view-billing">
-                    <a onclick="switchTab('view-billing', this)"><i class="fa-solid fa-file-invoice-dollar"></i><span>Billing & Invoicing</span></a>
-                </li>
-                <li class="nav-item" data-target="view-whitelabel">
-                    <a onclick="switchTab('view-whitelabel', this)"><i class="fa-solid fa-shield-halved"></i><span>Security & Settings</span></a>
+                <li class="nav-item" data-target="view-ehs" data-module="ehs">
+                    <a onclick="switchTab('view-ehs', this)"><i class="fa-solid fa-heart-pulse"></i><span>Employee Health</span><span class="badge-new">NEW</span></a>
                 </li>
             </ul>
         </div>
@@ -1695,12 +1758,22 @@ APP_HTML = """<!DOCTYPE html>
                 <input type="text" class="global-search-input" placeholder="Quick Search Patient..." onkeyup="handleGlobalPatientSearch(this)" />
             </div>
 
+            <!-- Department Role Switcher Pill -->
+            <div style="background:rgba(0,0,0,0.3); border:1px solid rgba(0,255,161,0.35); border-radius:8px; padding:4px 10px; display:flex; align-items:center; gap:8px; cursor:pointer;" onclick="openModal('modal-switch-role')">
+                <i class="fa-solid fa-id-badge" style="color:var(--brand-cyan);"></i>
+                <div>
+                    <div style="font-size:10px; color:#cbd5e1; text-transform:uppercase; font-weight:800;">Department Workspace:</div>
+                    <div style="font-size:12.5px; font-weight:800; color:#fff;" id="header-user-badge">👑 Super Admin</div>
+                </div>
+                <i class="fa-solid fa-chevron-down" style="font-size:10px; color:#cbd5e1; margin-left:4px;"></i>
+            </div>
+
             <!-- User Profile & Secure Sign Out -->
             <div class="user-profile">
                 <div class="user-avatar" id="header-user-avatar">AD</div>
                 <div>
                     <div style="font-size: 13px; font-weight: 700;" id="header-user-name">Administrator</div>
-                    <div style="font-size: 11px; color: #cbd5e1;" id="header-user-role">Super Admin &bull; Session Secure</div>
+                    <div style="font-size: 11px; color: #cbd5e1;" id="header-user-role">Super Admin &bull; Full Access</div>
                 </div>
                 <a href="javascript:void(0)" class="btn-logout" onclick="performSecureLogout(event)">
                     <i class="fa-solid fa-right-from-bracket"></i>
@@ -3833,6 +3906,126 @@ APP_HTML = """<!DOCTYPE html>
 
     <script>
         // Secure Logout Handler
+        
+        // Departmental RBAC Access Permissions Map
+        const ROLE_PERMISSIONS = {
+            'admin': [
+                'dashboard', 'clinical', 'clinicalsettings', 'appointment', 'patient', 
+                'procurement', 'billing', 'claimmgmt', 'utilities', 'mktreferral', 
+                'reports', 'laboratory', 'radiology', 'adt', 'vaccination', 'queuemngmt', 
+                'inventory', 'accounting', 'emergency', 'helpdesk', 'nursing', 
+                'medicalrecords', 'settings', 'systemadmin', 'pharmacy', 'substore', 
+                'cssd', 'incentive', 'verification', 'fixedassets', 'aicrm', 'patient360', 'ehs'
+            ],
+            'doctor': [
+                'dashboard', 'clinical', 'clinicalsettings', 'appointment', 'patient', 
+                'emergency', 'adt', 'nursing', 'laboratory', 'radiology', 
+                'medicalrecords', 'vaccination', 'telehealth', 'aicrm', 'patient360', 
+                'incentive', 'reports'
+            ],
+            'nurse': [
+                'dashboard', 'nursing', 'adt', 'emergency', 'appointment', 
+                'patient', 'vaccination', 'queuemngmt', 'cssd', 'substore', 
+                'pharmacy', 'laboratory', 'patient360', 'ehs', 'helpdesk'
+            ],
+            'accountant': [
+                'dashboard', 'accounting', 'billing', 'claimmgmt', 'incentive', 
+                'fixedassets', 'procurement', 'reports', 'verification', 'utilities'
+            ],
+            'billing': [
+                'dashboard', 'billing', 'claimmgmt', 'patient', 'queuemngmt', 
+                'reports', 'helpdesk'
+            ],
+            'pharmacy': [
+                'dashboard', 'pharmacy', 'substore', 'inventory', 'procurement', 
+                'verification', 'reports'
+            ],
+            'labtech': [
+                'dashboard', 'laboratory', 'radiology', 'verification', 'patient', 
+                'patient360', 'reports'
+            ],
+            'reception': [
+                'dashboard', 'patient', 'appointment', 'queuemngmt', 'helpdesk', 
+                'billing', 'mktreferral', 'patient360'
+            ]
+        };
+
+        // Filter Sidebar Menu by Role
+        function applyRolePermissions() {
+            const roleKey = sessionStorage.getItem('g1_role_key') || 'admin';
+            const allowed = ROLE_PERMISSIONS[roleKey] || ROLE_PERMISSIONS['admin'];
+
+            document.querySelectorAll('#sidebar-nav-list .nav-item').forEach(item => {
+                const mod = item.getAttribute('data-module');
+                if (!mod || mod === 'dashboard' || allowed.includes(mod)) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+
+        // Real-time Sidebar Search ("Search Menu Items...")
+        function filterSidebarMenu(input) {
+            const query = input.value.toLowerCase().trim();
+            const roleKey = sessionStorage.getItem('g1_role_key') || 'admin';
+            const allowed = ROLE_PERMISSIONS[roleKey] || ROLE_PERMISSIONS['admin'];
+
+            document.querySelectorAll('#sidebar-nav-list .nav-item').forEach(item => {
+                const mod = item.getAttribute('data-module');
+                const title = item.innerText.toLowerCase();
+                const isAllowed = !mod || mod === 'dashboard' || allowed.includes(mod);
+
+                if (isAllowed && (query === '' || title.includes(query) || (mod && mod.includes(query)))) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+
+        // Instant 1-Click Role Switcher
+        function switchActiveRole(roleKey) {
+            const roleData = VALID_USERS[roleKey];
+            if (!roleData) return;
+
+            sessionStorage.setItem('g1_role_key', roleKey);
+            sessionStorage.setItem('g1_user', roleKey);
+            sessionStorage.setItem('g1_user_name', roleData.name);
+            sessionStorage.setItem('g1_user_role', roleData.role);
+            sessionStorage.setItem('g1_user_avatar', roleData.avatar);
+            sessionStorage.setItem('g1_user_badge', roleData.badge);
+
+            document.getElementById('header-user-name').textContent = roleData.name;
+            document.getElementById('header-user-role').innerHTML = roleData.role;
+            document.getElementById('header-user-avatar').textContent = roleData.avatar;
+            document.getElementById('header-user-badge').textContent = roleData.badge;
+
+            applyRolePermissions();
+            closeModal('modal-switch-role');
+
+            // Switch to appropriate default landing view for this role
+            if (roleKey === 'doctor') {
+                switchTab('view-clinical', document.querySelector('[data-target=view-clinical]'));
+            } else if (roleKey === 'nurse') {
+                switchTab('view-nursing', document.querySelector('[data-target=view-nursing]'));
+            } else if (roleKey === 'accountant') {
+                switchTab('view-accounting', document.querySelector('[data-target=view-accounting]'));
+            } else if (roleKey === 'billing') {
+                switchTab('view-billing', document.querySelector('[data-target=view-billing]'));
+            } else if (roleKey === 'pharmacy') {
+                switchTab('view-pharmacy', document.querySelector('[data-target=view-pharmacy]'));
+            } else if (roleKey === 'labtech') {
+                switchTab('view-laboratory', document.querySelector('[data-target=view-laboratory]'));
+            } else if (roleKey === 'reception') {
+                switchTab('view-patient-reg', document.querySelector('[data-target=view-patient-reg]'));
+            } else {
+                switchTab('view-dashboard', document.querySelector('[data-target=view-dashboard]'));
+            }
+
+            showToast(`Workspace switched to ${roleData.badge} (${roleData.name}). Tools filtered!`);
+        }
+
         function performSecureLogout(event) {
             if (event) {
                 event.preventDefault();
@@ -4297,6 +4490,7 @@ APP_HTML = """<!DOCTYPE html>
             activeWardFilter = wardKey;
             document.querySelectorAll('#ward-pills-list .filter-pill').forEach(btn => btn.classList.remove('active'));
             if (buttonEl) buttonEl.classList.add('active');
+            applyRolePermissions();
             renderBedMatrix();
         }
 
@@ -4358,6 +4552,7 @@ APP_HTML = """<!DOCTYPE html>
             bed.admittedDate = newPatient ? (bed.admittedDate || '24-Aug-2026') : '';
 
             closeModal('modal-manage-bed');
+            applyRolePermissions();
             renderBedMatrix();
             showToast(`Bed ${bed.id} updated successfully: ${bed.status.toUpperCase()} ${newPatient ? '(' + newPatient + ')' : '(Empty)'}!`);
         }
@@ -4372,6 +4567,7 @@ APP_HTML = """<!DOCTYPE html>
             bed.code = '';
             bed.doctor = '';
             bed.admittedDate = '';
+            applyRolePermissions();
             renderBedMatrix();
             showToast(`Patient ${dischargedPatient} discharged! Bed ${bed.id} marked under cleaning/disinfection.`);
         }
@@ -4381,6 +4577,7 @@ APP_HTML = """<!DOCTYPE html>
             const bed = BED_RECORDS.find(b => b.id === bedId);
             if (!bed) return;
             bed.status = 'available';
+            applyRolePermissions();
             renderBedMatrix();
             showToast(`Bed ${bed.id} disinfected & marked Available (Empty)!`);
         }
@@ -4414,6 +4611,7 @@ APP_HTML = """<!DOCTYPE html>
             });
 
             closeModal('modal-add-bed');
+            applyRolePermissions();
             renderBedMatrix();
             showToast(`New Bed ${code} added to ${ward}!`);
         }
@@ -4487,7 +4685,8 @@ APP_HTML = """<!DOCTYPE html>
             }
 
             if (viewId === 'view-adt') {
-                renderBedMatrix();
+                applyRolePermissions();
+            renderBedMatrix();
             } else if (viewId === 'view-emergency') {
                 renderERCases();
             }
@@ -4678,6 +4877,7 @@ APP_HTML = """<!DOCTYPE html>
                 document.getElementById('header-user-avatar').textContent = uAvatar;
             }
 
+            applyRolePermissions();
             renderBedMatrix();
             renderERCases();
         });

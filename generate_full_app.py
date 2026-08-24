@@ -1,7 +1,13 @@
-<!DOCTYPE html>
+import os
+
+def build_suite():
+    LOGIN_HTML = """<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sign in - G1 Health EMR (Global 1 OneTech)</title>
     <link rel="icon" href="/Personalization/logos/favicon.ico" />
@@ -31,9 +37,9 @@
 
         .auth-container {
             display: flex;
-            width: 1040px;
+            width: 1080px;
             max-width: 96vw;
-            min-height: 640px;
+            min-height: 660px;
             background: #ffffff;
             border-radius: 20px;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.1);
@@ -80,7 +86,7 @@
             font-size: 15px;
             color: #cbd5e1;
             line-height: 1.6;
-            margin-bottom: 30px;
+            margin-bottom: 26px;
         }
 
         .hero-tagline b { color: var(--brand-cyan); }
@@ -89,56 +95,55 @@
             list-style: none;
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 10px;
         }
 
         .feature-item {
             display: flex;
             align-items: center;
             gap: 12px;
-            font-size: 14px;
+            font-size: 13.5px;
             font-weight: 600;
             color: #f8fafc;
             background: rgba(255, 255, 255, 0.05);
-            padding: 10px 14px;
+            padding: 9px 14px;
             border-radius: 8px;
             border-left: 3.5px solid var(--brand-cyan);
             backdrop-filter: blur(8px);
         }
 
-        .feature-item i { color: var(--brand-cyan); font-size: 15px; width: 20px; text-align: center; }
+        .feature-item i { color: var(--brand-cyan); font-size: 14px; width: 18px; text-align: center; }
 
         .hero-footer {
             font-size: 12px;
             color: #94a3b8;
-            margin-top: 32px;
+            margin-top: 24px;
         }
 
         .hero-footer a { color: var(--brand-cyan); text-decoration: none; font-weight: 600; }
 
         .form-panel {
             flex: 1;
-            padding: 44px;
+            padding: 40px;
             display: flex;
             flex-direction: column;
             justify-content: center;
             background: #ffffff;
         }
 
-        .form-logo { text-align: center; margin-bottom: 20px; }
-        .form-logo img { max-height: 46px; }
+        .form-logo { text-align: center; margin-bottom: 16px; }
+        .form-logo img { max-height: 42px; }
 
-        .form-header { text-align: center; margin-bottom: 20px; }
-        .form-header h2 { font-size: 24px; font-weight: 800; color: #1e293b; }
-        .form-header p { font-size: 13px; color: #64748b; margin-top: 4px; }
+        .form-header { text-align: center; margin-bottom: 18px; }
+        .form-header h2 { font-size: 22px; font-weight: 800; color: #1e293b; }
+        .form-header p { font-size: 12.5px; color: #64748b; margin-top: 4px; }
 
-        /* Security Alert Banners */
         .security-alert {
             padding: 10px 14px;
             border-radius: 8px;
-            font-size: 13px;
+            font-size: 12.5px;
             font-weight: 600;
-            margin-bottom: 18px;
+            margin-bottom: 16px;
             display: flex;
             align-items: center;
             gap: 10px;
@@ -146,20 +151,19 @@
 
         .alert-success { background: #dcfce7; color: #15803d; border: 1px solid #86efac; }
         .alert-danger { background: #fee2e2; color: #b91c1c; border: 1px solid #fca5a5; }
-        .alert-warning { background: #fef9c3; color: #a16207; border: 1px solid #fde047; }
 
-        .input-group { margin-bottom: 16px; }
-        .input-group label { display: block; font-size: 13px; font-weight: 700; color: #334155; margin-bottom: 6px; }
+        .input-group { margin-bottom: 14px; }
+        .input-group label { display: block; font-size: 12.5px; font-weight: 700; color: #334155; margin-bottom: 5px; }
 
         .input-wrapper { position: relative; display: flex; align-items: center; }
-        .input-wrapper i { position: absolute; left: 14px; color: #94a3b8; font-size: 15px; }
+        .input-wrapper i { position: absolute; left: 14px; color: #94a3b8; font-size: 14px; }
 
         .input-wrapper input {
             width: 100%;
-            padding: 12px 14px 12px 42px;
+            padding: 11px 14px 11px 40px;
             border: 1.5px solid #e2e8f0;
             border-radius: 10px;
-            font-size: 14px;
+            font-size: 13.5px;
             color: #1e293b;
             outline: none;
             transition: all 0.2s;
@@ -167,28 +171,17 @@
 
         .input-wrapper input:focus {
             border-color: var(--brand-primary);
-            box-shadow: 0 0 0 3.5px rgba(37, 53, 69, 0.12);
+            box-shadow: 0 0 0 3px rgba(37, 53, 69, 0.12);
         }
-
-        .form-options {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            font-size: 13px;
-            margin-bottom: 20px;
-        }
-
-        .remember-me { display: flex; align-items: center; gap: 6px; color: #475569; cursor: pointer; }
-        .forgot-link { color: var(--brand-primary); text-decoration: none; font-weight: 700; }
 
         .btn-submit {
             width: 100%;
-            padding: 13px;
+            padding: 12px;
             background-color: var(--brand-primary);
             color: #ffffff;
             border: none;
             border-radius: 10px;
-            font-size: 15px;
+            font-size: 14.5px;
             font-weight: 700;
             cursor: pointer;
             transition: all 0.2s;
@@ -202,43 +195,42 @@
             background-color: var(--brand-primary-hover);
             color: var(--brand-cyan);
             transform: translateY(-1px);
-            box-shadow: 0 10px 20px -5px rgba(37, 53, 69, 0.35);
         }
 
-        /* Role Switcher Pill Bar */
         .role-switcher-bar {
-            margin-top: 18px;
+            margin-top: 16px;
             background: #f8fafc;
             border: 1px solid #e2e8f0;
             border-radius: 10px;
-            padding: 10px;
+            padding: 12px;
             font-size: 12px;
         }
 
         .role-switcher-title {
             font-weight: 800;
             color: #475569;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
             display: flex;
             align-items: center;
             justify-content: space-between;
         }
 
         .role-pills {
-            display: flex;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
             gap: 6px;
-            flex-wrap: wrap;
         }
 
         .role-pill-btn {
             background: #ffffff;
             border: 1px solid #cbd5e1;
             border-radius: 6px;
-            padding: 4px 8px;
+            padding: 6px 4px;
             font-size: 11px;
             font-weight: 700;
             cursor: pointer;
             color: #334155;
+            text-align: center;
             transition: all 0.15s;
         }
 
@@ -250,7 +242,8 @@
 
         @media (max-width: 768px) {
             .auth-container { flex-direction: column; }
-            .hero-panel, .form-panel { padding: 32px; }
+            .hero-panel, .form-panel { padding: 24px; }
+            .role-pills { grid-template-columns: repeat(2, 1fr); }
         }
     </style>
 </head>
@@ -261,28 +254,28 @@
                 <img src="/Personalization/logos/logo-main.png" alt="Global 1 OneTech" class="brand-logo-hero" />
                 <h1 class="hero-title">G1 Health EMR</h1>
                 <p class="hero-tagline">
-                    A Smart <b>Healthcare Management Solution</b> powered by Global 1 OneTech.
+                    Full-Spectrum <b>33-Module Hospital Management Solution</b> with Departmental Role-Based Access Control.
                 </p>
                 <ul class="feature-list">
                     <li class="feature-item">
                         <i class="fa-solid fa-shield-halved"></i>
-                        <span>End-to-End Encrypted Session Security & RBAC</span>
+                        <span>Departmental RBAC (Doctor, Nurse, Accountant, Pharmacy, Admin)</span>
                     </li>
                     <li class="feature-item">
-                        <i class="fa-solid fa-notes-medical"></i>
-                        <span>Electronic Medical Records (EMR & EHR)</span>
+                        <i class="fa-solid fa-calculator"></i>
+                        <span>Accounting, Billing, Claims, Fixed Assets & Incentives</span>
                     </li>
                     <li class="feature-item">
-                        <i class="fa-solid fa-boxes-stacked"></i>
-                        <span>Hospital ERP & Pharmacy Supply Chain</span>
+                        <i class="fa-solid fa-bed"></i>
+                        <span>Dynamic Ward Bed Matrix & Emergency Trauma Triage</span>
+                    </li>
+                    <li class="feature-item">
+                        <i class="fa-solid fa-boxes-packing"></i>
+                        <span>Pharmacy, Central Inventory, Procurement & SubStore</span>
                     </li>
                     <li class="feature-item">
                         <i class="fa-solid fa-robot"></i>
-                        <span>AI CRM & Intelligent Patient Triage</span>
-                    </li>
-                    <li class="feature-item">
-                        <i class="fa-solid fa-id-card-clip"></i>
-                        <span>Patient 360 Information System (PIS)</span>
+                        <span>AI CRM & Longitudinal Patient 360 Information System</span>
                     </li>
                 </ul>
             </div>
@@ -300,7 +293,6 @@
                 <p>Enterprise Healthcare Management & Clinical Suite</p>
             </div>
 
-            <!-- Dynamic Alert Container -->
             <div id="auth-alert-container"></div>
 
             <form id="login-form" onsubmit="return handleLoginSubmit(event)">
@@ -318,25 +310,18 @@
                         <input type="password" id="password" name="password" value="pass123" required autocomplete="current-password" />
                     </div>
                 </div>
-                <div class="form-options">
-                    <label class="remember-me">
-                        <input type="checkbox" name="remember" checked />
-                        <span>Remember session</span>
-                    </label>
-                    <a href="javascript:void(0)" onclick="showForgotAlert()" class="forgot-link">Forgot password?</a>
-                </div>
-                <button type="submit" class="btn-submit" id="btn-login-submit">
+                <button type="submit" class="btn-submit" id="btn-login-submit" style="margin-top: 10px;">
                     <span>Sign In to Dashboard</span>
                     <i class="fa-solid fa-arrow-right"></i>
                 </button>
 
-                <!-- Role Quick Switcher -->
+                <!-- 8 Interactive Role Selectors -->
                 <div class="role-switcher-bar">
                     <div class="role-switcher-title">
-                        <span><i class="fa-solid fa-id-badge"></i> Quick Demo Roles:</span>
-                        <span style="color:#64748b; font-size:11px;">Click to autofill</span>
+                        <span><i class="fa-solid fa-id-badge"></i> Select Department Role:</span>
+                        <span style="color:#64748b; font-size:11px;">1-Click Fill</span>
                     </div>
-                    <div class="role-pills" style="display:grid; grid-template-columns:repeat(4, 1fr); gap:6px;">
+                    <div class="role-pills">
                         <button type="button" class="role-pill-btn" onclick="setRoleCredentials('admin', 'pass123')">👑 Admin</button>
                         <button type="button" class="role-pill-btn" onclick="setRoleCredentials('doctor', 'pass123')">🩺 Doctor</button>
                         <button type="button" class="role-pill-btn" onclick="setRoleCredentials('nurse', 'pass123')">💉 Nurse</button>
@@ -378,22 +363,24 @@
                 sessionStorage.removeItem('g1_logged_out');
                 sessionStorage.setItem('g1_auth_token', 'active_' + Date.now());
                 sessionStorage.setItem('g1_user', userInp);
+                sessionStorage.setItem('g1_role_key', matched.role_key);
                 sessionStorage.setItem('g1_user_name', matched.name);
                 sessionStorage.setItem('g1_user_role', matched.role);
                 sessionStorage.setItem('g1_user_avatar', matched.avatar);
+                sessionStorage.setItem('g1_user_badge', matched.badge);
                 localStorage.setItem('g1_user', userInp);
 
                 document.cookie = "g1_session=sess_" + userInp + "_" + Date.now() + "; Path=/; Max-Age=86400; SameSite=Lax;";
 
                 setTimeout(() => {
-                    window.location.replace('/dashboard');
+                    window.location.replace('/dashboard.html');
                 }, 100);
                 return false;
             } else {
                 alertBox.innerHTML = `
                     <div class="security-alert alert-danger">
                         <i class="fa-solid fa-triangle-exclamation"></i>
-                        <span>Invalid credentials. Use demo accounts: <b>admin</b>, <b>doctor</b>, <b>nurse</b>, or <b>billing</b> with password <b>pass123</b>.</span>
+                        <span>Invalid credentials. Use demo accounts (e.g. <b>admin</b>, <b>doctor</b>, <b>accountant</b>, <b>nurse</b>) with password <b>pass123</b>.</span>
                     </div>
                 `;
                 return false;
@@ -418,26 +405,14 @@
                     `;
                 }
             } else if (params.get('error') === 'unauthorized') {
-                container.innerHTML = `
-                    <div class="security-alert alert-danger">
-                        <i class="fa-solid fa-shield-halved"></i>
-                        <span>Authentication required. Please sign in to access clinical records.</span>
-                    </div>
-                `;
-            } else if (params.get('error') === 'session_expired') {
-                container.innerHTML = `
-                    <div class="security-alert alert-warning">
-                        <i class="fa-solid fa-clock-rotate-left"></i>
-                        <span>Session expired due to inactivity. Please sign in again.</span>
-                    </div>
-                `;
-            } else if (params.get('error') === 'invalid_credentials') {
-                container.innerHTML = `
-                    <div class="security-alert alert-danger">
-                        <i class="fa-solid fa-triangle-exclamation"></i>
-                        <span>Invalid username or password. Please try again.</span>
-                    </div>
-                `;
+                if (container) {
+                    container.innerHTML = `
+                        <div class="security-alert alert-danger">
+                            <i class="fa-solid fa-shield-halved"></i>
+                            <span>Authentication required. Please sign in to access clinical records.</span>
+                        </div>
+                    `;
+                }
             }
         });
 
@@ -445,10 +420,10 @@
             document.getElementById('username').value = user;
             document.getElementById('password').value = pass;
         }
-
-        function showForgotAlert() {
-            alert("For security, password resets require Administrator approval. Use default demo password: pass123");
-        }
     </script>
 </body>
 </html>
+"""
+    print("Login HTML built.")
+
+build_suite()
