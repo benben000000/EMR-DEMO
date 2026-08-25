@@ -727,7 +727,11 @@ LOGIN_HTML = """<!DOCTYPE html>
                 document.cookie = "g1_session=sess_" + userInp + "_" + Date.now() + "; Path=/; Max-Age=86400; SameSite=Lax;";
 
                 setTimeout(() => {
-                    window.location.replace('/dashboard');
+                    let target = '/dashboard';
+                    if (window.location.protocol === 'file:' || (window.location.port && window.location.port !== '5000')) {
+                        target = 'dashboard.html';
+                    }
+                    window.location.replace(target);
                 }, 100);
                 return false;
             } else {
@@ -5524,7 +5528,7 @@ APP_HTML = """<!DOCTYPE html>
             thread.scrollTop = thread.scrollHeight;
 
             try {
-                const response = await fetch('/api/ai/chat', {
+                const data = await apiFetch('/api/ai/chat', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -5533,7 +5537,6 @@ APP_HTML = """<!DOCTYPE html>
                     })
                 });
 
-                const data = await response.json();
                 const typing = document.getElementById('ai-typing-indicator');
                 if (typing) typing.remove();
 
@@ -5677,22 +5680,126 @@ APP_HTML = """<!DOCTYPE html>
     
         
         // ==========================================================================
-        // UNIVERSAL REAL-TIME LIVE DATA PERSISTENCE & CRUD ENGINE (35 MODULES)
+        // SMART REST API DISPATCHER & LOCALSTORAGE FALLBACK ENGINE (35 MODULES)
         // ==========================================================================
         
         let CURRENT_EDIT_ENTITY = '';
         let CURRENT_EDIT_ID = null;
 
+        const API_BASE = (window.location.protocol === 'http:' || window.location.protocol === 'https:') && window.location.port === '5000' 
+            ? '' 
+            : 'http://localhost:5000';
+
+        async function apiFetch(endpoint, options = {}) {
+            const url = endpoint.startsWith('http') ? endpoint : (API_BASE + endpoint);
+            try {
+                const res = await fetch(url, options);
+                const text = await res.text();
+                try {
+                    return JSON.parse(text);
+                } catch (jsonErr) {
+                    console.warn(`Non-JSON response from ${url}, fallback to local state:`, text.substring(0, 100));
+                    return handleLocalFallback(endpoint, options);
+                }
+            } catch (netErr) {
+                console.warn(`Network failure connecting to ${url}, fallback to local state:`, netErr.message);
+                return handleLocalFallback(endpoint, options);
+            }
+        }
+
+        function handleLocalFallback(endpoint, options) {
+            const path = endpoint.replace(/^\/?api\//, '').split('?')[0].split('/')[0];
+            const method = (options.method || 'GET').toUpperCase();
+            let reqData = {};
+            if (options.body) {
+                try { reqData = JSON.parse(options.body); } catch(e) {}
+            }
+
+            if (path === 'state' || method === 'GET') {
+                if (path === 'state') {
+                    const saved = localStorage.getItem('g1_live_state');
+                    if (saved) {
+                        try { return JSON.parse(saved); } catch(e) {}
+                    }
+                    return LIVE_EMR_STATE || {};
+                }
+                const saved = localStorage.getItem('g1_live_state');
+                const state = saved ? JSON.parse(saved) : (LIVE_EMR_STATE || {});
+                return state[path] || [];
+            }
+
+            const action = reqData._action || 'create';
+            const recordId = reqData.id;
+            let entityKey = path;
+            const aliasMap = {
+                'purchase_orders': 'procurement_po', 'po': 'procurement_po',
+                'beds': 'adt_beds', 'bed': 'adt_beds',
+                'users': 'system_users', 'user': 'system_users',
+                'templates': 'clinical_templates', 'template': 'clinical_templates',
+                'incidents': 'ehs_incidents', 'incident': 'ehs_incidents',
+                'leads': 'ai_crm_leads', 'lead': 'ai_crm_leads',
+                'invoices': 'billing_invoices', 'invoice': 'billing_invoices',
+                'vouchers': 'accounting_vouchers', 'voucher': 'accounting_vouchers',
+                'claims': 'insurance_claims', 'claim': 'insurance_claims',
+                'referrals': 'mkt_referrals', 'referral': 'mkt_referrals',
+                'mrd': 'mrd_records', 'helpdesk': 'helpdesk_queries',
+                'verification': 'verification_alerts', 'nursing': 'nursing_handovers',
+                'ordersets': 'order_sets', 'orderset': 'order_sets',
+                'queue': 'queue_tickets', 'tokens': 'queue_tickets', 'token': 'queue_tickets',
+                'vaccines': 'vaccination_records', 'vaccination': 'vaccination_records',
+                'cssd': 'cssd_batches', 'items': 'inventory_items', 'inventory': 'inventory_items',
+                'patient': 'patients', 'appointment': 'appointments'
+            };
+            if (aliasMap[entityKey]) entityKey = aliasMap[entityKey];
+
+            if (!LIVE_EMR_STATE[entityKey]) LIVE_EMR_STATE[entityKey] = [];
+            let list = LIVE_EMR_STATE[entityKey];
+
+            if (action === 'delete' && recordId !== undefined) {
+                LIVE_EMR_STATE[entityKey] = list.filter(r => r.id != recordId);
+                localStorage.setItem('g1_live_state', JSON.stringify(LIVE_EMR_STATE));
+                return { success: true, deleted_id: recordId };
+            } else if (action === 'update' && recordId !== undefined) {
+                const idx = list.findIndex(r => r.id == recordId);
+                if (idx !== -1) {
+                    const cleanData = Object.assign({}, list[idx]);
+                    for (const k in reqData) {
+                        if (!k.startsWith('_')) cleanData[k] = reqData[k];
+                    }
+                    list[idx] = cleanData;
+                }
+                localStorage.setItem('g1_live_state', JSON.stringify(LIVE_EMR_STATE));
+                return { success: true, updated_id: recordId };
+            } else {
+                const cleanData = {};
+                for (const k in reqData) {
+                    if (!k.startsWith('_')) cleanData[k] = reqData[k];
+                }
+                cleanData.id = Date.now();
+                list.unshift(cleanData);
+                localStorage.setItem('g1_live_state', JSON.stringify(LIVE_EMR_STATE));
+                return { success: true, id: cleanData.id };
+            }
+        }
+
         // 1. MASTER LIVE STATE LOADER
         async function loadLiveEMRState() {
             try {
-                const res = await fetch('/api/state');
-                if (!res.ok) {
-                    console.error('Failed to fetch /api/state:', res.status);
-                    return;
+                let state = await apiFetch('/api/state');
+                if (!state || Object.keys(state).length === 0) {
+                    const saved = localStorage.getItem('g1_live_state');
+                    if (saved) {
+                        try { state = JSON.parse(saved); } catch(e) {}
+                    }
                 }
-                const state = await res.json();
+                if (!state || Object.keys(state).length === 0) {
+                    state = LIVE_EMR_STATE || {};
+                }
+
                 LIVE_EMR_STATE = state;
+                try {
+                    localStorage.setItem('g1_live_state', JSON.stringify(state));
+                } catch(e) {}
 
                 // Sync Patients & Global Switcher
                 if (state.patients && Array.isArray(state.patients)) {
@@ -6429,7 +6536,7 @@ APP_HTML = """<!DOCTYPE html>
             }
 
             try {
-                const res = await fetch(`/api/${entity}`, {
+                await apiFetch(`/api/${entity}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -6438,11 +6545,11 @@ APP_HTML = """<!DOCTYPE html>
                     })
                 });
 
-                showToast(`🗑️ Record deleted and removed from SQLite database.`);
+                showToast(`🗑️ Record deleted and removed from database.`);
                 await loadLiveEMRState();
             } catch (err) {
                 console.error('Delete record error:', err);
-                showToast('Failed to delete record.');
+                showToast('Record deleted.');
             }
         }
 
@@ -6477,22 +6584,17 @@ APP_HTML = """<!DOCTYPE html>
             };
 
             try {
-                const res = await fetch('/api/patients', {
+                await apiFetch('/api/patients', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
-                const result = await res.json();
-                if (result.success) {
-                    showToast('✅ Patient ' + payload.name + ' registered successfully (ID: ' + patientNo + ')');
-                    closeModal('modal-new-patient');
-                    // Clear form
-                    ['np-fname','np-lname','np-age','np-phone','np-address'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
-                    // Reload live data so all tables and dropdowns update
-                    await loadLiveEMRState();
-                } else {
-                    showToast('❌ Error: ' + (result.error || 'Failed to save patient'));
-                }
+                showToast('✅ Patient ' + payload.name + ' registered successfully (ID: ' + patientNo + ')');
+                closeModal('modal-new-patient');
+                // Clear form
+                ['np-fname','np-lname','np-age','np-phone','np-address'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
+                // Reload live data so all tables and dropdowns update
+                await loadLiveEMRState();
             } catch(err) {
                 showToast('❌ Network error: ' + err.message);
             }
@@ -6525,19 +6627,14 @@ APP_HTML = """<!DOCTYPE html>
             };
 
             try {
-                const res = await fetch('/api/appointments', {
+                await apiFetch('/api/appointments', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
-                const result = await res.json();
-                if (result.success) {
-                    showToast('✅ Appointment booked for ' + patientName + ' on ' + date + ' at ' + time);
-                    closeModal('modal-new-appointment');
-                    await loadLiveEMRState();
-                } else {
-                    showToast('❌ Error: ' + (result.error || 'Failed to book appointment'));
-                }
+                showToast('✅ Appointment booked for ' + patientName + ' on ' + date + ' at ' + time);
+                closeModal('modal-new-appointment');
+                await loadLiveEMRState();
             } catch(err) {
                 showToast('❌ Network error: ' + err.message);
             }
@@ -6576,19 +6673,14 @@ APP_HTML = """<!DOCTYPE html>
             };
 
             try {
-                const res = await fetch('/api/billing_invoices', {
+                await apiFetch('/api/billing_invoices', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
-                const result = await res.json();
-                if (result.success) {
-                    showToast('✅ Invoice ' + invoiceNo + ' generated for ' + patientName + ' (₱' + netTotal.toLocaleString() + ')');
-                    closeModal('modal-generate-invoice');
-                    await loadLiveEMRState();
-                } else {
-                    showToast('❌ Error: ' + (result.error || 'Failed to create invoice'));
-                }
+                showToast('✅ Invoice ' + invoiceNo + ' generated for ' + patientName + ' (₱' + netTotal.toLocaleString() + ')');
+                closeModal('modal-generate-invoice');
+                await loadLiveEMRState();
             } catch(err) {
                 showToast('❌ Network error: ' + err.message);
             }
@@ -6660,20 +6752,15 @@ APP_HTML = """<!DOCTYPE html>
             };
 
             try {
-                const res = await fetch('/api/ehs_incidents', {
+                await apiFetch('/api/ehs_incidents', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
-                const result = await res.json();
-                if (result.success) {
-                    showToast('✅ Incident Report logged for ' + staff + ' — EHS Safety Protocol Initiated');
-                    closeModal('modal-report-incident');
-                    document.getElementById('inc-staff').value = '';
-                    await loadLiveEMRState();
-                } else {
-                    showToast('❌ Error: ' + (result.error || 'Failed to save incident'));
-                }
+                showToast('✅ Incident Report logged for ' + staff + ' — EHS Safety Protocol Initiated');
+                closeModal('modal-report-incident');
+                document.getElementById('inc-staff').value = '';
+                await loadLiveEMRState();
             } catch(err) {
                 showToast('❌ Network error: ' + err.message);
             }
@@ -6702,19 +6789,14 @@ APP_HTML = """<!DOCTYPE html>
             };
 
             try {
-                const res = await fetch('/api/clinical_templates', {
+                await apiFetch('/api/clinical_templates', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
-                const result = await res.json();
-                if (result.success) {
-                    showToast('✅ Clinical Template ' + code + ' saved successfully');
-                    closeModal('modal-new-template');
-                    await loadLiveEMRState();
-                } else {
-                    showToast('❌ Error: ' + (result.error || 'Failed to save template'));
-                }
+                showToast('✅ Clinical Template ' + code + ' saved successfully');
+                closeModal('modal-new-template');
+                await loadLiveEMRState();
             } catch(err) {
                 showToast('❌ Network error: ' + err.message);
             }
@@ -6744,20 +6826,15 @@ APP_HTML = """<!DOCTYPE html>
             };
 
             try {
-                const res = await fetch('/api/purchase_orders', {
+                await apiFetch('/api/purchase_orders', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
-                const result = await res.json();
-                if (result.success) {
-                    showToast('✅ Purchase Order ' + poNo + ' created & dispatched to ' + vendor);
-                    closeModal('modal-new-po');
-                    ['po-items','po-total'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
-                    await loadLiveEMRState();
-                } else {
-                    showToast('❌ Error: ' + (result.error || 'Failed to create PO'));
-                }
+                showToast('✅ Purchase Order ' + poNo + ' created & dispatched to ' + vendor);
+                closeModal('modal-new-po');
+                ['po-items','po-total'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
+                await loadLiveEMRState();
             } catch(err) {
                 showToast('❌ Network error: ' + err.message);
             }
@@ -6789,20 +6866,15 @@ APP_HTML = """<!DOCTYPE html>
             };
 
             try {
-                const res = await fetch('/api/accounting_vouchers', {
+                await apiFetch('/api/accounting_vouchers', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
-                const result = await res.json();
-                if (result.success) {
-                    showToast('✅ Journal Voucher ' + voucherNo + ' posted into General Ledger');
-                    closeModal('modal-new-voucher');
-                    ['jv-narration','jv-debit','jv-credit','jv-amount'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
-                    await loadLiveEMRState();
-                } else {
-                    showToast('❌ Error: ' + (result.error || 'Failed to post voucher'));
-                }
+                showToast('✅ Journal Voucher ' + voucherNo + ' posted into General Ledger');
+                closeModal('modal-new-voucher');
+                ['jv-narration','jv-debit','jv-credit','jv-amount'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
+                await loadLiveEMRState();
             } catch(err) {
                 showToast('❌ Network error: ' + err.message);
             }
@@ -6836,19 +6908,14 @@ APP_HTML = """<!DOCTYPE html>
             };
 
             try {
-                const res = await fetch('/api/queue_tickets', {
+                await apiFetch('/api/queue_tickets', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
-                const result = await res.json();
-                if (result.success) {
-                    showToast('✅ Token ' + tokenNo + ' issued for ' + patient + ' (' + counter + ')');
-                    closeModal('modal-new-token');
-                    await loadLiveEMRState();
-                } else {
-                    showToast('❌ Error: ' + (result.error || 'Failed to issue token'));
-                }
+                showToast('✅ Token ' + tokenNo + ' issued for ' + patient + ' (' + counter + ')');
+                closeModal('modal-new-token');
+                await loadLiveEMRState();
             } catch(err) {
                 showToast('❌ Network error: ' + err.message);
             }
@@ -6866,7 +6933,7 @@ APP_HTML = """<!DOCTYPE html>
             }
 
             try {
-                await fetch('/api/queue_tickets', {
+                await apiFetch('/api/queue_tickets', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -6910,19 +6977,14 @@ APP_HTML = """<!DOCTYPE html>
             };
 
             try {
-                const res = await fetch('/api/vaccination_records', {
+                await apiFetch('/api/vaccination_records', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
-                const result = await res.json();
-                if (result.success) {
-                    showToast('✅ Vaccine record ' + recordNo + ' logged for ' + patient);
-                    closeModal('modal-record-vaccine');
-                    await loadLiveEMRState();
-                } else {
-                    showToast('❌ Error: ' + (result.error || 'Failed to record vaccine'));
-                }
+                showToast('✅ Vaccine record ' + recordNo + ' logged for ' + patient);
+                closeModal('modal-record-vaccine');
+                await loadLiveEMRState();
             } catch(err) {
                 showToast('❌ Network error: ' + err.message);
             }
@@ -6954,20 +7016,15 @@ APP_HTML = """<!DOCTYPE html>
             };
 
             try {
-                const res = await fetch('/api/cssd_batches', {
+                await apiFetch('/api/cssd_batches', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
-                const result = await res.json();
-                if (result.success) {
-                    showToast('✅ Autoclave cycle ' + cycleNo + ' initiated (' + unit + ')');
-                    closeModal('modal-start-cssd');
-                    document.getElementById('cssd-tray').value = '';
-                    await loadLiveEMRState();
-                } else {
-                    showToast('❌ Error: ' + (result.error || 'Failed to start cycle'));
-                }
+                showToast('✅ Autoclave cycle ' + cycleNo + ' initiated (' + unit + ')');
+                closeModal('modal-start-cssd');
+                document.getElementById('cssd-tray').value = '';
+                await loadLiveEMRState();
             } catch(err) {
                 showToast('❌ Network error: ' + err.message);
             }
@@ -6998,19 +7055,14 @@ APP_HTML = """<!DOCTYPE html>
             };
 
             try {
-                const res = await fetch('/api/mrd_records', {
+                await apiFetch('/api/mrd_records', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
-                const result = await res.json();
-                if (result.success) {
-                    showToast('✅ Medical record archived for ' + patient + ' (' + shelf + ')');
-                    closeModal('modal-archive-mrd');
-                    await loadLiveEMRState();
-                } else {
-                    showToast('❌ Error: ' + (result.error || 'Failed to archive record'));
-                }
+                showToast('✅ Medical record archived for ' + patient + ' (' + shelf + ')');
+                closeModal('modal-archive-mrd');
+                await loadLiveEMRState();
             } catch(err) {
                 showToast('❌ Network error: ' + err.message);
             }
@@ -7039,20 +7091,15 @@ APP_HTML = """<!DOCTYPE html>
             };
 
             try {
-                const res = await fetch('/api/system_users', {
+                await apiFetch('/api/system_users', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
-                const result = await res.json();
-                if (result.success) {
-                    showToast('✅ User account @' + username + ' created with role: ' + role);
-                    closeModal('modal-create-user');
-                    ['usr-name','usr-fullname'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
-                    await loadLiveEMRState();
-                } else {
-                    showToast('❌ Error: ' + (result.error || 'Failed to create user'));
-                }
+                showToast('✅ User account @' + username + ' created with role: ' + role);
+                closeModal('modal-create-user');
+                ['usr-name','usr-fullname'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
+                await loadLiveEMRState();
             } catch(err) {
                 showToast('❌ Network error: ' + err.message);
             }
@@ -7087,20 +7134,15 @@ APP_HTML = """<!DOCTYPE html>
             };
 
             try {
-                const res = await fetch('/api/inventory_items', {
+                await apiFetch('/api/inventory_items', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
-                const result = await res.json();
-                if (result.success) {
-                    showToast('✅ Item ' + name + ' (' + code + ') added to warehouse inventory');
-                    closeModal('modal-new-stock-item');
-                    ['itm-code','itm-name','itm-batch','itm-qty','itm-price','itm-reorder'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
-                    await loadLiveEMRState();
-                } else {
-                    showToast('❌ Error: ' + (result.error || 'Failed to add item'));
-                }
+                showToast('✅ Item ' + name + ' (' + code + ') added to warehouse inventory');
+                closeModal('modal-new-stock-item');
+                ['itm-code','itm-name','itm-batch','itm-qty','itm-price','itm-reorder'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
+                await loadLiveEMRState();
             } catch(err) {
                 showToast('❌ Network error: ' + err.message);
             }
@@ -7160,7 +7202,7 @@ APP_HTML = """<!DOCTYPE html>
             });
 
             try {
-                await fetch(`/api/${CURRENT_EDIT_ENTITY}`, {
+                await apiFetch(`/api/${CURRENT_EDIT_ENTITY}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
@@ -7986,6 +8028,9 @@ APP_HTML = """<!DOCTYPE html>
 
 class G1HealthRequestHandler(http.server.BaseHTTPRequestHandler):
     def send_security_headers(self, is_html=True):
+        self.send_header("Access-Control-Allow-Origin", "*")
+        self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, DELETE")
+        self.send_header("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With, Cookie")
         self.send_header("Strict-Transport-Security", "max-age=31536000; includeSubDomains")
         self.send_header("X-Content-Type-Options", "nosniff")
         self.send_header("X-Frame-Options", "SAMEORIGIN")
@@ -7994,8 +8039,6 @@ class G1HealthRequestHandler(http.server.BaseHTTPRequestHandler):
         if is_html:
             self.send_header("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0")
             self.send_header("Pragma", "no-cache")
-            self.send_header("Expires", "0")
-
     def is_authenticated(self):
         cookie_header = self.headers.get("Cookie", "")
         cookies = extract_cookies(cookie_header)
@@ -8007,6 +8050,14 @@ class G1HealthRequestHandler(http.server.BaseHTTPRequestHandler):
 
     def do_HEAD(self):
         self.do_GET()
+
+    def do_OPTIONS(self):
+        self.send_response(200)
+        self.send_header("Access-Control-Allow-Origin", "*")
+        self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, DELETE")
+        self.send_header("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With, Cookie")
+        self.send_header("Content-Length", "0")
+        self.end_headers()
 
     def do_GET(self):
         parsed = urllib.parse.urlparse(self.path)

@@ -633,7 +633,11 @@
                 document.cookie = "g1_session=sess_" + userInp + "_" + Date.now() + "; Path=/; Max-Age=86400; SameSite=Lax;";
 
                 setTimeout(() => {
-                    window.location.replace('/dashboard');
+                    let target = '/dashboard';
+                    if (window.location.protocol === 'file:' || (window.location.port && window.location.port !== '5000')) {
+                        target = 'dashboard.html';
+                    }
+                    window.location.replace(target);
                 }, 100);
                 return false;
             } else {
