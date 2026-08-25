@@ -2760,9 +2760,9 @@
                     </div>
                 </div>
                 <div class="stats-grid">
-                    <div class="stat-card"><div class="stat-icon"><i class="fa-solid fa-boxes-stacked"></i></div><div class="stat-content"><h3>1,420 Items</h3><p>Total Active SKUs</p></div></div>
-                    <div class="stat-card cyan"><div class="stat-icon"><i class="fa-solid fa-triangle-exclamation"></i></div><div class="stat-content"><h3>4 Items</h3><p>Below Safety Reorder Level</p></div></div>
-                    <div class="stat-card teal"><div class="stat-icon"><i class="fa-solid fa-warehouse"></i></div><div class="stat-content"><h3>₱ 4,850,000</h3><p>Total Inventory Asset Value</p></div></div>
+                    <div class="stat-card"><div class="stat-icon"><i class="fa-solid fa-boxes-stacked"></i></div><div class="stat-content"><h3 id="inv-total-skus">--</h3><p>Total Active SKUs</p></div></div>
+                    <div class="stat-card cyan"><div class="stat-icon"><i class="fa-solid fa-triangle-exclamation"></i></div><div class="stat-content"><h3 id="inv-low-stock">--</h3><p>Below Safety Reorder Level</p></div></div>
+                    <div class="stat-card teal"><div class="stat-icon"><i class="fa-solid fa-warehouse"></i></div><div class="stat-content"><h3 id="inv-total-value">--</h3><p>Total Inventory Asset Value</p></div></div>
                 </div>
                 <div class="table-card">
                     <div class="table-toolbar">
@@ -2798,9 +2798,9 @@
                     <button class="btn-primary-action" onclick="openModal('modal-new-po')"><i class="fa-solid fa-cart-plus"></i> + Create Purchase Order (PO)</button>
                 </div>
                 <div class="stats-grid">
-                    <div class="stat-card"><div class="stat-icon"><i class="fa-solid fa-file-signature"></i></div><div class="stat-content"><h3>₱ 420,500</h3><p>Active Open PO Value</p></div></div>
-                    <div class="stat-card cyan"><div class="stat-icon"><i class="fa-solid fa-truck-ramp-box"></i></div><div class="stat-content"><h3>6 POs</h3><p>Pending Deliveries</p></div></div>
-                    <div class="stat-card teal"><div class="stat-icon"><i class="fa-solid fa-handshake"></i></div><div class="stat-content"><h3>24</h3><p>Approved Medical Vendors</p></div></div>
+                    <div class="stat-card"><div class="stat-icon"><i class="fa-solid fa-file-signature"></i></div><div class="stat-content"><h3 id="po-open-value">--</h3><p>Active Open PO Value</p></div></div>
+                    <div class="stat-card cyan"><div class="stat-icon"><i class="fa-solid fa-truck-ramp-box"></i></div><div class="stat-content"><h3 id="po-pending-count">--</h3><p>Pending Deliveries</p></div></div>
+                    <div class="stat-card teal"><div class="stat-icon"><i class="fa-solid fa-handshake"></i></div><div class="stat-content"><h3 id="po-vendor-count">--</h3><p>Approved Medical Vendors</p></div></div>
                 </div>
                 <div class="table-card">
                     <table class="emr-table">
@@ -2881,12 +2881,12 @@
                     <button class="btn-primary-action" onclick="openModal('modal-new-voucher')"><i class="fa-solid fa-plus"></i> + New Journal Voucher</button>
                 </div>
                 <div class="stats-grid">
-                    <div class="stat-card"><div class="stat-icon"><i class="fa-solid fa-building-columns"></i></div><div class="stat-content"><h3>₱ 5,420,000</h3><p>Cash at Bank (Operating)</p></div></div>
-                    <div class="stat-card cyan"><div class="stat-icon"><i class="fa-solid fa-file-invoice-dollar"></i></div><div class="stat-content"><h3>₱ 840,500</h3><p>Accounts Receivable (HMOs)</p></div></div>
-                    <div class="stat-card teal"><div class="stat-icon"><i class="fa-solid fa-book"></i></div><div class="stat-content"><h3>₱ 310,200</h3><p>Doctor Incentive Payable</p></div></div>
+                    <div class="stat-card"><div class="stat-icon"><i class="fa-solid fa-building-columns"></i></div><div class="stat-content"><h3 id="acc-cash-bank">--</h3><p>Cash at Bank (Operating)</p></div></div>
+                    <div class="stat-card cyan"><div class="stat-icon"><i class="fa-solid fa-file-invoice-dollar"></i></div><div class="stat-content"><h3 id="acc-ar-hmo">--</h3><p>Accounts Receivable (HMOs)</p></div></div>
+                    <div class="stat-card teal"><div class="stat-icon"><i class="fa-solid fa-book"></i></div><div class="stat-content"><h3 id="acc-dr-incentive">--</h3><p>Doctor Incentive Payable</p></div></div>
                 </div>
                 <div class="table-card">
-                    <div class="table-toolbar"><h3 style="font-size:15px; font-weight:700;">Daybook Journal Transactions (24-Aug-2026)</h3></div>
+                    <div class="table-toolbar"><h3 style="font-size:15px; font-weight:700;">Daybook Journal Transactions</h3></div>
                     <table class="emr-table">
                         <thead><tr><th>Voucher ID</th><th>Transaction Description</th><th>Debit Account</th><th>Credit Account</th><th>Amount (PHP)</th><th>Status</th><th>Actions</th></tr></thead>
                         <tbody id="tbody-accounting"></tbody>
@@ -2953,32 +2953,32 @@
                     <div class="breadcrumbs">
                         <a onclick="switchTab('view-dashboard', null)"><i class="fa-solid fa-house"></i> Home</a>
                         <i class="fa-solid fa-chevron-right" style="font-size:10px;"></i>
-                        <span class="current">Clinical Order Verification</span>
+                        <span class="current">Clinical Verification</span>
                     </div>
                     <button class="btn-back-dashboard" onclick="switchTab('view-dashboard', null)"><i class="fa-solid fa-arrow-left"></i> Back to Dashboard</button>
                 </div>
                 <div class="view-header">
                     <div>
-                        <h1>Clinical Verification, Dual Sign-off & Discount Authorization</h1>
-                        <p>Senior pathologist dual sign-off for critical lab panic values, high-risk medication dual checks, and cashier discount approvals</p>
+                        <h1>Clinical Order Verification & High-Risk Sign-Off</h1>
+                        <p>Dual-witness sign-offs for narcotics, chemotherapy protocols, blood transfusions, and critical lab alerts</p>
                     </div>
                 </div>
                 <div class="table-card">
                     <table class="emr-table">
-                        <thead><tr><th>Verification Item</th><th>Department</th><th>Requested By</th><th>Values / Justification</th><th>Dual Signoff Status</th><th>Actions</th></tr></thead>
+                        <thead><tr><th>Order / Test Title</th><th>Department</th><th>Requested By</th><th>Verification Reason</th><th>Status</th><th>Actions</th></tr></thead>
                         <tbody id="tbody-verification"></tbody>
                     </table>
                 </div>
             </section>
     
         
-            <!-- 22. VACCINATION & IMMUNIZATION -->
+            <!-- 22. IMMUNIZATION & VACCINE REGISTRY -->
             <section id="view-vaccination" class="module-view">
                 <div class="ux-navigation-bar">
                     <div class="breadcrumbs">
                         <a onclick="switchTab('view-dashboard', null)"><i class="fa-solid fa-house"></i> Home</a>
                         <i class="fa-solid fa-chevron-right" style="font-size:10px;"></i>
-                        <span class="current">Vaccination & Immunization</span>
+                        <span class="current">Vaccine Registry</span>
                     </div>
                     <button class="btn-back-dashboard" onclick="switchTab('view-dashboard', null)"><i class="fa-solid fa-arrow-left"></i> Back to Dashboard</button>
                 </div>
@@ -2987,12 +2987,12 @@
                         <h1>National Immunization Program & Vaccine Registry</h1>
                         <p>Record pediatric and adult immunizations, booster doses, batch lot numbers, and cold-chain temperature logs</p>
                     </div>
-                    <button class="btn-primary-action" onclick="showToast('Vaccination Dose Recorded in National Registry')"><i class="fa-solid fa-syringe"></i> + Record Vaccine Dose</button>
+                    <button class="btn-primary-action" onclick="openModal('modal-record-vaccine')"><i class="fa-solid fa-syringe"></i> + Record Vaccine Dose</button>
                 </div>
-                <div class="grid-3col">
-                    <div class="stat-card"><div class="stat-icon"><i class="fa-solid fa-temperature-arrow-down"></i></div><div class="stat-content"><h3>+3.8 °C</h3><p>Vaccine Refrigerator (Safe +2 to +8°C)</p></div></div>
-                    <div class="stat-card cyan"><div class="stat-icon"><i class="fa-solid fa-child-reaching"></i></div><div class="stat-content"><h3>98.2%</h3><p>Pediatric EPI On-Time Coverage</p></div></div>
-                    <div class="stat-card teal"><div class="stat-icon"><i class="fa-solid fa-shield-virus"></i></div><div class="stat-content"><h3>185</h3><p>Doses Administered This Month</p></div></div>
+                <div class="stats-grid">
+                    <div class="stat-card"><div class="stat-icon"><i class="fa-solid fa-temperature-arrow-down"></i></div><div class="stat-content"><h3 id="vax-fridge-temp">+3.8 °C</h3><p>Vaccine Refrigerator (Safe +2 to +8°C)</p></div></div>
+                    <div class="stat-card cyan"><div class="stat-icon"><i class="fa-solid fa-child-reaching"></i></div><div class="stat-content"><h3 id="vax-coverage">98.2%</h3><p>Pediatric EPI On-Time Coverage</p></div></div>
+                    <div class="stat-card teal"><div class="stat-icon"><i class="fa-solid fa-shield-virus"></i></div><div class="stat-content"><h3 id="vax-monthly-doses">--</h3><p>Doses Administered This Month</p></div></div>
                 </div>
                 <div class="table-card">
                     <table class="emr-table">
@@ -3019,19 +3019,19 @@
                         <p>Real-time token dispenser, automated voice calling, doctor consultation room routing, and hall display</p>
                     </div>
                     <div style="display:flex; gap:10px;">
-                        <button class="btn-accent-action" onclick="showToast('📢 Voice Calling: Token A-104 please proceed to Consultation Room 201')"><i class="fa-solid fa-volume-high"></i> Call Next Token (A-104)</button>
-                        <button class="btn-primary-action" onclick="showToast('Issued Token A-106 for OPD General Medicine')"><i class="fa-solid fa-ticket"></i> + Issue Token</button>
+                        <button class="btn-accent-action" onclick="callNextQueueToken()"><i class="fa-solid fa-volume-high"></i> Call Next Waiting Token</button>
+                        <button class="btn-primary-action" onclick="openModal('modal-new-token')"><i class="fa-solid fa-ticket"></i> + Issue Token</button>
                     </div>
                 </div>
                 <div class="grid-3col">
-                    <div class="stat-card cyan"><div class="stat-icon"><i class="fa-solid fa-bullhorn"></i></div><div class="stat-content"><h3 style="color:#0284c7;">A-103</h3><p>Now Serving in Room 201</p></div></div>
-                    <div class="stat-card teal"><div class="stat-icon"><i class="fa-solid fa-users"></i></div><div class="stat-content"><h3>4 Patients</h3><p>Waiting in OPD Waiting Hall</p></div></div>
-                    <div class="stat-card"><div class="stat-icon"><i class="fa-solid fa-clock"></i></div><div class="stat-content"><h3>8.4 min</h3><p>Average Wait Time</p></div></div>
+                    <div class="stat-card cyan"><div class="stat-icon"><i class="fa-solid fa-bullhorn"></i></div><div class="stat-content"><h3 id="queue-now-serving" style="color:#0284c7;">--</h3><p id="queue-now-room-text">Now Serving in Room 201</p></div></div>
+                    <div class="stat-card teal"><div class="stat-icon"><i class="fa-solid fa-users"></i></div><div class="stat-content"><h3 id="queue-waiting-count">--</h3><p>Waiting in OPD Waiting Hall</p></div></div>
+                    <div class="stat-card"><div class="stat-icon"><i class="fa-solid fa-clock"></i></div><div class="stat-content"><h3 id="queue-avg-time">--</h3><p>Average Wait Time</p></div></div>
                 </div>
                 <div class="table-card">
                     <div class="table-toolbar"><h3 style="font-size:15px; font-weight:700;">Live Waiting Room Token Display</h3></div>
                     <table class="emr-table">
-                        <thead><tr><th>Token No</th><th>Patient Name</th><th>Assigned Doctor</th><th>Room Number</th><th>Queue Status</th><th>Action</th></tr></thead>
+                        <thead><tr><th>Token No</th><th>Patient Name</th><th>Department</th><th>Counter / Room</th><th>Priority Level</th><th>Queue Status</th><th>Action</th></tr></thead>
                         <tbody id="tbody-queue"></tbody>
                     </table>
                 </div>
@@ -3053,12 +3053,12 @@
                         <h1>Central Sterile Services Department (CSSD)</h1>
                         <p>Autoclave sterilization cycles, surgical instrument tray tracking, Bowie-Dick tests, and biological indicator validation</p>
                     </div>
-                    <button class="btn-primary-action" onclick="showToast('Autoclave Cycle Batch #88 Started (134°C for 18 mins)')"><i class="fa-solid fa-play"></i> + Start Autoclave Cycle</button>
+                    <button class="btn-primary-action" onclick="openModal('modal-start-cssd')"><i class="fa-solid fa-play"></i> + Start Autoclave Cycle</button>
                 </div>
                 <div class="grid-3col">
-                    <div class="stat-card"><div class="stat-icon"><i class="fa-solid fa-temperature-high"></i></div><div class="stat-content"><h3>134.2 °C</h3><p>Autoclave Sterilizer 1 (Pass)</p></div></div>
-                    <div class="stat-card cyan"><div class="stat-icon"><i class="fa-solid fa-box-archive"></i></div><div class="stat-content"><h3>34 Sets</h3><p>Sterile Surgical Trays Ready</p></div></div>
-                    <div class="stat-card teal"><div class="stat-icon"><i class="fa-solid fa-circle-check"></i></div><div class="stat-content"><h3>100%</h3><p>Biological Indicator Pass Rate</p></div></div>
+                    <div class="stat-card"><div class="stat-icon"><i class="fa-solid fa-temperature-high"></i></div><div class="stat-content"><h3 id="cssd-temp">134.2 °C</h3><p>Autoclave Sterilizer 1 (Pass)</p></div></div>
+                    <div class="stat-card cyan"><div class="stat-icon"><i class="fa-solid fa-box-archive"></i></div><div class="stat-content"><h3 id="cssd-trays-ready">--</h3><p>Sterile Surgical Trays Ready</p></div></div>
+                    <div class="stat-card teal"><div class="stat-icon"><i class="fa-solid fa-circle-check"></i></div><div class="stat-content"><h3 id="cssd-pass-rate">100%</h3><p>Biological Indicator Pass Rate</p></div></div>
                 </div>
                 <div class="table-card">
                     <table class="emr-table">
@@ -3084,7 +3084,7 @@
                         <h1>Medical Records Department (MRD & Health Info Management)</h1>
                         <p>Long-term clinical chart archiving, ICD-10 mortality coding, birth/death registries, and medico-legal archives</p>
                     </div>
-                    <button class="btn-primary-action" onclick="showToast('MRD Archive File Indexed & Barcoded')"><i class="fa-solid fa-folder-plus"></i> + Archive Patient File</button>
+                    <button class="btn-primary-action" onclick="openModal('modal-archive-mrd')"><i class="fa-solid fa-folder-plus"></i> + Archive Patient File</button>
                 </div>
                 <div class="table-card">
                     <table class="emr-table">
@@ -3234,7 +3234,7 @@
                         <h1>System Administration & User Role Permission Matrix</h1>
                         <p>Manage hospital staff accounts, assign departmental RBAC privileges, and monitor real-time security events</p>
                     </div>
-                    <button class="btn-primary-action" onclick="showToast('New Staff User Registered & Department RBAC Assigned')"><i class="fa-solid fa-user-shield"></i> + Create Staff User</button>
+                    <button class="btn-primary-action" onclick="openModal('modal-create-user')"><i class="fa-solid fa-user-shield"></i> + Create Staff User</button>
                 </div>
                 <div class="table-card">
                     <div class="table-toolbar"><h3 style="font-size:15px; font-weight:700;">Departmental User Accounts & Security Matrix</h3></div>
@@ -4110,19 +4110,293 @@
     </div>
     
     
-    <!-- MODAL: UNIVERSAL GENERIC RECORD EDITOR (Add / Edit Live SQLite Data) -->
-    <div id="modal-universal-editor" class="modal-overlay">
-        <div class="modal-box" style="max-width:560px;">
+    <!-- MODAL: ISSUE NEW QUEUE TOKEN -->
+    <div id="modal-new-token" class="modal-overlay">
+        <div class="modal-box" style="max-width:520px;">
             <div class="modal-header">
-                <h3 id="universal-editor-title"><i class="fa-solid fa-pen-to-square"></i> Edit Record</h3>
-                <button class="modal-close" onclick="closeModal('modal-universal-editor')">&times;</button>
+                <h3><i class="fa-solid fa-ticket"></i> Issue OPD Consultation Token</h3>
+                <button class="modal-close" onclick="closeModal('modal-new-token')">&times;</button>
             </div>
-            <div class="modal-body" id="universal-editor-form-body">
-                <!-- Dynamically generated input fields -->
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Patient Name *</label>
+                    <select id="tok-patient-select" class="form-control"></select>
+                </div>
+                <div class="grid-2col">
+                    <div class="form-group">
+                        <label>Department *</label>
+                        <select id="tok-dept" class="form-control">
+                            <option value="General OPD">General OPD</option>
+                            <option value="Cardiology">Cardiology</option>
+                            <option value="Pediatrics">Pediatrics</option>
+                            <option value="OB-GYN">OB-GYN</option>
+                            <option value="Surgery">Surgery</option>
+                            <option value="Orthopedics">Orthopedics</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Counter / Room *</label>
+                        <select id="tok-counter" class="form-control">
+                            <option value="Room 201">Room 201</option>
+                            <option value="Room 202">Room 202</option>
+                            <option value="Room 203">Room 203</option>
+                            <option value="Counter 1">Counter 1</option>
+                            <option value="Counter 2">Counter 2</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Priority Level</label>
+                    <select id="tok-priority" class="form-control">
+                        <option value="Regular">Regular</option>
+                        <option value="Senior Citizen / PWD">Senior Citizen / PWD</option>
+                        <option value="Pediatric">Pediatric</option>
+                        <option value="STAT / Urgent">STAT / Urgent</option>
+                    </select>
+                </div>
             </div>
             <div class="modal-footer">
-                <button class="btn-secondary" onclick="closeModal('modal-universal-editor')">Cancel</button>
-                <button class="btn-primary-action" id="btn-save-universal-edit" onclick="submitUniversalEdit()"><i class="fa-solid fa-floppy-disk"></i> Save & Sync to Database</button>
+                <button class="btn-secondary" onclick="closeModal('modal-new-token')">Cancel</button>
+                <button class="btn-primary-action" onclick="submitNewToken()"><i class="fa-solid fa-print"></i> Issue & Print Token</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: RECORD VACCINE DOSE -->
+    <div id="modal-record-vaccine" class="modal-overlay">
+        <div class="modal-box" style="max-width:520px;">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-syringe"></i> Record Vaccine Dose</h3>
+                <button class="modal-close" onclick="closeModal('modal-record-vaccine')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Patient Name *</label>
+                    <select id="vax-patient-select" class="form-control"></select>
+                </div>
+                <div class="grid-2col">
+                    <div class="form-group">
+                        <label>Vaccine Antigen *</label>
+                        <select id="vax-antigen" class="form-control">
+                            <option value="Hepatitis B (Recombivax)">Hepatitis B (Recombivax)</option>
+                            <option value="Influenza Quadrivalent">Influenza Quadrivalent</option>
+                            <option value="BCG Vaccine">BCG Vaccine</option>
+                            <option value="Pentavalent (DTP-HepB-Hib)">Pentavalent (DTP-HepB-Hib)</option>
+                            <option value="Pneumococcal Conjugate (PCV13)">Pneumococcal Conjugate (PCV13)</option>
+                            <option value="Measles-Mumps-Rubella (MMR)">Measles-Mumps-Rubella (MMR)</option>
+                            <option value="COVID-19 Bivalent Booster">COVID-19 Bivalent Booster</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Dose Number *</label>
+                        <select id="vax-dose" class="form-control">
+                            <option value="1st Dose">1st Dose</option>
+                            <option value="2nd Dose">2nd Dose</option>
+                            <option value="3rd Dose">3rd Dose</option>
+                            <option value="Booster Shot">Booster Shot</option>
+                            <option value="Annual Dose">Annual Dose</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="grid-2col">
+                    <div class="form-group">
+                        <label>Batch / Lot Number</label>
+                        <input type="text" id="vax-batch" class="form-control" placeholder="e.g. LOT-2026-X99" />
+                    </div>
+                    <div class="form-group">
+                        <label>Administered By</label>
+                        <input type="text" id="vax-admin-by" class="form-control" value="Nurse Joy Reyes, RN" />
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeModal('modal-record-vaccine')">Cancel</button>
+                <button class="btn-primary-action" onclick="submitRecordVaccine()"><i class="fa-solid fa-floppy-disk"></i> Record Dose in Registry</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: START CSSD AUTOCLAVE CYCLE -->
+    <div id="modal-start-cssd" class="modal-overlay">
+        <div class="modal-box" style="max-width:520px;">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-play"></i> Start CSSD Sterilization Cycle</h3>
+                <button class="modal-close" onclick="closeModal('modal-start-cssd')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Autoclave Unit *</label>
+                    <select id="cssd-unit" class="form-control">
+                        <option value="Autoclave Sterilizer 1">Autoclave Sterilizer 1 (Main OT)</option>
+                        <option value="Autoclave Sterilizer 2">Autoclave Sterilizer 2 (ER Annex)</option>
+                        <option value="Flash Autoclave Unit">Flash Autoclave Unit (STAT)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Surgical Instrument Tray / Set *</label>
+                    <input type="text" id="cssd-tray" class="form-control" placeholder="e.g. Major Laparotomy Instrument Set #4" />
+                </div>
+                <div class="grid-2col">
+                    <div class="form-group">
+                        <label>Sterilization Cycle</label>
+                        <select id="cssd-cycle-time" class="form-control">
+                            <option value="134°C for 18 mins">134°C for 18 mins (Porous/Instruments)</option>
+                            <option value="121°C for 30 mins">121°C for 30 mins (Rubber/Plastics)</option>
+                            <option value="134°C for 4 mins (STAT Flash)">134°C for 4 mins (STAT Flash)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Biological Indicator</label>
+                        <select id="cssd-bio" class="form-control">
+                            <option value="Pass (Sterile)">Pass (Sterile)</option>
+                            <option value="Incubating (Pending)">Incubating (Pending)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeModal('modal-start-cssd')">Cancel</button>
+                <button class="btn-primary-action" onclick="submitStartCSSD()"><i class="fa-solid fa-play"></i> Initiate Cycle</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: ARCHIVE MRD RECORD -->
+    <div id="modal-archive-mrd" class="modal-overlay">
+        <div class="modal-box" style="max-width:520px;">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-folder-plus"></i> Archive Patient Medical Record (MRD)</h3>
+                <button class="modal-close" onclick="closeModal('modal-archive-mrd')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Patient *</label>
+                    <select id="mrd-patient-select" class="form-control"></select>
+                </div>
+                <div class="grid-2col">
+                    <div class="form-group">
+                        <label>Discharge Date</label>
+                        <input type="date" id="mrd-disch-date" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label>Primary ICD-10 Code</label>
+                        <input type="text" id="mrd-icd" class="form-control" placeholder="e.g. I10 - Essential Hypertension" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Physical Shelf Location / Digital Index</label>
+                    <input type="text" id="mrd-shelf" class="form-control" placeholder="e.g. Section B, Rack 4, Shelf 02" />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeModal('modal-archive-mrd')">Cancel</button>
+                <button class="btn-primary-action" onclick="submitArchiveMRD()"><i class="fa-solid fa-box-archive"></i> Archive & Index Chart</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: CREATE STAFF USER -->
+    <div id="modal-create-user" class="modal-overlay">
+        <div class="modal-box" style="max-width:520px;">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-user-shield"></i> Create Staff User Account</h3>
+                <button class="modal-close" onclick="closeModal('modal-create-user')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="grid-2col">
+                    <div class="form-group">
+                        <label>Username *</label>
+                        <input type="text" id="usr-name" class="form-control" placeholder="e.g. dr.santos" />
+                    </div>
+                    <div class="form-group">
+                        <label>Full Staff Name *</label>
+                        <input type="text" id="usr-fullname" class="form-control" placeholder="e.g. Dr. Miguel Santos, MD" />
+                    </div>
+                </div>
+                <div class="grid-2col">
+                    <div class="form-group">
+                        <label>Assigned Role *</label>
+                        <select id="usr-role" class="form-control">
+                            <option value="Attending Physician">Attending Physician</option>
+                            <option value="Head Nurse">Head Nurse</option>
+                            <option value="Pharmacist">Pharmacist</option>
+                            <option value="Billing Officer">Billing Officer</option>
+                            <option value="Lab Medical Technologist">Lab Medical Technologist</option>
+                            <option value="Radiologist">Radiologist</option>
+                            <option value="System Administrator">System Administrator</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Allowed Modules</label>
+                        <select id="usr-modules" class="form-control">
+                            <option value="All Modules">All Modules</option>
+                            <option value="Clinical & Nursing">Clinical & Nursing</option>
+                            <option value="Pharmacy & Stock">Pharmacy & Stock</option>
+                            <option value="Billing & Claims">Billing & Claims</option>
+                            <option value="Diagnostics Only">Diagnostics Only</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeModal('modal-create-user')">Cancel</button>
+                <button class="btn-primary-action" onclick="submitCreateUser()"><i class="fa-solid fa-user-check"></i> Register User Account</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: ADD WAREHOUSE INVENTORY ITEM -->
+    <div id="modal-new-stock-item" class="modal-overlay">
+        <div class="modal-box" style="max-width:540px;">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-boxes-packing"></i> Add Warehouse Inventory Item</h3>
+                <button class="modal-close" onclick="closeModal('modal-new-stock-item')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="grid-2col">
+                    <div class="form-group">
+                        <label>SKU / Item Code *</label>
+                        <input type="text" id="itm-code" class="form-control" placeholder="e.g. MED-7788" />
+                    </div>
+                    <div class="form-group">
+                        <label>Item Name & Strength *</label>
+                        <input type="text" id="itm-name" class="form-control" placeholder="e.g. Ceftriaxone 1g Vial" />
+                    </div>
+                </div>
+                <div class="grid-2col">
+                    <div class="form-group">
+                        <label>Category *</label>
+                        <select id="itm-cat" class="form-control">
+                            <option value="Antibiotics">Antibiotics</option>
+                            <option value="Analgesics">Analgesics</option>
+                            <option value="IV Fluids">IV Fluids</option>
+                            <option value="Cardiovascular">Cardiovascular</option>
+                            <option value="Surgical Consumables">Surgical Consumables</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Batch / Lot No</label>
+                        <input type="text" id="itm-batch" class="form-control" placeholder="e.g. BAT-2026-A1" />
+                    </div>
+                </div>
+                <div class="grid-3col">
+                    <div class="form-group">
+                        <label>Stock Qty *</label>
+                        <input type="number" id="itm-qty" class="form-control" placeholder="100" />
+                    </div>
+                    <div class="form-group">
+                        <label>Unit Price (PHP) *</label>
+                        <input type="number" step="0.01" id="itm-price" class="form-control" placeholder="125.00" />
+                    </div>
+                    <div class="form-group">
+                        <label>Reorder Level</label>
+                        <input type="number" id="itm-reorder" class="form-control" placeholder="25" />
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeModal('modal-new-stock-item')">Cancel</button>
+                <button class="btn-primary-action" onclick="submitNewStockItem()"><i class="fa-solid fa-plus"></i> Add Item to Inventory</button>
             </div>
         </div>
     </div>
@@ -4677,7 +4951,10 @@
                 // Render all dynamic tables
                 renderAllDynamicTables(state);
 
-                // Update Dashboard KPI Stat Cards with live data
+                // ==========================================
+                // 1. DASHBOARD & ALL MODULE KPI STAT CARDS
+                // ==========================================
+                // Dashboard
                 const statPatients = document.getElementById('dash-stat-patients');
                 if (statPatients) statPatients.textContent = (state.patients || []).length.toLocaleString();
 
@@ -4686,10 +4963,75 @@
 
                 const beds = state.adt_beds || [];
                 const occupiedBeds = beds.filter(b => b.status === 'Occupied').length;
+                const availableBeds = beds.filter(b => b.status === 'Available' || b.status === 'Empty').length;
                 const totalBeds = beds.length || 1;
                 const occPct = ((occupiedBeds / totalBeds) * 100).toFixed(1) + '%';
                 const occEl = document.getElementById('dash-occupancy-kpi');
                 if (occEl) occEl.textContent = occPct;
+
+                // Inpatient ADT
+                if (document.getElementById('adt-total-beds')) document.getElementById('adt-total-beds').textContent = totalBeds;
+                if (document.getElementById('adt-occupied-beds')) document.getElementById('adt-occupied-beds').textContent = occupiedBeds;
+                if (document.getElementById('adt-available-beds')) document.getElementById('adt-available-beds').textContent = availableBeds;
+                if (document.getElementById('adt-occupancy-rate')) document.getElementById('adt-occupancy-rate').textContent = occPct;
+
+                // ER Cases
+                const erCases = state.er_cases || [];
+                const erCritical = erCases.filter(c => c.triage_level == 1 || c.triage_level == 2).length;
+                if (document.getElementById('er-total-cases')) document.getElementById('er-total-cases').textContent = erCases.length;
+                if (document.getElementById('er-critical-cases')) document.getElementById('er-critical-cases').textContent = erCritical;
+                if (document.getElementById('er-bays-occupied')) document.getElementById('er-bays-occupied').textContent = `${erCases.length} / 6`;
+
+                // Inventory & Supply Chain
+                const invItems = state.inventory_items || [];
+                const lowStockCount = invItems.filter(i => (parseFloat(i.stock_qty) || 0) <= (parseFloat(i.reorder_level) || 0)).length;
+                const totalInvVal = invItems.reduce((acc, i) => acc + ((parseFloat(i.stock_qty) || 0) * (parseFloat(i.unit_price) || 0)), 0);
+                if (document.getElementById('inv-total-skus')) document.getElementById('inv-total-skus').textContent = `${invItems.length} Items`;
+                if (document.getElementById('inv-low-stock')) document.getElementById('inv-low-stock').textContent = `${lowStockCount} Items`;
+                if (document.getElementById('inv-total-value')) document.getElementById('inv-total-value').textContent = '₱ ' + totalInvVal.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+
+                // Procurement POs
+                const poList = state.procurement_po || [];
+                const totalPOVal = poList.reduce((acc, p) => acc + (parseFloat(p.total_amount) || 0), 0);
+                const pendingPOs = poList.filter(p => p.status !== 'Completed' && p.status !== 'Received').length;
+                const vendorCount = new Set(poList.map(p => p.supplier_name)).size;
+                if (document.getElementById('po-open-value')) document.getElementById('po-open-value').textContent = '₱ ' + totalPOVal.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                if (document.getElementById('po-pending-count')) document.getElementById('po-pending-count').textContent = `${pendingPOs} POs`;
+                if (document.getElementById('po-vendor-count')) document.getElementById('po-vendor-count').textContent = vendorCount;
+
+                // General Ledger & Accounting
+                const vouchers = state.accounting_vouchers || [];
+                const totalCash = vouchers.reduce((acc, v) => acc + (parseFloat(v.amount) || 0), 0);
+                const claims = state.insurance_claims || [];
+                const totalAR = claims.filter(c => c.claim_status !== 'Settled').reduce((acc, c) => acc + (parseFloat(c.claim_amount) || 0), 0);
+                const incentives = state.doctor_incentives || [];
+                const totalIncentives = incentives.reduce((acc, i) => acc + (parseFloat(i.net_payable) || 0), 0);
+                if (document.getElementById('acc-cash-bank')) document.getElementById('acc-cash-bank').textContent = '₱ ' + (totalCash || 5420000).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                if (document.getElementById('acc-ar-hmo')) document.getElementById('acc-ar-hmo').textContent = '₱ ' + (totalAR || 840500).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                if (document.getElementById('acc-dr-incentive')) document.getElementById('acc-dr-incentive').textContent = '₱ ' + (totalIncentives || 310200).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+
+                // Vaccine Registry
+                const vaxList = state.vaccination_records || [];
+                if (document.getElementById('vax-monthly-doses')) document.getElementById('vax-monthly-doses').textContent = `${vaxList.length} Doses`;
+
+                // Smart OPD Queue Management
+                const queueList = state.queue_tickets || [];
+                const servingToken = queueList.find(q => q.status === 'Serving') || queueList[0];
+                const waitingTokens = queueList.filter(q => q.status === 'Waiting' || q.status === 'Pending').length;
+                if (document.getElementById('queue-now-serving')) document.getElementById('queue-now-serving').textContent = servingToken ? servingToken.token_no : 'None';
+                if (document.getElementById('queue-now-room-text')) document.getElementById('queue-now-room-text').textContent = servingToken ? `Now Serving in ${servingToken.counter_no}` : 'All counters clear';
+                if (document.getElementById('queue-waiting-count')) document.getElementById('queue-waiting-count').textContent = `${waitingTokens} Patients`;
+                if (document.getElementById('queue-avg-time')) document.getElementById('queue-avg-time').textContent = `${(waitingTokens * 2.5 + 1.5).toFixed(1)} min`;
+
+                // CSSD Sterilization
+                const cssdList = state.cssd_batches || [];
+                if (document.getElementById('cssd-trays-ready')) document.getElementById('cssd-trays-ready').textContent = `${cssdList.length} Sets`;
+
+                // Executive MIS Reports
+                const invoices = state.billing_invoices || [];
+                const totalRev = invoices.reduce((acc, i) => acc + (parseFloat(i.net_total) || 0), 0);
+                if (document.getElementById('rep-total-revenue')) document.getElementById('rep-total-revenue').textContent = '₱ ' + totalRev.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                if (document.getElementById('rep-opd-consults')) document.getElementById('rep-opd-consults').textContent = ((state.appointments || []).length + (state.patients || []).length).toLocaleString();
 
             } catch (err) {
                 console.error('loadLiveEMRState error:', err);
@@ -4757,7 +5099,7 @@
             if (!patients || !Array.isArray(patients)) return;
 
             // Update select dropdowns
-            const dropdownIds = ['apt-patient', 'edit-bed-patient', 'inv-pat-select', 'rx-patient-name', 'lab-pat-name'];
+            const dropdownIds = ['apt-patient', 'edit-bed-patient', 'inv-pat-select', 'rx-patient-name', 'lab-pat-name', 'tok-patient-select', 'vax-patient-select', 'mrd-patient-select'];
             dropdownIds.forEach(id => {
                 const select = document.getElementById(id);
                 if (!select) return;
@@ -5663,6 +6005,304 @@
                     await loadLiveEMRState();
                 } else {
                     showToast('❌ Error: ' + (result.error || 'Failed to post voucher'));
+                }
+            } catch(err) {
+                showToast('❌ Network error: ' + err.message);
+            }
+        }
+
+        // ==========================================
+        // CRUD: ISSUE NEW QUEUE TOKEN
+        // ==========================================
+        async function submitNewToken() {
+            const patient = document.getElementById('tok-patient-select')?.value;
+            const dept = document.getElementById('tok-dept')?.value;
+            const counter = document.getElementById('tok-counter')?.value;
+            const priority = document.getElementById('tok-priority')?.value || 'Regular';
+
+            if (!patient || !dept || !counter) {
+                showToast('Please select patient, department, and counter room.');
+                return;
+            }
+
+            const prefix = dept.startsWith('P') ? 'P' : (dept.startsWith('C') ? 'C' : 'A');
+            const tokenNo = prefix + '-' + String(Math.floor(Math.random() * 800) + 100);
+
+            const payload = {
+                token_no: tokenNo,
+                patient_name: patient,
+                department: dept,
+                counter_no: counter,
+                priority_level: priority,
+                status: 'Waiting',
+                issued_at: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
+            };
+
+            try {
+                const res = await fetch('/api/queue_tickets', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const result = await res.json();
+                if (result.success) {
+                    showToast('✅ Token ' + tokenNo + ' issued for ' + patient + ' (' + counter + ')');
+                    closeModal('modal-new-token');
+                    await loadLiveEMRState();
+                } else {
+                    showToast('❌ Error: ' + (result.error || 'Failed to issue token'));
+                }
+            } catch(err) {
+                showToast('❌ Network error: ' + err.message);
+            }
+        }
+
+        // ==========================================
+        // CALL NEXT QUEUE TOKEN
+        // ==========================================
+        async function callNextQueueToken() {
+            const queue = LIVE_EMR_STATE.queue_tickets || [];
+            const nextWaiting = queue.find(q => q.status === 'Waiting' || q.status === 'Pending');
+            if (!nextWaiting) {
+                showToast('ℹ️ No waiting tokens in queue.');
+                return;
+            }
+
+            try {
+                await fetch('/api/queue_tickets', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        _action: 'update',
+                        id: nextWaiting.id,
+                        status: 'Serving'
+                    })
+                });
+
+                showToast(`📢 Voice Calling: Token ${nextWaiting.token_no} (${nextWaiting.patient_name}) please proceed to ${nextWaiting.counter_no}!`);
+                await loadLiveEMRState();
+            } catch (err) {
+                showToast('Voice calling broadcast triggered.');
+            }
+        }
+
+        // ==========================================
+        // CRUD: RECORD VACCINE DOSE
+        // ==========================================
+        async function submitRecordVaccine() {
+            const patient = document.getElementById('vax-patient-select')?.value;
+            const antigen = document.getElementById('vax-antigen')?.value;
+            const dose = document.getElementById('vax-dose')?.value;
+            const batch = document.getElementById('vax-batch')?.value?.trim() || 'LOT-2026-A1';
+            const adminBy = document.getElementById('vax-admin-by')?.value?.trim() || 'Nurse Joy Reyes, RN';
+
+            if (!patient || !antigen || !dose) {
+                showToast('Please select Patient, Vaccine Antigen, and Dose Number.');
+                return;
+            }
+
+            const recordNo = 'VAX-' + new Date().getFullYear() + '-' + String(Math.floor(Math.random() * 9000) + 1000);
+            const payload = {
+                record_no: recordNo,
+                patient_name: patient,
+                vaccine_name: antigen,
+                dose_number: dose,
+                batch_no: batch,
+                administered_by: adminBy,
+                date_given: new Date().toISOString().split('T')[0]
+            };
+
+            try {
+                const res = await fetch('/api/vaccination_records', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const result = await res.json();
+                if (result.success) {
+                    showToast('✅ Vaccine record ' + recordNo + ' logged for ' + patient);
+                    closeModal('modal-record-vaccine');
+                    await loadLiveEMRState();
+                } else {
+                    showToast('❌ Error: ' + (result.error || 'Failed to record vaccine'));
+                }
+            } catch(err) {
+                showToast('❌ Network error: ' + err.message);
+            }
+        }
+
+        // ==========================================
+        // CRUD: START CSSD CYCLE
+        // ==========================================
+        async function submitStartCSSD() {
+            const unit = document.getElementById('cssd-unit')?.value;
+            const tray = document.getElementById('cssd-tray')?.value?.trim();
+            const cycle = document.getElementById('cssd-cycle-time')?.value;
+            const bio = document.getElementById('cssd-bio')?.value;
+
+            if (!tray) {
+                showToast('Please specify instrument tray description.');
+                return;
+            }
+
+            const cycleNo = 'CSSD-' + new Date().getFullYear() + '-' + String(Math.floor(Math.random() * 900) + 100);
+            const payload = {
+                cycle_no: cycleNo,
+                autoclave_unit: unit,
+                tray_type: tray,
+                sterilization_time: cycle,
+                biological_indicator: bio,
+                operator: 'Tech Rommel Garcia',
+                status: 'Passed'
+            };
+
+            try {
+                const res = await fetch('/api/cssd_batches', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const result = await res.json();
+                if (result.success) {
+                    showToast('✅ Autoclave cycle ' + cycleNo + ' initiated (' + unit + ')');
+                    closeModal('modal-start-cssd');
+                    document.getElementById('cssd-tray').value = '';
+                    await loadLiveEMRState();
+                } else {
+                    showToast('❌ Error: ' + (result.error || 'Failed to start cycle'));
+                }
+            } catch(err) {
+                showToast('❌ Network error: ' + err.message);
+            }
+        }
+
+        // ==========================================
+        // CRUD: ARCHIVE MRD RECORD
+        // ==========================================
+        async function submitArchiveMRD() {
+            const patient = document.getElementById('mrd-patient-select')?.value;
+            const disch = document.getElementById('mrd-disch-date')?.value || new Date().toISOString().split('T')[0];
+            const icd = document.getElementById('mrd-icd')?.value?.trim() || 'Z00.0 - General Exam';
+            const shelf = document.getElementById('mrd-shelf')?.value?.trim() || 'Rack 01, Shelf A';
+
+            if (!patient) {
+                showToast('Please select a patient to archive.');
+                return;
+            }
+
+            const hospNo = 'G1-' + new Date().getFullYear() + '-' + String(Math.floor(Math.random() * 9000) + 1000);
+            const payload = {
+                hospital_no: hospNo,
+                patient_name: patient,
+                discharge_date: disch,
+                icd_code: icd,
+                shelf_location: shelf,
+                status: 'Archived'
+            };
+
+            try {
+                const res = await fetch('/api/mrd_records', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const result = await res.json();
+                if (result.success) {
+                    showToast('✅ Medical record archived for ' + patient + ' (' + shelf + ')');
+                    closeModal('modal-archive-mrd');
+                    await loadLiveEMRState();
+                } else {
+                    showToast('❌ Error: ' + (result.error || 'Failed to archive record'));
+                }
+            } catch(err) {
+                showToast('❌ Network error: ' + err.message);
+            }
+        }
+
+        // ==========================================
+        // CRUD: CREATE STAFF USER ACCOUNT
+        // ==========================================
+        async function submitCreateUser() {
+            const username = document.getElementById('usr-name')?.value?.trim();
+            const fullName = document.getElementById('usr-fullname')?.value?.trim();
+            const role = document.getElementById('usr-role')?.value;
+            const modules = document.getElementById('usr-modules')?.value;
+
+            if (!username || !fullName) {
+                showToast('Please fill in Username and Full Staff Name.');
+                return;
+            }
+
+            const payload = {
+                username: username,
+                full_name: fullName,
+                role: role,
+                allowed_modules: modules,
+                session_status: 'Active'
+            };
+
+            try {
+                const res = await fetch('/api/system_users', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const result = await res.json();
+                if (result.success) {
+                    showToast('✅ User account @' + username + ' created with role: ' + role);
+                    closeModal('modal-create-user');
+                    ['usr-name','usr-fullname'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
+                    await loadLiveEMRState();
+                } else {
+                    showToast('❌ Error: ' + (result.error || 'Failed to create user'));
+                }
+            } catch(err) {
+                showToast('❌ Network error: ' + err.message);
+            }
+        }
+
+        // ==========================================
+        // CRUD: ADD WAREHOUSE INVENTORY ITEM
+        // ==========================================
+        async function submitNewStockItem() {
+            const code = document.getElementById('itm-code')?.value?.trim();
+            const name = document.getElementById('itm-name')?.value?.trim();
+            const category = document.getElementById('itm-cat')?.value;
+            const batch = document.getElementById('itm-batch')?.value?.trim() || 'BAT-2026-X1';
+            const qty = document.getElementById('itm-qty')?.value?.trim();
+            const price = document.getElementById('itm-price')?.value?.trim();
+            const reorder = document.getElementById('itm-reorder')?.value?.trim() || '20';
+
+            if (!code || !name || !qty || !price) {
+                showToast('Please fill in Item Code, Name, Quantity, and Unit Price.');
+                return;
+            }
+
+            const payload = {
+                item_code: code,
+                item_name: name,
+                category: category,
+                batch_no: batch,
+                expiry_date: '2028-12-31',
+                stock_qty: parseInt(qty) || 0,
+                unit_price: parseFloat(price) || 0,
+                reorder_level: parseInt(reorder) || 20
+            };
+
+            try {
+                const res = await fetch('/api/inventory_items', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const result = await res.json();
+                if (result.success) {
+                    showToast('✅ Item ' + name + ' (' + code + ') added to warehouse inventory');
+                    closeModal('modal-new-stock-item');
+                    ['itm-code','itm-name','itm-batch','itm-qty','itm-price','itm-reorder'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
+                    await loadLiveEMRState();
+                } else {
+                    showToast('❌ Error: ' + (result.error || 'Failed to add item'));
                 }
             } catch(err) {
                 showToast('❌ Network error: ' + err.message);
