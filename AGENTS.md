@@ -1,4 +1,4 @@
-# Antigravity Agent Workspace Guidelines: DanpheEMR
+# Antigravity Agent Workspace Guidelines: Enterprise Hospital EMR
 
 ## 1. Personalization & White-Labeling Protocol
 - When asked to customize branding, logos, hospital names, contact details, or themes, **ALWAYS check the `/Personalization` directory first**:
@@ -14,9 +14,9 @@
 - Ensure dual calendar compatibility (Gregorian AD and Nepali Bikram Sambat BS) through `NepaliCalendarService`.
 
 ## 3. Backend & API Guidelines
-- Register all new domain services in `Code/Websites/DanpheEMR/DependencyInjection/DanpheServicesExtensions.cs`.
-- All API controllers must inherit from `CommonController`, enforce JWT Bearer auth, and return `DanpheHTTPResponse<T>`.
-- Register new EF entities in `DanpheEMR.ServerModel` and `DanpheEMR.DalLayer`.
+- Register all new domain services in `Code/Websites/HospitalEMR/DependencyInjection/HospitalServicesExtensions.cs`.
+- All API controllers must inherit from `CommonController`, enforce JWT Bearer auth, and return `HospitalHTTPResponse<T>`.
+- Register new EF entities in `HospitalEMR.ServerModel` and `HospitalEMR.DalLayer`.
 
 ## 4. Database Safety Rules
 - Wrap data manipulation in transactions with error handling.

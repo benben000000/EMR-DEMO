@@ -126,7 +126,7 @@ class TriageService:
 
 # 4. DEPENDENCY INJECTION (DI) CONTAINER
 class ServiceContainer:
-    def __init__(self, use_in_memory: bool = False, db_path: str = "danphe_emr.db"):
+    def __init__(self, use_in_memory: bool = False, db_path: str = "hospital_emr.db"):
         self.use_in_memory = use_in_memory
         self.db_path = db_path
         self._repositories: Dict[str, IRepository] = {}

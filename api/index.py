@@ -29,7 +29,7 @@ import base64
 
 PORT = 5000
 PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
-BASE_DIR = os.path.abspath(os.path.join(PROJECT_ROOT, "Code/Websites/DanpheEMR"))
+BASE_DIR = os.path.abspath(os.path.join(PROJECT_ROOT, "Code/Websites/HospitalEMR"))
 
 # Cryptographic Secret Key for HMAC Session Tokens
 SECRET_KEY = b'global1onetech_g1_health_emr_enterprise_secret_key_2026'
@@ -2118,7 +2118,7 @@ APP_HTML = """<!DOCTYPE html>
                     <a onclick="switchTab('view-dashboard', this)"><i class="fa-solid fa-chart-pie"></i><span>Dashboard</span></a>
                 </li>
 
-                <!-- Legacy HMIS & G1 Modules matching Danphe + Cloud Suite -->
+                <!-- Core Enterprise EMR & Clinical Modules -->
                 <li class="nav-item" data-target="view-clinical" data-module="clinical">
                     <a onclick="switchTab('view-clinical', this)"><i class="fa-solid fa-stethoscope"></i><span>Clinical</span></a>
                 </li>

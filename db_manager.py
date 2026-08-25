@@ -3,10 +3,10 @@ import os
 import json
 import time
 
-DB_PATH = os.environ.get("DANPHE_DB_PATH", os.path.join(os.path.dirname(__file__), "danphe_emr.db"))
+DB_PATH = os.environ.get("EMR_DB_PATH", os.environ.get("HOSPITAL_DB_PATH", os.path.join(os.path.dirname(__file__), "hospital_emr.db")))
 
 if not os.access(os.path.dirname(DB_PATH) or ".", os.W_OK):
-    DB_PATH = "/tmp/danphe_emr.db"
+    DB_PATH = "/tmp/hospital_emr.db"
 
 def get_db_connection():
     conn = sqlite3.connect(DB_PATH)

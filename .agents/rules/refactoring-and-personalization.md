@@ -37,16 +37,17 @@ Whenever tasked with updating branding, logos, themes, contact information, prin
 ## 2. ⚡ Frontend Refactoring & Architecture Guidelines
 
 ### Rule 2.1: Modern Modular SPA Principles
-- Maintain decoupled feature modules under `wwwroot/DanpheApp/src/app/` (or modernized standalone components in target Angular/React/Vite).
+### Rule 2.1: Modern Modular SPA Principles
+- Maintain decoupled feature modules under `wwwroot/HospitalApp/src/app/` (or modernized standalone components in target Angular/React/Vite).
 - Ensure every feature module has dedicated `shared/` services (`bl.service.ts`, `dl.service.ts`, `endpoint.service.ts`) encapsulating HTTP operations.
 - Avoid passing raw untyped objects; define TypeScript interfaces/models in `<feature>/shared/<model>.model.ts`.
 
-### Rule 2.2: Dual Calendar (Gregorian AD & Bikram Sambat BS) Safety
-- DanpheEMR operates with dual calendar systems (English AD and Nepali BS).
-- Always use `NepaliCalendarService` / `nepali-dates` for date conversion. Do not mutate raw JavaScript `Date` objects directly when handling BS fiscal dates.
+### Rule 2.2: Dual Calendar Safety
+- Platform supports dual calendar systems (English AD and local calendar formats).
+- Always use calendar services for date conversion. Do not mutate raw JavaScript `Date` objects directly when handling fiscal dates.
 
 ### Rule 2.3: Reusable Data Grids & Modals
-- Use standard `DanpheGridComponent` or the modernized table component with built-in export (Excel/PDF), filtering, search, and pagination.
+- Use standard `EMRGridComponent` or the modernized table component with built-in export (Excel/PDF), filtering, search, and pagination.
 - Avoid modifying global DOM elements directly via jQuery; use Angular reactive state and Angular CDK / Headless UI patterns.
 
 ---
@@ -54,17 +55,17 @@ Whenever tasked with updating branding, logos, themes, contact information, prin
 ## 3. 🛡️ Backend & API Guidelines
 
 ### Rule 3.1: Service Registration & Dependency Injection
-- Whenever creating a new domain service, register it in `Code/Websites/DanpheEMR/DependencyInjection/DanpheServicesExtensions.cs` using `services.AddTransient<ITargetService, TargetService>();`.
+- Whenever creating a new domain service, register it in `Code/Websites/HospitalEMR/DependencyInjection/HospitalServicesExtensions.cs` using `services.AddTransient<ITargetService, TargetService>();`.
 - Do not bloat `Startup.cs` directly.
 
 ### Rule 3.2: API Controller Standards
 - All domain controllers must inherit from `CommonController` to gain access to configuration, tenant connection strings, and audit helpers.
 - Decorate endpoints with `[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]`.
-- Always wrap response payloads in `DanpheHTTPResponse<T>` (`Status = "OK" | "Failed"`, `Results = data`, `ErrorMessage = message`).
+- Always wrap response payloads in `HospitalHTTPResponse<T>` (`Status = "OK" | "Failed"`, `Results = data`, `ErrorMessage = message`).
 
 ### Rule 3.3: Data Access & EF DbContext Partitioning
-- Place new Entity Framework models in `DanpheEMR.ServerModel/<Domain>Models/`.
-- Register new `DbSet<T>` in the appropriate `DanpheEMR.DalLayer/<Domain>DbContext.cs`.
+- Place new Entity Framework models in `HospitalEMR.ServerModel/<Domain>Models/`.
+- Register new `DbSet<T>` in the appropriate `HospitalEMR.DalLayer/<Domain>DbContext.cs`.
 - Ensure table names strictly match SQL schema mappings (e.g. `[Table("PAT_Patient")]`).
 
 ---

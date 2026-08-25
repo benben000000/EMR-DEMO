@@ -7,7 +7,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")
 from core.services import ServiceContainer
 
 def test_sqlite_container_integration():
-    test_db = "/tmp/test_danphe_emr.db"
+    test_db = "/tmp/test_hospital_emr.db"
     if os.path.exists(test_db):
         os.remove(test_db)
         
