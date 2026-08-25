@@ -2474,11 +2474,13 @@ APP_HTML = """<!DOCTYPE html>
                     <table class="emr-table">
                         <thead>
                             <tr>
-                                <th>Time Slot</th>
+                                <th>#</th>
                                 <th>Patient Name</th>
-                                <th>Doctor</th>
+                                <th>Consultant Doctor</th>
                                 <th>Department</th>
-                                <th>Queue Status</th>
+                                <th>Date</th>
+                                <th>Time Slot</th>
+                                <th>Status</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -4489,49 +4491,73 @@ APP_HTML = """<!DOCTYPE html>
 
     <!-- MODAL: BOOK APPOINTMENT -->
     <div id="modal-new-appointment" class="modal-overlay">
-        <div class="modal-box">
+        <div class="modal-box" style="max-width:540px;">
             <div class="modal-header">
-                <h3><i class="fa-solid fa-calendar-plus"></i> Book Doctor Consultation</h3>
+                <h3><i class="fa-solid fa-calendar-plus"></i> Book & Confirm Doctor Consultation</h3>
                 <button class="modal-close" onclick="closeModal('modal-new-appointment')">&times;</button>
             </div>
             <div class="modal-body">
                 <div class="form-grid">
                     <div class="form-group">
-                        <label>Select Patient</label>
+                        <label>Select Patient *</label>
                         <select class="form-control" id="apt-patient">
-                            <option>Maria Santos (G1-2026-0089)</option>
-                            <option>Juan Dela Cruz (G1-2026-0090)</option>
-                            <option>Elena Reyes (G1-2026-0091)</option>
-                            <option>Antonio Gonzales (G1-2026-0092)</option>
+                            <option value="Maria Santos">Maria Santos (G1-2026-0089)</option>
+                            <option value="Juan Dela Cruz">Juan Dela Cruz (G1-2026-0090)</option>
+                            <option value="Elena Reyes">Elena Reyes (G1-2026-0091)</option>
+                            <option value="Antonio Gonzales">Antonio Gonzales (G1-2026-0092)</option>
+                            <option value="Teresa Ramos">Teresa Ramos (G1-2026-0093)</option>
+                            <option value="Rodrigo Alvarez">Rodrigo Alvarez (G1-2026-0094)</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>Clinical Department</label>
-                        <select class="form-control">
-                            <option>Cardiology</option>
-                            <option>Internal Medicine</option>
-                            <option>Neurology</option>
-                            <option>Orthopedics</option>
-                            <option>General Surgery</option>
+                        <label>Clinical Department *</label>
+                        <select class="form-control" id="apt-department" onchange="updateAppointmentDoctorList(this.value)">
+                            <option value="Cardiology">Cardiology</option>
+                            <option value="Internal Medicine">Internal Medicine</option>
+                            <option value="Neurology">Neurology</option>
+                            <option value="Orthopedics">Orthopedics</option>
+                            <option value="Pediatrics">Pediatrics</option>
+                            <option value="General Surgery">General Surgery</option>
+                            <option value="Emergency">Emergency</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>Attending Consultant</label>
-                        <select class="form-control">
-                            <option>Dr. Roberto Tan, MD (Cardiologist)</option>
-                            <option>Dr. Alicia Gomez, MD (Internal Med)</option>
-                            <option>Dr. Vincent Lim, MD (Neurologist)</option>
+                        <label>Attending Consultant *</label>
+                        <select class="form-control" id="apt-doctor">
+                            <option value="Dr. Roberto Tan, MD">Dr. Roberto Tan, MD (Cardiology)</option>
+                            <option value="Dr. Alicia Gomez, MD">Dr. Alicia Gomez, MD (Internal Medicine)</option>
+                            <option value="Dr. Vincent Lim, MD">Dr. Vincent Lim, MD (Neurology)</option>
+                            <option value="Dr. Clara Santos, MD">Dr. Clara Santos, MD (Pediatrics)</option>
+                            <option value="Dr. Marcus Hernandez, MD">Dr. Marcus Hernandez, MD (Surgery)</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>Appointment Date</label>
-                        <input type="date" class="form-control" value="2026-08-24" />
+                        <label>Appointment Date *</label>
+                        <input type="date" class="form-control" id="apt-date" value="2026-08-25" />
+                    </div>
+                    <div class="form-group">
+                        <label>Time Slot *</label>
+                        <select class="form-control" id="apt-time">
+                            <option value="09:00 AM">09:00 AM - 09:30 AM</option>
+                            <option value="09:30 AM">09:30 AM - 10:00 AM</option>
+                            <option value="10:00 AM" selected>10:00 AM - 10:30 AM</option>
+                            <option value="10:30 AM">10:30 AM - 11:00 AM</option>
+                            <option value="11:00 AM">11:00 AM - 11:30 AM</option>
+                            <option value="01:30 PM">01:30 PM - 02:00 PM</option>
+                            <option value="02:00 PM">02:00 PM - 02:30 PM</option>
+                            <option value="03:00 PM">03:00 PM - 03:30 PM</option>
+                            <option value="04:00 PM">04:00 PM - 04:30 PM</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Reason / Chief Complaint</label>
+                        <input type="text" class="form-control" id="apt-notes" placeholder="e.g. Routine follow-up, chest discomfort, hypertension check" />
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn-secondary" onclick="closeModal('modal-new-appointment')">Cancel</button>
-                <button class="btn-primary-action" onclick="saveNewAppointment()"><i class="fa-solid fa-calendar-check"></i> Confirm Appointment</button>
+                <button type="button" class="btn-secondary" onclick="closeModal('modal-new-appointment')">Cancel</button>
+                <button type="button" class="btn-primary-action" onclick="saveNewAppointment()"><i class="fa-solid fa-calendar-check"></i> Confirm & Book Appointment</button>
             </div>
         </div>
     </div>
@@ -5700,11 +5726,32 @@ APP_HTML = """<!DOCTYPE html>
         }
 
         // Automated EMR Tool Execution from AI Chat
-        function executeAIAutoBook(patName, doctorName, dept) {
-            showToast(`✅ [TOOL EXECUTED] Appointment confirmed with ${doctorName} (${dept}) for ${patName}!`);
-            setTimeout(() => {
-                switchTab('view-appointments', null);
-            }, 1200);
+        async function executeAIAutoBook(patName, doctorName, dept) {
+            const today = new Date().toISOString().split('T')[0];
+            const payload = {
+                patient_name: patName || 'Walk-in Patient',
+                doctor_name: doctorName || 'Dr. Roberto Tan, MD',
+                department: dept || 'Cardiology',
+                appointment_date: today,
+                appointment_time: '10:00 AM',
+                status: 'Confirmed',
+                notes: 'AI CRM Triage Auto-Booking'
+            };
+
+            try {
+                await apiFetch('/api/appointments', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                showToast(`✅ [CONFIRMED] Appointment booked with ${payload.doctor_name} (${payload.department}) for ${payload.patient_name}!`);
+                await loadLiveEMRState();
+                setTimeout(() => {
+                    switchTab('view-appointments', document.querySelector('[data-target=view-appointments]'));
+                }, 700);
+            } catch(err) {
+                showToast(`❌ Error auto-booking: ${err.message}`);
+            }
         }
     
         
@@ -6175,14 +6222,15 @@ APP_HTML = """<!DOCTYPE html>
         function renderAllDynamicTables(state) {
             // 1. Appointments
             renderTableHelper('tbody-appointments', state.appointments, (a) => `
-                <td><strong>${a.id}</strong></td>
+                <td><strong>#${a.id}</strong></td>
                 <td><strong>${a.patient_name}</strong></td>
                 <td>${a.doctor_name}</td>
                 <td><span class="status-badge status-completed">${a.department}</span></td>
-                <td>${a.appointment_date}</td>
-                <td>${a.appointment_time}</td>
+                <td>${a.appointment_date || '2026-08-25'}</td>
+                <td>${a.appointment_time || '10:00 AM'}</td>
                 <td><span class="status-badge ${a.status === 'Confirmed' ? 'status-active' : 'status-pending'}">${a.status}</span></td>
                 <td>
+                    ${a.status !== 'Confirmed' ? `<button class="btn-primary-action" style="padding:3px 8px; font-size:11px; margin-right:4px;" onclick="confirmExistingAppointment(${a.id})"><i class="fa-solid fa-circle-check"></i> Confirm</button>` : ''}
                     <button class="btn-secondary" style="padding:3px 7px; font-size:11px;" onclick="openUniversalEditor('appointments', ${a.id})"><i class="fa-solid fa-pen"></i></button>
                     <button class="btn-secondary" style="padding:3px 7px; font-size:11px; color:#ef4444;" onclick="deleteLiveRecord('appointments', ${a.id})"><i class="fa-solid fa-trash"></i></button>
                 </td>
@@ -6703,21 +6751,50 @@ APP_HTML = """<!DOCTYPE html>
             }
         }
 
+        function updateAppointmentDoctorList(dept) {
+            const docSelect = document.getElementById('apt-doctor');
+            if (!docSelect) return;
+            const doctorsByDept = {
+                'Cardiology': ['Dr. Roberto Tan, MD', 'Dr. Manuel Roxas, MD'],
+                'Internal Medicine': ['Dr. Alicia Gomez, MD', 'Dr. Victor Cruz, MD'],
+                'Neurology': ['Dr. Vincent Lim, MD', 'Dr. Carmen Diaz, MD'],
+                'Orthopedics': ['Dr. Gabriel Ramos, MD', 'Dr. Felipe Santos, MD'],
+                'Pediatrics': ['Dr. Clara Santos, MD', 'Dr. Sofia Reyes, MD'],
+                'General Surgery': ['Dr. Marcus Hernandez, MD', 'Dr. Antonio Luna, MD'],
+                'Emergency': ['Dr. Joaquin Valdes, MD', 'Dr. Teresa Ocampo, MD']
+            };
+            const docs = doctorsByDept[dept] || ['Dr. Roberto Tan, MD'];
+            docSelect.innerHTML = docs.map(d => `<option value="${d}">${d} (${dept})</option>`).join('');
+        }
+
+        async function confirmExistingAppointment(aptId) {
+            try {
+                await apiFetch('/api/appointments', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        _action: 'update',
+                        id: aptId,
+                        status: 'Confirmed'
+                    })
+                });
+                showToast('✅ Appointment #' + aptId + ' marked as CONFIRMED!');
+                await loadLiveEMRState();
+            } catch(err) {
+                showToast('❌ Error confirming appointment: ' + err.message);
+            }
+        }
+
         // ==========================================
         // CRUD: SAVE NEW APPOINTMENT
         // ==========================================
         async function saveNewAppointment() {
-            const patientName = document.getElementById('apt-patient')?.value;
-            const department = document.getElementById('apt-department')?.value;
-            const doctor = document.getElementById('apt-doctor')?.value;
-            const date = document.getElementById('apt-date')?.value;
-            const time = document.getElementById('apt-time')?.value;
-            const notes = document.getElementById('apt-notes')?.value?.trim() || '';
-
-            if (!patientName || !department || !doctor || !date || !time) {
-                showToast('Please fill in all required appointment fields.');
-                return;
-            }
+            const patientName = document.getElementById('apt-patient')?.value || 'Maria Santos';
+            const department = document.getElementById('apt-department')?.value || 'Cardiology';
+            const doctor = document.getElementById('apt-doctor')?.value || 'Dr. Roberto Tan, MD';
+            const date = document.getElementById('apt-date')?.value || new Date().toISOString().split('T')[0];
+            const time = document.getElementById('apt-time')?.value || '10:00 AM';
+            const notes = document.getElementById('apt-notes')?.value?.trim() || 'Consultation confirmed';
 
             const payload = {
                 patient_name: patientName,
@@ -6735,7 +6812,7 @@ APP_HTML = """<!DOCTYPE html>
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
-                showToast('✅ Appointment booked for ' + patientName + ' on ' + date + ' at ' + time);
+                showToast('✅ Appointment booked & confirmed for ' + patientName + ' with ' + doctor + ' on ' + date + ' at ' + time);
                 closeModal('modal-new-appointment');
                 await loadLiveEMRState();
             } catch(err) {
