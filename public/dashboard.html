@@ -4396,7 +4396,76 @@
             </div>
             <div class="modal-footer">
                 <button class="btn-secondary" onclick="closeModal('modal-new-stock-item')">Cancel</button>
-                <button class="btn-primary-action" onclick="submitNewStockItem()"><i class="fa-solid fa-plus"></i> Add Item to Inventory</button>
+    <!-- MODAL: SWITCH DEPARTMENT WORKSPACE ROLE -->
+    <div id="modal-switch-role" class="modal-overlay">
+        <div class="modal-box" style="max-width:560px;">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-id-badge"></i> Switch Department Workspace</h3>
+                <button class="modal-close" onclick="closeModal('modal-switch-role')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p style="font-size:13px; color:#64748b; margin-bottom:14px;">Select a department workspace to switch active RBAC module privileges, clinical desks, and navbar identity:</p>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                    <div onclick="switchDepartmentRole('admin')" style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:8px; padding:12px; cursor:pointer; display:flex; align-items:center; gap:10px; transition:all 0.2s;" onmouseover="this.style.borderColor='var(--brand-primary)'" onmouseout="this.style.borderColor='#cbd5e1'">
+                        <span style="font-size:24px;">👑</span>
+                        <div>
+                            <strong style="font-size:13px; color:#1e293b;">Super Admin</strong>
+                            <div style="font-size:11px; color:#64748b;">Full Access (All 35 Modules)</div>
+                        </div>
+                    </div>
+                    <div onclick="switchDepartmentRole('doctor')" style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:8px; padding:12px; cursor:pointer; display:flex; align-items:center; gap:10px; transition:all 0.2s;" onmouseover="this.style.borderColor='var(--brand-primary)'" onmouseout="this.style.borderColor='#cbd5e1'">
+                        <span style="font-size:24px;">🩺</span>
+                        <div>
+                            <strong style="font-size:13px; color:#1e293b;">Doctor (MD)</strong>
+                            <div style="font-size:11px; color:#64748b;">Clinical Desk, Rx, LIS, RIS</div>
+                        </div>
+                    </div>
+                    <div onclick="switchDepartmentRole('nurse')" style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:8px; padding:12px; cursor:pointer; display:flex; align-items:center; gap:10px; transition:all 0.2s;" onmouseover="this.style.borderColor='var(--brand-primary)'" onmouseout="this.style.borderColor='#cbd5e1'">
+                        <span style="font-size:24px;">💉</span>
+                        <div>
+                            <strong style="font-size:13px; color:#1e293b;">Nurse (RN)</strong>
+                            <div style="font-size:11px; color:#64748b;">Inpatient Ward, Bed Matrix, ER</div>
+                        </div>
+                    </div>
+                    <div onclick="switchDepartmentRole('accountant')" style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:8px; padding:12px; cursor:pointer; display:flex; align-items:center; gap:10px; transition:all 0.2s;" onmouseover="this.style.borderColor='var(--brand-primary)'" onmouseout="this.style.borderColor='#cbd5e1'">
+                        <span style="font-size:24px;">💰</span>
+                        <div>
+                            <strong style="font-size:13px; color:#1e293b;">Accountant</strong>
+                            <div style="font-size:11px; color:#64748b;">General Ledger, Vouchers, Claims</div>
+                        </div>
+                    </div>
+                    <div onclick="switchDepartmentRole('billing')" style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:8px; padding:12px; cursor:pointer; display:flex; align-items:center; gap:10px; transition:all 0.2s;" onmouseover="this.style.borderColor='var(--brand-primary)'" onmouseout="this.style.borderColor='#cbd5e1'">
+                        <span style="font-size:24px;">💳</span>
+                        <div>
+                            <strong style="font-size:13px; color:#1e293b;">Billing & Cashier</strong>
+                            <div style="font-size:11px; color:#64748b;">Invoices, Receipts, Queue</div>
+                        </div>
+                    </div>
+                    <div onclick="switchDepartmentRole('pharmacy')" style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:8px; padding:12px; cursor:pointer; display:flex; align-items:center; gap:10px; transition:all 0.2s;" onmouseover="this.style.borderColor='var(--brand-primary)'" onmouseout="this.style.borderColor='#cbd5e1'">
+                        <span style="font-size:24px;">💊</span>
+                        <div>
+                            <strong style="font-size:13px; color:#1e293b;">Pharmacist</strong>
+                            <div style="font-size:11px; color:#64748b;">Dispensary, Warehouse Stock</div>
+                        </div>
+                    </div>
+                    <div onclick="switchDepartmentRole('labtech')" style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:8px; padding:12px; cursor:pointer; display:flex; align-items:center; gap:10px; transition:all 0.2s;" onmouseover="this.style.borderColor='var(--brand-primary)'" onmouseout="this.style.borderColor='#cbd5e1'">
+                        <span style="font-size:24px;">🔬</span>
+                        <div>
+                            <strong style="font-size:13px; color:#1e293b;">Lab Technologist</strong>
+                            <div style="font-size:11px; color:#64748b;">LIS Laboratory & PACS Imaging</div>
+                        </div>
+                    </div>
+                    <div onclick="switchDepartmentRole('reception')" style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:8px; padding:12px; cursor:pointer; display:flex; align-items:center; gap:10px; transition:all 0.2s;" onmouseover="this.style.borderColor='var(--brand-primary)'" onmouseout="this.style.borderColor='#cbd5e1'">
+                        <span style="font-size:24px;">📋</span>
+                        <div>
+                            <strong style="font-size:13px; color:#1e293b;">Reception / Front Desk</strong>
+                            <div style="font-size:11px; color:#64748b;">Registration, Appointments, Tokens</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeModal('modal-switch-role')">Close</button>
             </div>
         </div>
     </div>
@@ -4517,15 +4586,49 @@
             renderDynamicSidebar(query);
         }
 
+        function switchDepartmentRole(roleKey) {
+            const matched = VALID_USERS[roleKey] || VALID_USERS['admin'];
+            sessionStorage.setItem('g1_user', roleKey);
+            sessionStorage.setItem('g1_role_key', matched.role_key || roleKey);
+            sessionStorage.setItem('g1_user_name', matched.name);
+            sessionStorage.setItem('g1_user_role', matched.role);
+            sessionStorage.setItem('g1_user_avatar', matched.avatar);
+            sessionStorage.setItem('g1_user_badge', matched.badge);
+            localStorage.setItem('g1_user', roleKey);
+            localStorage.setItem('g1_role_key', matched.role_key || roleKey);
+
+            applyRolePermissions();
+            closeModal('modal-switch-role');
+            showToast(`Switched active workspace to ${matched.badge}`);
+        }
+
         // Apply Strict Role Permissions & Rebuild DOM
         function applyRolePermissions() {
-            const roleKey = sessionStorage.getItem('g1_role_key') || 'admin';
-            const userBadge = sessionStorage.getItem('g1_user_badge') || '👑 Super Admin';
+            const roleKey = sessionStorage.getItem('g1_role_key') || localStorage.getItem('g1_role_key') || 'admin';
+            const matched = VALID_USERS[roleKey] || VALID_USERS['admin'];
 
-            // 1. Re-render dynamic sidebar with ONLY permitted modules
+            const userBadge = sessionStorage.getItem('g1_user_badge') || matched.badge;
+            const uName = sessionStorage.getItem('g1_user_name') || matched.name;
+            const uRole = sessionStorage.getItem('g1_user_role') || matched.role;
+            const uAvatar = sessionStorage.getItem('g1_user_avatar') || matched.avatar;
+
+            // 1. Update Header Badges & Profiles Dynamically
+            const badgeEl = document.getElementById('header-user-badge');
+            if (badgeEl) badgeEl.textContent = userBadge;
+
+            const nameEl = document.getElementById('header-user-name');
+            if (nameEl) nameEl.textContent = uName;
+
+            const roleEl = document.getElementById('header-user-role');
+            if (roleEl) roleEl.innerHTML = uRole;
+
+            const avatarEl = document.getElementById('header-user-avatar');
+            if (avatarEl) avatarEl.textContent = uAvatar;
+
+            // 2. Re-render dynamic sidebar with ONLY permitted modules
             renderDynamicSidebar();
 
-            // 2. Update active workspace banner
+            // 3. Update active workspace banner
             const roleBanner = document.getElementById('active-workspace-banner');
             if (roleBanner) {
                 let roleDesc = "All 33 Hospital Modules & Configurations Unlocked.";
