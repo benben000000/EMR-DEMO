@@ -5353,12 +5353,13 @@
         let CURRENT_EDIT_ENTITY = '';
         let CURRENT_EDIT_ID = null;
 
-        const API_BASE = (window.location.protocol === 'http:' || window.location.protocol === 'https:') && window.location.port === '5000' 
+        const API_BASE = (window.location.protocol === 'http:' || window.location.protocol === 'https:')
             ? '' 
             : 'http://localhost:5000';
 
         async function apiFetch(endpoint, options = {}) {
             const url = endpoint.startsWith('http') ? endpoint : (API_BASE + endpoint);
+            if (!options.credentials) options.credentials = 'include';
             try {
                 const res = await fetch(url, options);
                 const text = await res.text();
@@ -5801,11 +5802,11 @@
             // 5. Procurement POs
             renderTableHelper('tbody-procurement', state.procurement_po, (po) => `
                 <td><strong>${po.po_no}</strong></td>
-                <td><strong>${po.supplier_name}</strong></td>
-                <td>${po.items_summary}</td>
+                <td><strong>${po.vendor_name || po.supplier_name || 'Vendor'}</strong></td>
+                <td>${po.payment_terms || po.items_summary || 'Net 30 Days'}</td>
                 <td>$ ${Number(po.total_amount).toLocaleString('en-US', {minimumFractionDigits: 2})}</td>
-                <td>${po.order_date}</td>
-                <td><span class="status-badge status-active">${po.status}</span></td>
+                <td>${po.po_date || po.order_date || '2026-08-24'}</td>
+                <td><span class="status-badge status-active">${po.delivery_status || po.status || 'Received'}</span></td>
                 <td>
                     <button class="btn-secondary" style="padding:3px 7px; font-size:11px;" onclick="openUniversalEditor('procurement_po', ${po.id})"><i class="fa-solid fa-pen"></i></button>
                     <button class="btn-secondary" style="padding:3px 7px; font-size:11px; color:#ef4444;" onclick="deleteLiveRecord('procurement_po', ${po.id})"><i class="fa-solid fa-trash"></i></button>
@@ -5814,10 +5815,10 @@
 
             // 6. Fixed Assets
             renderTableHelper('tbody-fixedassets', state.fixed_assets, (ast) => `
-                <td><strong>${ast.asset_code}</strong></td>
+                <td><strong>${ast.asset_tag || ast.asset_code}</strong></td>
                 <td><strong>${ast.asset_name}</strong></td>
                 <td>${ast.department}</td>
-                <td>${ast.serial_no}</td>
+                <td>$ ${Number(ast.cost || 0).toLocaleString('en-US', {minimumFractionDigits: 2})}</td>
                 <td>${ast.purchase_date}</td>
                 <td><span class="status-badge status-active">${ast.status}</span></td>
                 <td>
@@ -5861,9 +5862,9 @@
                 <td><strong>${ot.surgery_no}</strong></td>
                 <td><strong>${ot.patient_name}</strong></td>
                 <td>${ot.procedure_name}</td>
-                <td>${ot.ot_room}</td>
+                <td>${ot.theater_no || ot.ot_room || 'OR-1'}</td>
                 <td>${ot.surgeon_name}</td>
-                <td>${ot.schedule_date}</td>
+                <td>${ot.surgery_date || ot.schedule_date || '2026-08-25'}</td>
                 <td><span class="status-badge status-active">${ot.status}</span></td>
                 <td>
                     <button class="btn-secondary" style="padding:3px 7px; font-size:11px;" onclick="openUniversalEditor('ot_schedules', ${ot.id})"><i class="fa-solid fa-pen"></i></button>
@@ -5873,12 +5874,12 @@
 
             // 10. Vaccination Records
             renderTableHelper('tbody-vaccination', state.vaccination_records, (vax) => `
-                <td><strong>${vax.record_no}</strong></td>
+                <td><strong>${vax.reg_no || vax.record_no}</strong></td>
                 <td><strong>${vax.patient_name}</strong></td>
                 <td>${vax.vaccine_name}</td>
-                <td>${vax.dose_number}</td>
-                <td>${vax.batch_no}</td>
-                <td>${vax.date_given}</td>
+                <td>${vax.dose_stage || vax.dose_number}</td>
+                <td>${vax.batch_lot || vax.batch_no}</td>
+                <td>${vax.administered_date || vax.date_given}</td>
                 <td>
                     <button class="btn-secondary" style="padding:3px 7px; font-size:11px;" onclick="openUniversalEditor('vaccination_records', ${vax.id})"><i class="fa-solid fa-pen"></i></button>
                     <button class="btn-secondary" style="padding:3px 7px; font-size:11px; color:#ef4444;" onclick="deleteLiveRecord('vaccination_records', ${vax.id})"><i class="fa-solid fa-trash"></i></button>
@@ -5889,9 +5890,8 @@
             renderTableHelper('tbody-queue', state.queue_tickets, (q) => `
                 <td><strong>${q.token_no}</strong></td>
                 <td><strong>${q.patient_name}</strong></td>
-                <td>${q.department}</td>
-                <td>${q.counter_no}</td>
-                <td><span class="status-badge status-completed">${q.priority_level}</span></td>
+                <td>${q.service_desk || q.department || 'Outpatient'}</td>
+                <td>${q.issued_time || q.counter_no || '09:00 AM'}</td>
                 <td><span class="status-badge status-active">${q.status}</span></td>
                 <td>
                     <button class="btn-secondary" style="padding:3px 7px; font-size:11px;" onclick="openUniversalEditor('queue_tickets', ${q.id})"><i class="fa-solid fa-pen"></i></button>
@@ -5901,11 +5901,11 @@
 
             // 12. CSSD Batches
             renderTableHelper('tbody-cssd', state.cssd_batches, (cssd) => `
-                <td><strong>${cssd.cycle_no}</strong></td>
-                <td><strong>${cssd.autoclave_unit}</strong></td>
-                <td>${cssd.tray_type}</td>
-                <td>${cssd.sterilization_time}</td>
-                <td>${cssd.biological_indicator}</td>
+                <td><strong>${cssd.batch_no || cssd.cycle_no}</strong></td>
+                <td><strong>${cssd.set_name || cssd.autoclave_unit}</strong></td>
+                <td>${cssd.tray_count || cssd.tray_type} Trays</td>
+                <td>${cssd.autoclave_cycle || cssd.sterilization_time}</td>
+                <td>${cssd.expiry_date || '2026-09-24'}</td>
                 <td><span class="status-badge status-active">${cssd.status}</span></td>
                 <td>
                     <button class="btn-secondary" style="padding:3px 7px; font-size:11px;" onclick="openUniversalEditor('cssd_batches', ${cssd.id})"><i class="fa-solid fa-pen"></i></button>
@@ -5915,11 +5915,11 @@
 
             // 13. EHS Incidents
             renderTableHelper('tbody-ehs', state.ehs_incidents, (ehs) => `
-                <td><strong>${ehs.incident_no}</strong></td>
-                <td>${ehs.incident_date}</td>
+                <td><strong>${ehs.incident_id || ehs.incident_no}</strong></td>
+                <td>${ehs.logged_date || ehs.incident_date}</td>
                 <td>${ehs.department}</td>
                 <td><span class="status-badge status-urgent">${ehs.severity}</span></td>
-                <td>${ehs.description}</td>
+                <td>${ehs.incident_type || ehs.description}</td>
                 <td><span class="status-badge status-active">${ehs.status}</span></td>
                 <td>
                     <button class="btn-secondary" style="padding:3px 7px; font-size:11px;" onclick="openUniversalEditor('ehs_incidents', ${ehs.id})"><i class="fa-solid fa-pen"></i></button>
@@ -5929,11 +5929,11 @@
 
             // 14. Sub-Store Inventory
             renderTableHelper('tbody-substore', state.substore_inventory, (sub) => `
-                <td><strong>${sub.substore_name}</strong></td>
+                <td><strong>${sub.store_name || sub.substore_name}</strong></td>
                 <td><strong>${sub.item_name}</strong></td>
-                <td>${sub.current_stock}</td>
-                <td>${sub.min_threshold}</td>
-                <td><span class="status-badge status-active">${sub.status}</span></td>
+                <td>${sub.qty_available || sub.current_stock}</td>
+                <td>${sub.min_required || sub.min_threshold}</td>
+                <td><span class="status-badge status-active">${sub.restock_status || sub.status}</span></td>
                 <td>
                     <button class="btn-secondary" style="padding:3px 7px; font-size:11px;" onclick="openUniversalEditor('substore_inventory', ${sub.id})"><i class="fa-solid fa-pen"></i></button>
                     <button class="btn-secondary" style="padding:3px 7px; font-size:11px; color:#ef4444;" onclick="deleteLiveRecord('substore_inventory', ${sub.id})"><i class="fa-solid fa-trash"></i></button>
@@ -6114,11 +6114,11 @@
 
             // 28. Clinical Verification & Dual Sign-offs
             renderTableHelper('tbody-verification', state.verification_alerts || [], (v) => `
-                <td><strong>${v.item_title}</strong></td>
+                <td><strong>${v.order_title || v.item_title}</strong></td>
                 <td>${v.department}</td>
                 <td>${v.requested_by}</td>
-                <td>${v.justification}</td>
-                <td><span class="status-badge ${v.status === 'Approved' ? 'status-active' : 'status-urgent'}">${v.status}</span></td>
+                <td>${v.verification_reason || v.justification}</td>
+                <td><span class="status-badge status-active">${v.status}</span></td>
                 <td>
                     <button class="btn-accent-action" style="padding:3px 7px; font-size:11px;" onclick="showToast('Dual Sign-Off Authorized!')"><i class="fa-solid fa-check-double"></i> Authorize</button>
                     <button class="btn-secondary" style="padding:3px 7px; font-size:11px;" onclick="openUniversalEditor('verification_alerts', ${v.id})"><i class="fa-solid fa-pen"></i></button>
@@ -6128,12 +6128,11 @@
 
             // 29. Medical Records Department (MRD)
             renderTableHelper('tbody-mrd', state.mrd_records || [], (m) => `
-                <td><strong>${m.hospital_no}</strong></td>
+                <td><strong>${m.mrd_no || m.hospital_no}</strong></td>
                 <td><strong>${m.patient_name}</strong></td>
                 <td>${m.discharge_date}</td>
-                <td>${m.icd_code}</td>
-                <td>${m.shelf_location}</td>
-                <td><span class="status-badge status-active">${m.status}</span></td>
+                <td>${m.icd_primary || m.icd_code}</td>
+                <td><span class="status-badge status-active">${m.custody_status || m.shelf_location || m.status}</span></td>
                 <td>
                     <button class="btn-secondary" style="padding:3px 7px; font-size:11px;" onclick="openUniversalEditor('mrd_records', ${m.id})"><i class="fa-solid fa-pen"></i></button>
                     <button class="btn-secondary" style="padding:3px 7px; font-size:11px; color:#ef4444;" onclick="deleteLiveRecord('mrd_records', ${m.id})"><i class="fa-solid fa-trash"></i></button>
@@ -6143,11 +6142,11 @@
             // 30. Information Helpdesk Queries
             renderTableHelper('tbody-helpdesk', state.helpdesk_queries || [], (h) => `
                 <td><strong>${h.ticket_no}</strong></td>
-                <td><strong>${h.visitor_name}</strong></td>
-                <td>${h.category}</td>
-                <td>${h.action_taken}</td>
-                <td>${h.attending_staff}</td>
-                <td><span class="status-badge ${h.status === 'Resolved' ? 'status-completed' : 'status-urgent'}">${h.status}</span></td>
+                <td><strong>${h.caller_name || h.visitor_name}</strong></td>
+                <td>${h.department || h.category}</td>
+                <td>${h.query_text || h.action_taken}</td>
+                <td>${h.priority || h.attending_staff}</td>
+                <td><span class="status-badge status-active">${h.status}</span></td>
                 <td>
                     <button class="btn-secondary" style="padding:3px 7px; font-size:11px;" onclick="openUniversalEditor('helpdesk_queries', ${h.id})"><i class="fa-solid fa-pen"></i></button>
                     <button class="btn-secondary" style="padding:3px 7px; font-size:11px; color:#ef4444;" onclick="deleteLiveRecord('helpdesk_queries', ${h.id})"><i class="fa-solid fa-trash"></i></button>
@@ -6177,9 +6176,9 @@
             renderTableHelper('tbody-users', state.system_users || [], (u) => `
                 <td><strong>${u.username}</strong></td>
                 <td>${u.full_name}</td>
-                <td><span class="status-badge status-completed">${u.role}</span></td>
-                <td>${u.allowed_modules}</td>
-                <td><span class="status-badge status-active">${u.session_status}</span></td>
+                <td><span class="status-badge status-completed">${u.badge_label || u.role}</span></td>
+                <td>${u.department || u.allowed_modules}</td>
+                <td><span class="status-badge status-active">${u.status || u.session_status || 'Active'}</span></td>
                 <td>
                     <button class="btn-secondary" style="padding:3px 7px; font-size:11px;" onclick="openUniversalEditor('system_users', ${u.id})"><i class="fa-solid fa-pen"></i></button>
                     <button class="btn-secondary" style="padding:3px 7px; font-size:11px; color:#ef4444;" onclick="deleteLiveRecord('system_users', ${u.id})"><i class="fa-solid fa-trash"></i></button>
@@ -6189,7 +6188,11 @@
 
         function renderTableHelper(tbodyId, dataList, rowRenderer) {
             const tbody = document.getElementById(tbodyId);
-            if (!tbody || !dataList) return;
+            if (!tbody) return;
+            if (!dataList || dataList.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="10" style="text-align:center; padding:24px; color:#64748b;"><i class="fa-solid fa-folder-open" style="font-size:20px; opacity:0.4; margin-bottom:6px; display:block;"></i>No records found in database</td></tr>';
+                return;
+            }
             tbody.innerHTML = '';
             dataList.forEach(item => {
                 const tr = document.createElement('tr');
