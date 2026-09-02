@@ -674,6 +674,112 @@ seed_if_empty("doctor_incentives", """INSERT INTO doctor_incentives (doctor_name
     ('Dr. Vincent Lim, MD', 'Internal Medicine', 35, 24500.00, '60%', 14700.00, 'Pending Review')
 """)
 
+# Seed Procurement PO
+seed_if_empty("procurement_po", """INSERT INTO procurement_po (po_no, vendor_name, total_amount, po_date, delivery_status, payment_terms) VALUES 
+    ('PO-US-2026-001', 'McKesson Medical-Surgical Inc', 48500.00, '2026-08-20', 'Delivered & Received in Central Store', 'Net 30 Days'),
+    ('PO-US-2026-002', 'AmerisourceBergen Pharmaceuticals', 34200.00, '2026-08-22', 'In Transit via FedEx Medical Express', 'Net 30 Days'),
+    ('PO-US-2026-003', 'Medline Industries LP', 18600.00, '2026-08-23', 'Awaiting Warehouse Dock Inspection', 'Net 15 Days'),
+    ('PO-US-2026-004', 'Cardinal Health Distribution', 26400.00, '2026-08-24', 'Order Confirmed / Dispatched', 'Net 30 Days'),
+    ('PO-US-2026-005', 'Stryker Surgical Endoscopy', 52000.00, '2026-08-24', 'Scheduled for Bi-Weekly Delivery', 'Net 45 Days')
+""")
+
+# Seed Fixed Assets
+seed_if_empty("fixed_assets", """INSERT INTO fixed_assets (asset_tag, asset_name, department, purchase_date, cost, status) VALUES 
+    ('EQ-RAD-001', 'GE Signa Pioneer 1.5T Magnetic Resonance Imaging (MRI)', 'Radiology / Diagnostic Imaging', '2024-03-15', 1250000.00, 'Operational / Calibrated'),
+    ('EQ-RAD-002', 'Siemens Somatom 128-Slice Computed Tomography (CT)', 'Emergency & Inpatient Radiology', '2024-06-20', 850000.00, 'Operational / Calibrated'),
+    ('EQ-SUR-001', 'Stryker 1688 AIM 4K Laparoscopic Surgical Video Tower', 'Operating Theater Suite 1', '2025-01-10', 165000.00, 'Operational / Sterile'),
+    ('EQ-CAR-001', 'Philips Azurion 7 Biplane Cardiac Catheterization Lab', 'Cardiology Interventional Suite', '2023-11-05', 1450000.00, 'Operational / Active'),
+    ('EQ-ICU-001', 'Drager Evita V800 Critical Care Ventilators (x6 Units)', 'Intensive Care Unit (ICU)', '2024-09-12', 240000.00, 'Operational / Bio-Med Inspected'),
+    ('EQ-LAB-001', 'Roche Cobas 8000 Clinical Chemistry & Immunoassay Analyzer', 'Diagnostic Pathology Laboratory', '2024-02-18', 420000.00, 'Operational / Daily QC Passed')
+""")
+
+# Seed OT Schedules
+seed_if_empty("ot_schedules", """INSERT INTO ot_schedules (surgery_no, patient_name, procedure_name, theater_no, surgeon_name, anesthetist, surgery_date, status) VALUES 
+    ('OT-2026-081', 'Carlos Martinez', 'Laparoscopic Appendectomy (CPT 44970)', 'OR Theater 1', 'Dr. Miguel Garcia, MD', 'Dr. Sarah Connor, MD', '2026-08-25 08:00 AM', 'Scheduled (Pre-Op Cleared)'),
+    ('OT-2026-082', 'Robert Johnson', 'Percutaneous Coronary Intervention (PCI) & Drug-Eluting Stent', 'Cath Lab 1', 'Dr. Roberto Tan, MD', 'Dr. Vincent Lim, MD', '2026-08-25 10:30 AM', 'Completed / Recovering'),
+    ('OT-2026-083', 'Jessica Taylor', 'Diagnostic Hysteroscopy & Polypectomy', 'OR Theater 2', 'Dr. Patricia Santos, MD', 'Dr. Sarah Connor, MD', '2026-08-25 01:00 PM', 'Scheduled (NPO Confirmed)'),
+    ('OT-2026-084', 'James Anderson', 'Right Forearm Extensor Tendon Repair & Neurolysis', 'OR Theater 3', 'Dr. Miguel Garcia, MD', 'Dr. Edward Hernandez, MD', '2026-08-25 03:00 PM', 'Scheduled'),
+    ('OT-2026-085', 'David Wilson', 'Total Knee Arthroplasty (CPT 27447)', 'OR Theater 1', 'Dr. Miguel Garcia, MD', 'Dr. Sarah Connor, MD', '2026-08-26 08:30 AM', 'Pre-Op Workup in Progress')
+""")
+
+# Seed Vaccination Records
+seed_if_empty("vaccination_records", """INSERT INTO vaccination_records (reg_no, patient_name, vaccine_name, dose_stage, administered_date, next_due_date, batch_lot) VALUES 
+    ('VAC-US-01', 'John Doe', 'Pneumococcal Conjugate PCV20 (Prevnar 20)', 'Single Adult Dose', '2026-08-24', 'Complete', 'LOT-PV20-8819'),
+    ('VAC-US-02', 'Mary Smith', 'Influenza Quadrivalent Vaccine (Fluzone HD)', 'Annual Season 2026-2027', '2026-08-24', '2027-08-24', 'LOT-FLU-2026A'),
+    ('VAC-US-03', 'Emily Davis', 'Tdap (Tetanus, Diphtheria, Acellular Pertussis)', '10-Yr Booster Dose', '2026-08-23', '2036-08-23', 'LOT-TDAP-4412'),
+    ('VAC-US-04', 'Carlos Martinez', 'Recombinant Zoster Vaccine (Shingrix)', 'Dose 1 of 2 (Age 50+)', '2026-08-22', '2026-10-22', 'LOT-SHX-9901'),
+    ('VAC-US-05', 'Jessica Taylor', 'Human Papillomavirus 9-Valent (Gardasil 9)', 'Dose 3 of 3 Series', '2026-08-20', 'Complete', 'LOT-G9-11823'),
+    ('VAC-US-06', 'David Wilson', 'COVID-19 mRNA Updated Formulation (Comirnaty)', 'Fall 2026 Booster', '2026-08-24', '2027-08-24', 'LOT-CV19-7721')
+""")
+
+# Seed Queue Tickets
+seed_if_empty("queue_tickets", """INSERT INTO queue_tickets (token_no, patient_name, service_desk, issued_time, status) VALUES 
+    ('Q-REG-101', 'John Doe', 'Front Desk Admissions & Medicare Verify', '08:45 AM', 'Completed'),
+    ('Q-CLIN-201', 'John Doe', 'Cardiology Clinic - Dr. Roberto Tan, MD', '09:00 AM', 'In Consultation'),
+    ('Q-LAB-301', 'Mary Smith', 'Central Phlebotomy Lab Station 1', '09:15 AM', 'Serving Now'),
+    ('Q-RAD-401', 'Emily Davis', 'Radiology Chest X-Ray Suite', '09:30 AM', 'Waiting'),
+    ('Q-CASH-501', 'Carlos Martinez', 'Cashier Desk 2 - Insurance Copays', '09:40 AM', 'Waiting'),
+    ('Q-PHRM-601', 'Sarah Jenkins', 'Outpatient Pharmacy Window 1', '09:45 AM', 'Ready for Pickup'),
+    ('Q-REG-102', 'Jessica Taylor', 'Patient Registration Window 3', '09:50 AM', 'Calling'),
+    ('Q-CLIN-202', 'David Wilson', 'Pulmonology Clinic - Dr. Hernandez', '10:00 AM', 'Waiting')
+""")
+
+# Seed CSSD Batches
+seed_if_empty("cssd_batches", """INSERT INTO cssd_batches (batch_no, set_name, tray_count, autoclave_cycle, status, expiry_date) VALUES 
+    ('CSSD-2026-041', 'Major Laparotomy & Vascular Surgical Set', 4, '134C High-Vacuum Steam (18 Min)', 'Sterile / Released (BI Negative)', '2026-09-24'),
+    ('CSSD-2026-042', 'Laparoscopic Endosurgical Handpiece Set', 3, 'Low-Temp Hydrogen Peroxide Plasma', 'Sterile / Released (Chemical Passed)', '2026-09-24'),
+    ('CSSD-2026-043', 'Orthopedic Total Joint Reamer Set', 6, '134C Porous Steam Cycle (25 Min)', 'In Autoclave Chamber #2', '2026-09-25'),
+    ('CSSD-2026-044', 'Emergency Trauma Resuscitation Cutdown Trays', 4, '134C High-Vacuum Steam (18 Min)', 'Sterile / Stored in ER Sub-Store', '2026-09-24'),
+    ('CSSD-2026-045', 'Ophthalmic Micro-Surgical Phaco Set', 2, 'Steam Gravity Displacement', 'Cooling & Packaging Station', '2026-09-25')
+""")
+
+# Seed EHS Incidents
+seed_if_empty("ehs_incidents", """INSERT INTO ehs_incidents (incident_id, employee_name, department, incident_type, severity, logged_date, status) VALUES 
+    ('EHS-2026-001', 'Nurse Clara Dizon', 'Inpatient Ward 2', 'Near-Miss Needlestick Safety Shield Activation', 'Minor / Zero Harm', '2026-08-20', 'Reviewed by EHS Officer / Closed'),
+    ('EHS-2026-002', 'Tech Kevin Brooks', 'Diagnostic Pathology Laboratory', 'Formalin Vapor Containment Alarm Test', 'Informational Drill', '2026-08-22', 'Drill Completed 100% Passed'),
+    ('EHS-2026-003', 'Elena Villar, CPA', 'Finance Administration', 'Ergonomic Desk & Display Review', 'Low Severity', '2026-08-23', 'Ergonomic Keyboard Deployed / Closed'),
+    ('EHS-2026-004', 'Nurse Ronald Valdez', 'Emergency Department', 'Slip on Wet Floor during STAT Resuscitation', 'Minor / No Injury', '2026-08-24', 'Corrective Anti-Slip Mat Deployed')
+""")
+
+# Seed SubStore Inventory
+seed_if_empty("substore_inventory", """INSERT INTO substore_inventory (store_name, item_name, qty_available, min_required, restock_status) VALUES 
+    ('ICU Pyxis MedStation #1', 'Norepinephrine Bitartrate 4mg/4mL Injection', '18 Vials', '10 Vials', 'Optimal Stock'),
+    ('ICU Pyxis MedStation #1', 'Midazolam HCl 5mg/mL STAT Injection', '24 Vials', '15 Vials', 'Optimal Stock'),
+    ('ER Crash Cart Bay 01', 'Epinephrine 1mg/10mL Prefilled Syringes', '12 Syringes', '6 Syringes', 'Ready / Inspected'),
+    ('ER Crash Cart Bay 01', 'Amiodarone HCl 150mg/3mL Vials', '8 Vials', '6 Vials', 'Ready / Inspected'),
+    ('OR Satellite Pharmacy', 'Propofol Injectable Emulsion 20mL (1%)', '45 Vials', '20 Vials', 'Optimal Stock'),
+    ('Ward 3 Clean Supply Room', '0.9% Normal Saline 500mL IV Bags', '64 Bags', '30 Bags', 'Optimal Stock'),
+    ('Ward 3 Clean Supply Room', 'Luer-Lock 10mL Syringes with Safety Needles', '120 Units', '50 Units', 'Optimal Stock'),
+    ('Dialysis Unit Pyxis', 'Heparin Sodium 10,000 Units/mL Vials', '15 Vials', '8 Vials', 'Optimal Stock')
+""")
+
+# Seed Marketing Referrals
+seed_if_empty("mkt_referrals", """INSERT INTO mkt_referrals (ref_id, referrer_name, institution, patient_referred, specialty, referral_fee, status) VALUES 
+    ('REF-US-001', 'Dr. Karen White, MD', 'Boston Primary Care Associates', 'John Doe', 'Cardiology', 150.00, 'Approved & Credited'),
+    ('REF-US-002', 'Dr. Steven Cho, MD', 'Beacon Hill Family Medicine', 'Mary Smith', 'Endocrinology', 150.00, 'Approved & Credited'),
+    ('REF-US-003', 'Dr. Laura Adams, MD', 'Cambridge Community Health Clinic', 'Robert Johnson', 'Interventional Cardiology', 200.00, 'Approved & Credited'),
+    ('REF-US-004', 'Dr. Daniel Miller, MD', 'Mass General Brigham Affiliated PCP', 'Emily Davis', 'Pulmonology', 150.00, 'Processed'),
+    ('REF-US-005', 'Dr. Rachel Green, MD', 'Back Bay Medical Group', 'Carlos Martinez', 'General Surgery', 175.00, 'Processed')
+""")
+
+# Seed MRD Records
+seed_if_empty("mrd_records", """INSERT INTO mrd_records (mrd_no, patient_name, admission_date, discharge_date, icd_primary, custody_status) VALUES 
+    ('MRD-2026-001', 'John Doe', '2026-08-15', '2026-08-18', 'I10 - Essential HTN', 'Archived / Digital Chart Locked'),
+    ('MRD-2026-002', 'Mary Smith', '2026-08-10', '2026-08-14', 'E11.9 - Type 2 Diabetes', 'Archived / Certified Complete'),
+    ('MRD-2026-003', 'Robert Johnson', '2026-08-01', '2026-08-05', 'I25.10 - CAD Native Artery', 'Archived / Legal Hold Cleared'),
+    ('MRD-2026-004', 'Emily Davis', '2026-07-20', '2026-07-22', 'J45.909 - Bronchial Asthma', 'Archived / ROI Authorized'),
+    ('MRD-2026-005', 'Carlos Martinez', '2026-08-20', '2026-08-22', 'K35.80 - Acute Appendicitis', 'In Review / Coding Audit')
+""")
+
+# Seed Helpdesk Queries
+seed_if_empty("helpdesk_queries", """INSERT INTO helpdesk_queries (ticket_no, caller_name, department, query_text, priority, status) VALUES 
+    ('TKT-2026-01', 'Dr. Roberto Tan, MD', 'Cardiology Clinic', 'DICOM PACS viewer calibration for High-DPI monitor', 'Medium Priority', 'Resolved / Workstation Calibrated'),
+    ('TKT-2026-02', 'Nurse Clara Dizon', 'ICU Ward', 'Mindray telemetry bed 102 wireless signal check', 'High Priority', 'Completed / Network Channel Reassigned'),
+    ('TKT-2026-03', 'Mark Mendoza', 'Billing & Cashier', 'Configure EDI 837 clearinghouse SFTP automated nightly submission', 'High Priority', 'Active / Testing Cleared'),
+    ('TKT-2026-04', 'Pharm. Leo Santos, RPh', 'Pharmacy Dispensary', 'Barcode scanner recalibration for Pyxis dispensing drawer 3', 'Normal Priority', 'Resolved / Scanner Firmware Updated'),
+    ('TKT-2026-05', 'Joy Pascual', 'Front Desk Admissions', 'Fast badge reader enrollment for new rotating clinical staff', 'Low Priority', 'Completed')
+""")
+
 # Seed System Users
 seed_if_empty("system_users", """INSERT INTO system_users (username, full_name, role_key, department, badge_label, status) VALUES 
     ('admin', 'Administrator', 'admin', 'Hospital Administration', 'Super Admin', 'Active'),

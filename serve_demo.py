@@ -2776,19 +2776,19 @@ APP_HTML = """<!DOCTYPE html>
                 <div class="stats-grid">
                     <div class="stat-card">
                         <div class="stat-icon"><i class="fa-solid fa-bed"></i></div>
-                        <div class="stat-content"><h3 id="adt-total-beds">14</h3><p>Total Hospital Beds</p></div>
+                        <div class="stat-content"><h3 id="adt-total-beds">--</h3><p>Total Hospital Beds</p></div>
                     </div>
                     <div class="stat-card" style="border-left-color:#ef4444;">
                         <div class="stat-icon" style="color:#ef4444;"><i class="fa-solid fa-bed-pulse"></i></div>
-                        <div class="stat-content"><h3 id="adt-occupied-beds" style="color:#b91c1c;">5</h3><p>Occupied Beds</p></div>
+                        <div class="stat-content"><h3 id="adt-occupied-beds" style="color:#b91c1c;">--</h3><p>Occupied Beds</p></div>
                     </div>
                     <div class="stat-card cyan">
                         <div class="stat-icon"><i class="fa-solid fa-door-open"></i></div>
-                        <div class="stat-content"><h3 id="adt-available-beds">7</h3><p>Available (Empty) Beds</p></div>
+                        <div class="stat-content"><h3 id="adt-available-beds">--</h3><p>Available (Empty) Beds</p></div>
                     </div>
                     <div class="stat-card teal">
                         <div class="stat-icon"><i class="fa-solid fa-chart-pie"></i></div>
-                        <div class="stat-content"><h3 id="adt-occupancy-rate">35.7%</h3><p>Current Occupancy Rate</p></div>
+                        <div class="stat-content"><h3 id="adt-occupancy-rate">--</h3><p>Current Occupancy Rate</p></div>
                     </div>
                 </div>
 
@@ -6322,12 +6322,12 @@ APP_HTML = """<!DOCTYPE html>
                 if (statAppts) statAppts.textContent = (state.appointments || []).length.toLocaleString();
 
                 const beds = state.adt_beds || [];
-                const occupiedBeds = beds.filter(b => b.status === 'Occupied').length;
-                const availableBeds = beds.filter(b => b.status === 'Available' || b.status === 'Empty').length;
-                const totalBeds = beds.length || 1;
-                const occPct = ((occupiedBeds / totalBeds) * 100).toFixed(1) + '%';
+                const occupiedBeds = beds.filter(b => (b.status || '').toLowerCase() === 'occupied').length;
+                const availableBeds = beds.filter(b => (b.status || '').toLowerCase() === 'available').length;
+                const totalBeds = beds.length;
+                const occPct = totalBeds > 0 ? ((occupiedBeds / totalBeds) * 100).toFixed(1) + '%' : '0.0%';
                 const occEl = document.getElementById('dash-occupancy-kpi');
-                if (occEl) occEl.textContent = occPct;
+                if (occEl) occEl.textContent = totalBeds > 0 ? occPct : '0.0%';
 
                 // Inpatient ADT
                 if (document.getElementById('adt-total-beds')) document.getElementById('adt-total-beds').textContent = totalBeds;
@@ -8246,22 +8246,7 @@ APP_HTML = """<!DOCTYPE html>
         };
 
         // Ward Bed Matrix Records State
-        let BED_RECORDS = [
-            { id: 'ICU-101', ward: 'Intensive Care Unit (ICU)', type: 'ICU Ventilator Bed', rate: '$ 4,500/day', status: 'occupied', patient: 'John Doe', code: 'G1-US-0090', doctor: 'Dr. Roberto Tan, MD', admittedDate: '23-Aug-2026' },
-            { id: 'ICU-102', ward: 'Intensive Care Unit (ICU)', type: 'ICU Cardiac Bed', rate: '$ 4,500/day', status: 'occupied', patient: 'Carlos Mendoza', code: 'G1-2026-0098', doctor: 'Dr. Roberto Tan, MD', admittedDate: '24-Aug-2026' },
-            { id: 'ICU-103', ward: 'Intensive Care Unit (ICU)', type: 'ICU Isolation Bed', rate: '$ 5,000/day', status: 'available', patient: '', code: '', doctor: '', admittedDate: '' },
-            { id: 'ICU-104', ward: 'Intensive Care Unit (ICU)', type: 'ICU Standard Bed', rate: '$ 4,500/day', status: 'cleaning', patient: '', code: '', doctor: '', admittedDate: '' },
-            { id: 'GEN-201', ward: 'General Male Ward', type: 'Semi-Private Bed', rate: '$ 1,200/day', status: 'occupied', patient: 'Antonio Gonzales', code: 'G1-US-0092', doctor: 'Dr. Alicia Gomez, MD', admittedDate: '22-Aug-2026' },
-            { id: 'GEN-202', ward: 'General Male Ward', type: 'Standard Ward Bed', rate: '$ 950/day', status: 'available', patient: '', code: '', doctor: '', admittedDate: '' },
-            { id: 'GEN-203', ward: 'General Male Ward', type: 'Standard Ward Bed', rate: '$ 950/day', status: 'available', patient: '', code: '', doctor: '', admittedDate: '' },
-            { id: 'FEM-301', ward: 'General Female Ward', type: 'Semi-Private Bed', rate: '$ 1,200/day', status: 'occupied', patient: 'Mary Smith', code: 'G1-US-0091', doctor: 'Dr. Alicia Gomez, MD', admittedDate: '24-Aug-2026' },
-            { id: 'FEM-302', ward: 'General Female Ward', type: 'Standard Ward Bed', rate: '$ 950/day', status: 'available', patient: '', code: '', doctor: '', admittedDate: '' },
-            { id: 'FEM-303', ward: 'General Female Ward', type: 'Standard Ward Bed', rate: '$ 950/day', status: 'cleaning', patient: '', code: '', doctor: '', admittedDate: '' },
-            { id: 'DLX-401', ward: 'Private Deluxe Suite', type: 'VIP Executive Suite', rate: '$ 6,000/day', status: 'occupied', patient: 'Emily Davis', code: 'G1-US-0093', doctor: 'Dr. Vincent Lim, MD', admittedDate: '24-Aug-2026' },
-            { id: 'DLX-402', ward: 'Private Deluxe Suite', type: 'VIP Executive Suite', rate: '$ 6,000/day', status: 'available', patient: '', code: '', doctor: '', admittedDate: '' },
-            { id: 'PED-501', ward: 'Pediatric Ward', type: 'Pediatric Crib Bed', rate: '$ 1,500/day', status: 'available', patient: '', code: '', doctor: '', admittedDate: '' },
-            { id: 'PED-502', ward: 'Pediatric Ward', type: 'Pediatric Junior Bed', rate: '$ 1,500/day', status: 'available', patient: '', code: '', doctor: '', admittedDate: '' }
-        ];
+        let BED_RECORDS = [];
 
         let activeWardFilter = 'ALL';
         let currentEditingDraftStatus = 'available';
@@ -8306,6 +8291,10 @@ APP_HTML = """<!DOCTYPE html>
 
             tbody.innerHTML = '';
 
+            if (bedsList.length === 0) {
+                container.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding:32px; color:#64748b;"><i class="fa-solid fa-bed" style="font-size:32px; margin-bottom:8px; opacity:0.4;"></i><p>No hospital beds registered in database.</p></div>`;
+                return;
+            }
             if (filtered.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="10" style="text-align:center; padding:24px; color:#64748b;">No emergency encounters matching the selected acuity filter.</td></tr>`;
                 return;
@@ -8461,10 +8450,11 @@ APP_HTML = """<!DOCTYPE html>
             const statusFilter = document.getElementById('bed-status-filter') ? document.getElementById('bed-status-filter').value : 'ALL';
             const searchQuery = document.getElementById('bed-search-box') ? document.getElementById('bed-search-box').value.toLowerCase().trim() : '';
 
-            const totalBeds = BED_RECORDS.length;
-            const occupiedBeds = BED_RECORDS.filter(b => b.status === 'occupied').length;
-            const availableBeds = BED_RECORDS.filter(b => b.status === 'available').length;
-            const occupancyRate = totalBeds > 0 ? ((occupiedBeds / totalBeds) * 100).toFixed(1) + '%' : '0%';
+            const bedsSource = (state && state.adt_beds && state.adt_beds.length > 0) ? state.adt_beds : BED_RECORDS;
+            const totalBeds = bedsSource.length;
+            const occupiedBeds = bedsSource.filter(b => (b.status || '').toLowerCase() === 'occupied').length;
+            const availableBeds = bedsSource.filter(b => (b.status || '').toLowerCase() === 'available').length;
+            const occupancyRate = totalBeds > 0 ? ((occupiedBeds / totalBeds) * 100).toFixed(1) + '%' : '0.0%';
 
             if (document.getElementById('adt-total-beds')) document.getElementById('adt-total-beds').textContent = totalBeds;
             if (document.getElementById('adt-occupied-beds')) document.getElementById('adt-occupied-beds').textContent = occupiedBeds;
@@ -8472,7 +8462,8 @@ APP_HTML = """<!DOCTYPE html>
             if (document.getElementById('adt-occupancy-rate')) document.getElementById('adt-occupancy-rate').textContent = occupancyRate;
             if (document.getElementById('dash-occupancy-kpi')) document.getElementById('dash-occupancy-kpi').textContent = occupancyRate;
 
-            let filtered = BED_RECORDS.filter(bed => {
+            const bedsList = (state && state.adt_beds && state.adt_beds.length > 0) ? state.adt_beds.map(b => ({ id: b.id, ward: b.ward_name, status: (b.status||'').toLowerCase(), patient: b.patient_name || '', doctor: b.attending_doctor || '', diagnosis: b.diagnosis || '', price: b.price || '$ 1,850/day', admittedDate: b.admission_date || '' })) : [];
+            let filtered = bedsList.filter(bed => {
                 if (activeWardFilter !== 'ALL' && !bed.ward.toLowerCase().includes(activeWardFilter.toLowerCase())) return false;
                 if (statusFilter !== 'ALL' && bed.status !== statusFilter) return false;
                 if (searchQuery) {
@@ -8486,6 +8477,10 @@ APP_HTML = """<!DOCTYPE html>
 
             container.innerHTML = '';
 
+            if (bedsList.length === 0) {
+                container.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding:32px; color:#64748b;"><i class="fa-solid fa-bed" style="font-size:32px; margin-bottom:8px; opacity:0.4;"></i><p>No hospital beds registered in database.</p></div>`;
+                return;
+            }
             if (filtered.length === 0) {
                 container.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding:32px; color:#64748b;"><i class="fa-solid fa-bed" style="font-size:32px; margin-bottom:8px; opacity:0.4;"></i><p>No beds found matching the selected ward or status filter.</p></div>`;
                 return;
@@ -8941,8 +8936,6 @@ APP_HTML = """<!DOCTYPE html>
 
             applyRolePermissions();
             loadLiveEMRState();
-            renderBedMatrix();
-            renderERCases();
         });
     
         // US HEALTHCARE & EDI RCM INTEGRATION JAVASCRIPT

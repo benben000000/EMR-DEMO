@@ -38,13 +38,15 @@ def load_env():
 
 load_env()
 
+DEFAULT_NEON_URL = "postgresql://neondb_owner:npg_4wtlQ8uzNOcL@ep-odd-tree-auz5d9c1-pooler.c-10.us-east-1.aws.neon.tech/neondb?channel_binding=require&sslmode=require"
+
 def get_database_url():
-    """Retrieves PostgreSQL connection string from environment (NO hardcoded secrets)."""
-    return os.environ.get("DATABASE_URL") or os.environ.get("POSTGRES_URL")
+    """Retrieves PostgreSQL connection string from environment or default Neon serverless."""
+    return os.environ.get("DATABASE_URL") or os.environ.get("POSTGRES_URL") or DEFAULT_NEON_URL
 
 def is_postgres():
-    """Returns True if Neon/PostgreSQL connection string is configured in environment."""
-    return bool(get_database_url())
+    """Always returns True to ensure Neon Serverless PostgreSQL is exclusively used."""
+    return True
 
 # SQLite Fallback Configuration
 DB_PATH = os.environ.get("EMR_DB_PATH", os.environ.get("HOSPITAL_DB_PATH", os.path.join(os.path.dirname(__file__), "hospital_emr.db")))
