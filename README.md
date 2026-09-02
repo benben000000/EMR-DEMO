@@ -5,7 +5,7 @@
 
 ---
 
-## 🔑 Access & Demo Credentials
+## Access & Demo Credentials
 
 Once the system is launched, access the portal in your browser:
 
@@ -15,7 +15,7 @@ Once the system is launched, access the portal in your browser:
 
 ---
 
-## ☁️ How to Deploy to Vercel (1-Click Setup)
+## How to Deploy to Vercel (1-Click Setup)
 
 This repository is pre-configured with `vercel.json` and serverless Python / static edge routing.
 
@@ -35,7 +35,7 @@ vercel --prod
 
 ---
 
-## 💻 How to Run Locally
+## How to Run Locally
 
 ### macOS / Linux / Windows (Instant Runner)
 ```bash
@@ -45,7 +45,7 @@ Open **`http://localhost:5000`** in your browser.
 
 ---
 
-## 🏥 Interactive Departments Included
+## Interactive Departments Included
 - **Executive Dashboard** (`/dashboard`)
 - **Patient Registration & Master Index**
 - **Doctor Appointments & OPD Queue**

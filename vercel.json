@@ -2,6 +2,14 @@
   "cleanUrls": true,
   "rewrites": [
     {
+      "source": "/api/(.*)",
+      "destination": "/api/index.py"
+    },
+    {
+      "source": "/login",
+      "destination": "/api/index.py"
+    },
+    {
       "source": "/Personalization/(.*)",
       "destination": "/public/Personalization/$1"
     },
@@ -14,16 +22,12 @@
       "destination": "/public/index.html"
     },
     {
-      "source": "/login",
-      "destination": "/public/index.html"
-    },
-    {
       "source": "/Account/Logout",
-      "destination": "/public/index.html?logout=success"
+      "destination": "/api/index.py"
     },
     {
       "source": "/logout",
-      "destination": "/public/index.html?logout=success"
+      "destination": "/api/index.py"
     },
     {
       "source": "/(.*)",

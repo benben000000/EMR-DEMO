@@ -122,4 +122,4 @@ if __name__ == "__main__":
     test_patient_service_with_injected_audit()
     test_billing_service_with_injected_discounts()
     test_triage_service_emergency_escalation()
-    print("🎉 All Dependency Injection & Repository tests passed successfully!")
+    print("[PASS] All Dependency Injection & Repository tests passed successfully!")

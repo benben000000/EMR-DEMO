@@ -90,4 +90,4 @@ if __name__ == "__main__":
     test_validate_vitals_normalcy()
     test_validate_accounting_entry()
     test_hmac_token_cryptography()
-    print("🎉 All Pure Domain Function tests passed successfully!")
+    print("[PASS] All Pure Domain Function tests passed successfully!")

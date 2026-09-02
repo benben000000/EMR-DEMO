@@ -1,10 +1,10 @@
-# 🚀 Vercel Deployment Guide for G1 Health EMR
+# Vercel Deployment Guide for G1 Health EMR
 
 This project is fully ready for zero-configuration deployment on **[Vercel](https://vercel.com/)**.
 
 ---
 
-## 🌟 1-Click Deployment via Vercel Dashboard
+## 1-Click Deployment via Vercel Dashboard
 
 1. **Log in to Vercel**:
    Go to [https://vercel.com](https://vercel.com) and sign in with your GitHub account (`benben000000`).
@@ -25,7 +25,7 @@ This project is fully ready for zero-configuration deployment on **[Vercel](http
 
 ---
 
-## 🛠️ Project Structure for Vercel
+## Project Structure for Vercel
 
 ```
 EMR-DEMO/
@@ -43,7 +43,7 @@ EMR-DEMO/
 
 ---
 
-## ⚡ Deployment via Vercel CLI (Optional)
+## Deployment via Vercel CLI (Optional)
 
 If you have Node.js / npm installed locally or on your CI/CD runner:
 
@@ -60,6 +60,6 @@ vercel --prod
 
 ---
 
-## 🔐 Credentials on Live Site
+## Credentials on Live Site
 - **Username**: `admin`
 - **Password**: `pass123`

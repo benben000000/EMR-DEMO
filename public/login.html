@@ -83,7 +83,7 @@
             margin-bottom: 30px;
         }
 
-        .hero-tagline b { color: var(--brand-cyan); }
+        .hero-tagline b { color: #38bdf8; }
 
         .feature-list {
             list-style: none;
@@ -106,7 +106,7 @@
             backdrop-filter: blur(8px);
         }
 
-        .feature-item i { color: var(--brand-cyan); font-size: 15px; width: 20px; text-align: center; }
+        .feature-item i { color: #38bdf8; font-size: 15px; width: 20px; text-align: center; }
 
         .hero-footer {
             font-size: 12px;
@@ -114,7 +114,7 @@
             margin-top: 32px;
         }
 
-        .hero-footer a { color: var(--brand-cyan); text-decoration: none; font-weight: 600; }
+        .hero-footer a { color: #38bdf8; text-decoration: none; font-weight: 600; }
 
         .form-panel {
             flex: 1;
@@ -167,7 +167,7 @@
 
         .input-wrapper input:focus {
             border-color: var(--brand-primary);
-            box-shadow: 0 0 0 3.5px rgba(37, 53, 69, 0.12);
+            box-shadow: 0 0 0 2px #94a3b8;
         }
 
         .form-options {
@@ -200,7 +200,7 @@
 
         .btn-submit:hover {
             background-color: var(--brand-primary-hover);
-            color: var(--brand-cyan);
+            color: #38bdf8;
             transform: translateY(-1px);
             box-shadow: 0 10px 20px -5px rgba(37, 53, 69, 0.35);
         }
@@ -581,14 +581,14 @@
                         <span style="color:#64748b; font-size:11px;">Click to autofill</span>
                     </div>
                     <div class="role-pills" style="display:grid; grid-template-columns:repeat(4, 1fr); gap:6px;">
-                        <button type="button" class="role-pill-btn" onclick="setRoleCredentials('admin', 'pass123')">👑 Admin</button>
-                        <button type="button" class="role-pill-btn" onclick="setRoleCredentials('doctor', 'pass123')">🩺 Doctor</button>
-                        <button type="button" class="role-pill-btn" onclick="setRoleCredentials('nurse', 'pass123')">💉 Nurse</button>
-                        <button type="button" class="role-pill-btn" onclick="setRoleCredentials('accountant', 'pass123')">💰 Accountant</button>
-                        <button type="button" class="role-pill-btn" onclick="setRoleCredentials('billing', 'pass123')">💳 Billing</button>
-                        <button type="button" class="role-pill-btn" onclick="setRoleCredentials('pharmacy', 'pass123')">💊 Pharmacy</button>
-                        <button type="button" class="role-pill-btn" onclick="setRoleCredentials('labtech', 'pass123')">🔬 Lab Tech</button>
-                        <button type="button" class="role-pill-btn" onclick="setRoleCredentials('reception', 'pass123')">📋 Reception</button>
+                        <button type="button" class="role-pill-btn" onclick="setRoleCredentials('admin', 'pass123')"> Admin</button>
+                        <button type="button" class="role-pill-btn" onclick="setRoleCredentials('doctor', 'pass123')"> Doctor</button>
+                        <button type="button" class="role-pill-btn" onclick="setRoleCredentials('nurse', 'pass123')"> Nurse</button>
+                        <button type="button" class="role-pill-btn" onclick="setRoleCredentials('accountant', 'pass123')"><i class="fa-solid fa-file-invoice-dollar"></i> Accountant</button>
+                        <button type="button" class="role-pill-btn" onclick="setRoleCredentials('billing', 'pass123')"><i class="fa-solid fa-credit-card"></i> Billing</button>
+                        <button type="button" class="role-pill-btn" onclick="setRoleCredentials('pharmacy', 'pass123')"> Pharmacy</button>
+                        <button type="button" class="role-pill-btn" onclick="setRoleCredentials('labtech', 'pass123')"><i class="fa-solid fa-microscope"></i> Lab Tech</button>
+                        <button type="button" class="role-pill-btn" onclick="setRoleCredentials('reception', 'pass123')"><i class="fa-solid fa-clipboard-user"></i> Reception</button>
                     </div>
                 </div>
             </form>
@@ -597,14 +597,14 @@
 
     <script>
         const VALID_USERS = {
-            'admin': { pass: 'pass123', name: 'Administrator', role: 'Super Admin &bull; Full Access', role_key: 'admin', avatar: 'AD', badge: '👑 Super Admin' },
-            'doctor': { pass: 'pass123', name: 'Dr. Roberto Tan, MD', role: 'Attending Cardiologist &bull; Clinical Desk', role_key: 'doctor', avatar: 'RT', badge: '🩺 Doctor (MD)' },
-            'nurse': { pass: 'pass123', name: 'Nurse Clara Dizon', role: 'Charge Nurse &bull; Ward Station', role_key: 'nurse', avatar: 'CD', badge: '💉 Nurse (RN)' },
-            'accountant': { pass: 'pass123', name: 'Elena Villar, CPA', role: 'Chief Accountant &bull; Finance Dept', role_key: 'accountant', avatar: 'EV', badge: '💰 Accountant' },
-            'billing': { pass: 'pass123', name: 'Mark Mendoza', role: 'Billing & Claims Officer &bull; Cashier', role_key: 'billing', avatar: 'MM', badge: '💳 Billing' },
-            'pharmacy': { pass: 'pass123', name: 'Pharm. Leo Santos, RPh', role: 'Chief Pharmacist &bull; Dispensary', role_key: 'pharmacy', avatar: 'LS', badge: '💊 Pharmacist' },
-            'labtech': { pass: 'pass123', name: 'Sarah Cruz, RMT', role: 'Diagnostic & Imaging Technologist', role_key: 'labtech', avatar: 'SC', badge: '🔬 Lab Tech' },
-            'reception': { pass: 'pass123', name: 'Joy Pascual', role: 'Front Desk & Admissions Officer', role_key: 'reception', avatar: 'JP', badge: '📋 Reception' }
+            'admin': { pass: 'pass123', name: 'Administrator', role: 'Super Admin &bull; Full Access', role_key: 'admin', avatar: 'AD', badge: '<i class="fa-solid fa-shield-halved"></i> Super Admin' },
+            'doctor': { pass: 'pass123', name: 'Dr. Roberto Tan, MD', role: 'Attending Cardiologist &bull; Clinical Desk', role_key: 'doctor', avatar: 'RT', badge: '<i class="fa-solid fa-user-doctor"></i> Doctor (MD)' },
+            'nurse': { pass: 'pass123', name: 'Nurse Clara Dizon', role: 'Charge Nurse &bull; Ward Station', role_key: 'nurse', avatar: 'CD', badge: '<i class="fa-solid fa-user-nurse"></i> Nurse (RN)' },
+            'accountant': { pass: 'pass123', name: 'Elena Villar, CPA', role: 'Chief Accountant &bull; Finance Dept', role_key: 'accountant', avatar: 'EV', badge: '<i class="fa-solid fa-file-invoice-dollar"></i> Accountant' },
+            'billing': { pass: 'pass123', name: 'Mark Mendoza', role: 'Billing & Claims Officer &bull; Cashier', role_key: 'billing', avatar: 'MM', badge: '<i class="fa-solid fa-credit-card"></i> Billing' },
+            'pharmacy': { pass: 'pass123', name: 'Pharm. Leo Santos, RPh', role: 'Chief Pharmacist &bull; Dispensary', role_key: 'pharmacy', avatar: 'LS', badge: '<i class="fa-solid fa-prescription-bottle-medical"></i> Pharmacist' },
+            'labtech': { pass: 'pass123', name: 'Sarah Cruz, RMT', role: 'Diagnostic & Imaging Technologist', role_key: 'labtech', avatar: 'SC', badge: '<i class="fa-solid fa-microscope"></i> Lab Tech' },
+            'reception': { pass: 'pass123', name: 'Joy Pascual', role: 'Front Desk & Admissions Officer', role_key: 'reception', avatar: 'JP', badge: '<i class="fa-solid fa-clipboard-user"></i> Reception' }
         };
 
         function handleLoginSubmit(event) {

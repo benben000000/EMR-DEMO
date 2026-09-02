@@ -2,12 +2,13 @@
 import sys
 import os
 import sqlite3
+import tempfile
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from core.services import ServiceContainer
 
 def test_sqlite_container_integration():
-    test_db = "/tmp/test_hospital_emr.db"
+    test_db = os.path.join(tempfile.gettempdir(), "test_hospital_emr.db")
     if os.path.exists(test_db):
         os.remove(test_db)
         
@@ -63,7 +64,7 @@ def test_sqlite_container_integration():
     if os.path.exists(test_db):
         os.remove(test_db)
 
-    print("🎉 SQLite ServiceContainer integration test passed successfully!")
+    print("[PASS] SQLite ServiceContainer integration test passed successfully!")
 
 if __name__ == "__main__":
     test_sqlite_container_integration()

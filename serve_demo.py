@@ -1,18 +1,10 @@
 import db_manager
+import core.domain as domain
 #!/usr/bin/env python3
 """
-G1 Health EMR - macOS Complete Interactive Enterprise Suite & Demo Runner
+G1 Health EMR - Complete Interactive Enterprise Suite & Demo Runner
 Organization: Global 1 OneTech (https://global1onetech.com/)
 Product: G1 Health EMR Enterprise Cloud
-
-Enterprise Security Features:
-- Stateless Cryptographic HMAC Session Tokens (100% Vercel Serverless & Local Compatible)
-- Protected Route Guards (/dashboard, /app, /Home/Index)
-- Immediate Post-Logout Cookie & Storage Invalidation
-- Anti-Cache Headers (Cache-Control: no-store, no-cache, must-revalidate)
-- Direct Access Whitelist for Static Files (/Personalization/*, /public/*, /favicon.ico)
-- Role-Based Access Control (RBAC): Super Admin, Doctor, Nurse, Billing Officer
-- Inactivity Lock Screen & Session Timeout
 """
 
 import http.server
@@ -35,16 +27,16 @@ BASE_DIR = os.path.abspath(os.path.join(PROJECT_ROOT, "Code/Websites/HospitalEMR
 SECRET_KEY = b'global1onetech_g1_health_emr_enterprise_secret_key_2026'
 SESSION_EXPIRY_SECONDS = 86400 # 24 Hours
 
-# Valid User Accounts & Roles
+# Valid User Accounts & Roles (Clean clinical typography, zero emojis)
 USERS_DB = {
-    'admin': {'password': 'pass123', 'name': 'Administrator', 'role': 'Super Admin &bull; Full Access', 'role_key': 'admin', 'avatar': 'AD', 'badge': '👑 Super Admin'},
-    'doctor': {'password': 'pass123', 'name': 'Dr. Roberto Tan, MD', 'role': 'Attending Cardiologist &bull; Clinical Desk', 'role_key': 'doctor', 'avatar': 'RT', 'badge': '🩺 Doctor (MD)'},
-    'nurse': {'password': 'pass123', 'name': 'Nurse Clara Dizon', 'role': 'Charge Nurse &bull; Ward Station', 'role_key': 'nurse', 'avatar': 'CD', 'badge': '💉 Nurse (RN)'},
-    'accountant': {'password': 'pass123', 'name': 'Elena Villar, CPA', 'role': 'Chief Accountant &bull; Finance Dept', 'role_key': 'accountant', 'avatar': 'EV', 'badge': '💰 Accountant'},
-    'billing': {'password': 'pass123', 'name': 'Mark Mendoza', 'role': 'Billing & Claims Officer &bull; Cashier', 'role_key': 'billing', 'avatar': 'MM', 'badge': '💳 Billing'},
-    'pharmacy': {'password': 'pass123', 'name': 'Pharm. Leo Santos, RPh', 'role': 'Chief Pharmacist &bull; Dispensary', 'role_key': 'pharmacy', 'avatar': 'LS', 'badge': '💊 Pharmacist'},
-    'labtech': {'password': 'pass123', 'name': 'Sarah Cruz, RMT', 'role': 'Diagnostic & Imaging Technologist', 'role_key': 'labtech', 'avatar': 'SC', 'badge': '🔬 Lab Tech'},
-    'reception': {'password': 'pass123', 'name': 'Joy Pascual', 'role': 'Front Desk & Admissions Officer', 'role_key': 'reception', 'avatar': 'JP', 'badge': '📋 Reception'}
+    'admin': {'password': 'pass123', 'name': 'Administrator', 'role': 'Super Admin &bull; Full Access', 'role_key': 'admin', 'avatar': 'AD', 'badge': 'Super Admin'},
+    'doctor': {'password': 'pass123', 'name': 'Dr. Roberto Tan, MD', 'role': 'Attending Cardiologist &bull; Clinical Desk', 'role_key': 'doctor', 'avatar': 'RT', 'badge': 'Doctor (MD)'},
+    'nurse': {'password': 'pass123', 'name': 'Nurse Clara Dizon', 'role': 'Charge Nurse &bull; Ward Station', 'role_key': 'nurse', 'avatar': 'CD', 'badge': 'Nurse (RN)'},
+    'accountant': {'password': 'pass123', 'name': 'Elena Villar, CPA', 'role': 'Chief Accountant &bull; Finance Dept', 'role_key': 'accountant', 'avatar': 'EV', 'badge': 'Accountant'},
+    'billing': {'password': 'pass123', 'name': 'Mark Mendoza', 'role': 'Billing & Claims Officer &bull; Cashier', 'role_key': 'billing', 'avatar': 'MM', 'badge': 'Billing'},
+    'pharmacy': {'password': 'pass123', 'name': 'Pharm. Leo Santos, RPh', 'role': 'Chief Pharmacist &bull; Dispensary', 'role_key': 'pharmacy', 'avatar': 'LS', 'badge': 'Pharmacist'},
+    'labtech': {'password': 'pass123', 'name': 'Sarah Cruz, RMT', 'role': 'Diagnostic & Imaging Technologist', 'role_key': 'labtech', 'avatar': 'SC', 'badge': 'Lab Tech'},
+    'reception': {'password': 'pass123', 'name': 'Joy Pascual', 'role': 'Front Desk & Admissions Officer', 'role_key': 'reception', 'avatar': 'JP', 'badge': 'Reception'}
 }
 
 # Audit Trail Log
@@ -177,7 +169,7 @@ LOGIN_HTML = """<!DOCTYPE html>
             margin-bottom: 30px;
         }
 
-        .hero-tagline b { color: var(--brand-cyan); }
+        .hero-tagline b { color: #38bdf8; }
 
         .feature-list {
             list-style: none;
@@ -200,7 +192,7 @@ LOGIN_HTML = """<!DOCTYPE html>
             backdrop-filter: blur(8px);
         }
 
-        .feature-item i { color: var(--brand-cyan); font-size: 15px; width: 20px; text-align: center; }
+        .feature-item i { color: #38bdf8; font-size: 15px; width: 20px; text-align: center; }
 
         .hero-footer {
             font-size: 12px;
@@ -208,7 +200,7 @@ LOGIN_HTML = """<!DOCTYPE html>
             margin-top: 32px;
         }
 
-        .hero-footer a { color: var(--brand-cyan); text-decoration: none; font-weight: 600; }
+        .hero-footer a { color: #38bdf8; text-decoration: none; font-weight: 600; }
 
         .form-panel {
             flex: 1;
@@ -261,7 +253,7 @@ LOGIN_HTML = """<!DOCTYPE html>
 
         .input-wrapper input:focus {
             border-color: var(--brand-primary);
-            box-shadow: 0 0 0 3.5px rgba(37, 53, 69, 0.12);
+            box-shadow: 0 0 0 2px #94a3b8;
         }
 
         .form-options {
@@ -294,7 +286,7 @@ LOGIN_HTML = """<!DOCTYPE html>
 
         .btn-submit:hover {
             background-color: var(--brand-primary-hover);
-            color: var(--brand-cyan);
+            color: #38bdf8;
             transform: translateY(-1px);
             box-shadow: 0 10px 20px -5px rgba(37, 53, 69, 0.35);
         }
@@ -675,14 +667,14 @@ LOGIN_HTML = """<!DOCTYPE html>
                         <span style="color:#64748b; font-size:11px;">Click to autofill</span>
                     </div>
                     <div class="role-pills" style="display:grid; grid-template-columns:repeat(4, 1fr); gap:6px;">
-                        <button type="button" class="role-pill-btn" onclick="setRoleCredentials('admin', 'pass123')">👑 Admin</button>
-                        <button type="button" class="role-pill-btn" onclick="setRoleCredentials('doctor', 'pass123')">🩺 Doctor</button>
-                        <button type="button" class="role-pill-btn" onclick="setRoleCredentials('nurse', 'pass123')">💉 Nurse</button>
-                        <button type="button" class="role-pill-btn" onclick="setRoleCredentials('accountant', 'pass123')">💰 Accountant</button>
-                        <button type="button" class="role-pill-btn" onclick="setRoleCredentials('billing', 'pass123')">💳 Billing</button>
-                        <button type="button" class="role-pill-btn" onclick="setRoleCredentials('pharmacy', 'pass123')">💊 Pharmacy</button>
-                        <button type="button" class="role-pill-btn" onclick="setRoleCredentials('labtech', 'pass123')">🔬 Lab Tech</button>
-                        <button type="button" class="role-pill-btn" onclick="setRoleCredentials('reception', 'pass123')">📋 Reception</button>
+                        <button type="button" class="role-pill-btn" onclick="setRoleCredentials('admin', 'pass123')"> Admin</button>
+                        <button type="button" class="role-pill-btn" onclick="setRoleCredentials('doctor', 'pass123')"> Doctor</button>
+                        <button type="button" class="role-pill-btn" onclick="setRoleCredentials('nurse', 'pass123')"> Nurse</button>
+                        <button type="button" class="role-pill-btn" onclick="setRoleCredentials('accountant', 'pass123')"><i class="fa-solid fa-file-invoice-dollar"></i> Accountant</button>
+                        <button type="button" class="role-pill-btn" onclick="setRoleCredentials('billing', 'pass123')"><i class="fa-solid fa-credit-card"></i> Billing</button>
+                        <button type="button" class="role-pill-btn" onclick="setRoleCredentials('pharmacy', 'pass123')"> Pharmacy</button>
+                        <button type="button" class="role-pill-btn" onclick="setRoleCredentials('labtech', 'pass123')"><i class="fa-solid fa-microscope"></i> Lab Tech</button>
+                        <button type="button" class="role-pill-btn" onclick="setRoleCredentials('reception', 'pass123')"><i class="fa-solid fa-clipboard-user"></i> Reception</button>
                     </div>
                 </div>
             </form>
@@ -691,14 +683,14 @@ LOGIN_HTML = """<!DOCTYPE html>
 
     <script>
         const VALID_USERS = {
-            'admin': { pass: 'pass123', name: 'Administrator', role: 'Super Admin &bull; Full Access', role_key: 'admin', avatar: 'AD', badge: '👑 Super Admin' },
-            'doctor': { pass: 'pass123', name: 'Dr. Roberto Tan, MD', role: 'Attending Cardiologist &bull; Clinical Desk', role_key: 'doctor', avatar: 'RT', badge: '🩺 Doctor (MD)' },
-            'nurse': { pass: 'pass123', name: 'Nurse Clara Dizon', role: 'Charge Nurse &bull; Ward Station', role_key: 'nurse', avatar: 'CD', badge: '💉 Nurse (RN)' },
-            'accountant': { pass: 'pass123', name: 'Elena Villar, CPA', role: 'Chief Accountant &bull; Finance Dept', role_key: 'accountant', avatar: 'EV', badge: '💰 Accountant' },
-            'billing': { pass: 'pass123', name: 'Mark Mendoza', role: 'Billing & Claims Officer &bull; Cashier', role_key: 'billing', avatar: 'MM', badge: '💳 Billing' },
-            'pharmacy': { pass: 'pass123', name: 'Pharm. Leo Santos, RPh', role: 'Chief Pharmacist &bull; Dispensary', role_key: 'pharmacy', avatar: 'LS', badge: '💊 Pharmacist' },
-            'labtech': { pass: 'pass123', name: 'Sarah Cruz, RMT', role: 'Diagnostic & Imaging Technologist', role_key: 'labtech', avatar: 'SC', badge: '🔬 Lab Tech' },
-            'reception': { pass: 'pass123', name: 'Joy Pascual', role: 'Front Desk & Admissions Officer', role_key: 'reception', avatar: 'JP', badge: '📋 Reception' }
+            'admin': { pass: 'pass123', name: 'Administrator', role: 'Super Admin &bull; Full Access', role_key: 'admin', avatar: 'AD', badge: '<i class="fa-solid fa-shield-halved"></i> Super Admin' },
+            'doctor': { pass: 'pass123', name: 'Dr. Roberto Tan, MD', role: 'Attending Cardiologist &bull; Clinical Desk', role_key: 'doctor', avatar: 'RT', badge: '<i class="fa-solid fa-user-doctor"></i> Doctor (MD)' },
+            'nurse': { pass: 'pass123', name: 'Nurse Clara Dizon', role: 'Charge Nurse &bull; Ward Station', role_key: 'nurse', avatar: 'CD', badge: '<i class="fa-solid fa-user-nurse"></i> Nurse (RN)' },
+            'accountant': { pass: 'pass123', name: 'Elena Villar, CPA', role: 'Chief Accountant &bull; Finance Dept', role_key: 'accountant', avatar: 'EV', badge: '<i class="fa-solid fa-file-invoice-dollar"></i> Accountant' },
+            'billing': { pass: 'pass123', name: 'Mark Mendoza', role: 'Billing & Claims Officer &bull; Cashier', role_key: 'billing', avatar: 'MM', badge: '<i class="fa-solid fa-credit-card"></i> Billing' },
+            'pharmacy': { pass: 'pass123', name: 'Pharm. Leo Santos, RPh', role: 'Chief Pharmacist &bull; Dispensary', role_key: 'pharmacy', avatar: 'LS', badge: '<i class="fa-solid fa-prescription-bottle-medical"></i> Pharmacist' },
+            'labtech': { pass: 'pass123', name: 'Sarah Cruz, RMT', role: 'Diagnostic & Imaging Technologist', role_key: 'labtech', avatar: 'SC', badge: '<i class="fa-solid fa-microscope"></i> Lab Tech' },
+            'reception': { pass: 'pass123', name: 'Joy Pascual', role: 'Front Desk & Admissions Officer', role_key: 'reception', avatar: 'JP', badge: '<i class="fa-solid fa-clipboard-user"></i> Reception' }
         };
 
         function handleLoginSubmit(event) {
@@ -727,11 +719,7 @@ LOGIN_HTML = """<!DOCTYPE html>
                 document.cookie = "g1_session=sess_" + userInp + "_" + Date.now() + "; Path=/; Max-Age=86400; SameSite=Lax;";
 
                 setTimeout(() => {
-                    let target = '/dashboard';
-                    if (window.location.protocol === 'file:' || (window.location.port && window.location.port !== '5000')) {
-                        target = 'dashboard.html';
-                    }
-                    window.location.replace(target);
+                    window.location.replace('/dashboard');
                 }, 100);
                 return false;
             } else {
@@ -836,6 +824,197 @@ APP_HTML = """<!DOCTYPE html>
         window.addEventListener('focus', function() {
             enforceAuthGuard();
         });
+    
+        // US HEALTHCARE & EDI RCM INTEGRATION JAVASCRIPT
+        function openCMS1500Modal(claimNo) {
+            const claim = (state.insurance_claims || []).find(c => c.claim_no === claimNo) || {
+                claim_no: claimNo || 'CLM-US-2026-0101',
+                patient_name: 'John Doe',
+                payer_id: '00431',
+                policy_no: '1EG4-TE5-MK72',
+                icd_code: 'I10 - Essential HTN',
+                cpt_codes: '99214, 93000',
+                billed_charges: 305.00
+            };
+            document.getElementById('hcfa-form-claim-id').textContent = claim.claim_no;
+            document.getElementById('hcfa-form-payer-id').textContent = claim.payer_id || '00431';
+            document.getElementById('hcfa-box1a').textContent = claim.policy_no || '1EG4-TE5-MK72';
+            document.getElementById('hcfa-box2').textContent = claim.patient_name || 'Doe, John A.';
+            document.getElementById('hcfa-box4').textContent = claim.patient_name || 'Doe, John A.';
+            document.getElementById('hcfa-diag-a').textContent = claim.icd_code || 'I10 (Essential HTN)';
+            document.getElementById('hcfa-total-charge').textContent = '$ ' + Number(claim.billed_charges || claim.claim_amount || 305.00).toFixed(2);
+            openModal('modal-cms1500');
+        }
+
+        function openUB04Modal(claimNo) {
+            const claim = (state.insurance_claims || []).find(c => c.claim_no === claimNo) || {
+                claim_no: claimNo || 'UB-US-2026-0045',
+                patient_name: 'Robert Johnson',
+                policy_no: '2MB7-FA9-KL10'
+            };
+            document.getElementById('ub04-claim-id').textContent = claim.claim_no;
+            document.getElementById('ub04-patient').textContent = claim.patient_name + ' - 89 Tremont St, Boston, MA';
+            document.getElementById('ub04-mbi').textContent = claim.policy_no || '2MB7-FA9-KL10';
+            openModal('modal-ub04');
+        }
+
+        function openClaimFormViewer(claimNo) {
+            const claim = (state.insurance_claims || []).find(c => c.claim_no === claimNo);
+            if (claim && (claim.claim_type || '').includes('837I')) {
+                openUB04Modal(claimNo);
+            } else {
+                openCMS1500Modal(claimNo);
+            }
+        }
+
+        function openEDI837Viewer(claimNo) {
+            const claim = (state.insurance_claims || []).find(c => c.claim_no === claimNo) || {
+                claim_no: claimNo,
+                patient_name: 'John Doe',
+                billed_charges: 305.00,
+                cpt_codes: '99214',
+                claim_type: '837P'
+            };
+            document.getElementById('edi-claim-header').textContent = 'Transaction: ' + (claim.claim_type || '837P Professional') + ' - ' + claim.claim_no;
+            document.getElementById('edi-payload-viewer').textContent = 'Generating ANSI ASC X12 837 loop...';
+            openModal('modal-edi837');
+
+            fetch('/api/claims/edi837', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(claim)
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success && data.edi_payload) {
+                    document.getElementById('edi-payload-viewer').textContent = data.edi_payload;
+                }
+            })
+            .catch(err => {
+                document.getElementById('edi-payload-viewer').textContent = 'ISA*00*          *00*          *ZZ*SUBMITTER1     *ZZ*00431          *260902*1000*^*00501*000000001*0*P*:~\nGS*HC*SUBMITTER1*00431*20260902*1000*1*X*005010X222A1~\nST*837*0001*005010X222A1~\nBHT*0019*00*' + claim.claim_no + '*20260902*1000*CH~\nNM1*41*2*GLOBAL 1 ONETECH HEALTH CENTER*****46*1098765432~\nHL*1**20*1~\nCLM*' + claim.claim_no + '*' + (claim.billed_charges || 305) + '***11:B:1*Y*A*Y*Y~\nSE*26*0001~\nGE*1*1~\nIEA*1*000000001~';
+            });
+        }
+
+        function copyEDIText() {
+            const text = document.getElementById('edi-payload-viewer').textContent;
+            navigator.clipboard.writeText(text);
+            showToast('ANSI ASC X12 837 payload copied to clipboard!');
+        }
+
+        function downloadEDIFile() {
+            const text = document.getElementById('edi-payload-viewer').textContent;
+            const blob = new Blob([text], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'claim_837_submission.x12';
+            a.click();
+            showToast('Downloaded claim_837_submission.x12');
+        }
+
+        function printCMS1500() {
+            window.print();
+        }
+
+        function runLive270Inquiry() {
+            const mbi = document.getElementById('el-inquiry-mbi').value;
+            const payerId = document.getElementById('el-inquiry-payer').value;
+            fetch('/api/claims/eligibility', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ policy_or_mbi: mbi, payer_id: payerId })
+            })
+            .then(r => r.json())
+            .then(d => {
+                if (d.success && d.eligibility) {
+                    const el = d.eligibility;
+                    document.getElementById('el-res-plan').textContent = el.payer_name + ' (' + el.plan_type + ')';
+                    document.getElementById('el-res-deductible').textContent = '$ ' + Number(el.annual_deductible).toFixed(2);
+                    document.getElementById('el-res-ded-rem').textContent = '$ ' + Number(el.deductible_remaining).toFixed(2);
+                    document.getElementById('el-res-coins').textContent = el.coinsurance_rate + ' Patient / ' + el.medicare_share + ' Primary';
+                    showToast('Real-time EDI 270/271 verified: Active Coverage');
+                }
+            });
+        }
+
+        function verifyPatientEligibilityInModal() {
+            const mbi = document.getElementById('np-mbi').value;
+            const payerVal = document.getElementById('np-payer').value;
+            const [payerId, payerName] = payerVal.split('|');
+            fetch('/api/claims/eligibility', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ policy_or_mbi: mbi, payer_id: payerId, payer_name: payerName })
+            })
+            .then(r => r.json())
+            .then(d => {
+                if (d.success && d.eligibility) {
+                    document.getElementById('np-eligibility-preview').textContent = 'Verified Active: ' + d.eligibility.plan_type + ' (Deductible: $' + d.eligibility.deductible_remaining + ' remaining)';
+                    showToast('Patient Insurance Active & Verified via EDI 271');
+                }
+            });
+        }
+
+        function handlePayerChange(val) {
+            const [payerId, payerName] = val.split('|');
+            if (payerId === '00431') {
+                document.getElementById('np-mbi').placeholder = 'Medicare MBI (e.g. 1EG4-TE5-MK72)';
+            } else {
+                document.getElementById('np-mbi').placeholder = 'Member Policy ID (e.g. BCBS-90218-44)';
+            }
+        }
+
+        function generateClaimFromSuperbill() {
+            showToast('Generating ANSI ASC X12 837P Professional Claim...');
+            const newClaim = {
+                claim_no: 'CLM-US-2026-0' + Math.floor(100 + Math.random() * 900),
+                patient_name: document.getElementById('emr-patient-title').textContent.split('(')[0].trim(),
+                claim_type: '837P (Professional)',
+                payer_id: '00431',
+                payer_name: 'Medicare Part B (CMS)',
+                icd_code: document.getElementById('emr-diagnosis').value,
+                cpt_codes: '99214, 93000',
+                billed_charges: 305.00,
+                allowed_amount: 183.00,
+                insurance_paid: 146.40,
+                contractual_adj: 122.00,
+                patient_responsibility: 36.60,
+                claim_status: 'Submitted (837P)'
+            };
+            fetch('/api/insurance_claims', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(newClaim)
+            })
+            .then(r => r.json())
+            .then(d => {
+                showToast('Claim ' + newClaim.claim_no + ' successfully scrubbed & dispatched to Clearinghouse!');
+                fetchFullState();
+            });
+        }
+
+        function adjudicateClaimPrompt(claimNo) {
+            showToast('Processing EDI 835 Remittance Advice & Adjudicating Claim ' + claimNo + '...');
+            fetch('/api/claims/adjudicate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    billed_charges: 305.00,
+                    allowed_amount: 183.00,
+                    payer_type: 'medicare_b',
+                    remaining_deductible: 0.00
+                })
+            })
+            .then(r => r.json())
+            .then(d => {
+                if (d.success) {
+                    const adj = d.adjudication;
+                    alert('EDI 835 Remittance Posted:\n\nBilled: $' + adj.billed_charges.toFixed(2) + '\nContractual Write-Off (CO-45): $' + adj.contractual_adjustment_co45.toFixed(2) + '\nMedicare Paid (80%): $' + adj.primary_paid_amount.toFixed(2) + '\nPatient 20% Coinsurance (PR-2): $' + adj.primary_coinsurance_pr2.toFixed(2) + '\nStatus: ' + adj.cob_status);
+                    fetchFullState();
+                }
+            });
+        }
+
     </script>
 
     <style>
@@ -1004,8 +1183,8 @@ APP_HTML = """<!DOCTYPE html>
 
         /* Global Active Patient Banner */
         .active-patient-badge {
-            background: rgba(0, 0, 0, 0.35);
-            border: 1px solid rgba(0, 255, 161, 0.3);
+            background: #1e293b;
+            border: 1px solid #334155;
             border-radius: 8px;
             padding: 6px 14px;
             display: flex;
@@ -1341,16 +1520,17 @@ APP_HTML = """<!DOCTYPE html>
             display: inline-flex;
             align-items: center;
             gap: 5px;
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 11.5px;
-            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            border: 1px solid transparent;
         }
 
-        .status-active { background: #dcfce7; color: #15803d; }
-        .status-pending { background: #fef9c3; color: #a16207; }
-        .status-urgent { background: #fee2e2; color: #b91c1c; }
-        .status-completed { background: #e0f2fe; color: #0369a1; }
+        .status-active { background: #f0fdf4; color: #166534; border-color: #bbf7d0; }
+        .status-pending { background: #fefce8; color: #854d0e; border-color: #fef08a; }
+        .status-urgent { background: #fef2f2; color: #991b1b; border-color: #fecaca; }
+        .status-completed { background: #f0f9ff; color: #075985; border-color: #bae6fd; }
 
         /* Stats Grid */
         .stats-grid {
@@ -2044,14 +2224,13 @@ APP_HTML = """<!DOCTYPE html>
             display: flex;
             align-items: center;
             justify-content: space-between;
-            box-shadow: 0 4px 15px rgba(220, 38, 38, 0.5);
-            animation: pulse-red 1.5s infinite;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid #7f1d1d;
             z-index: 1060;
             border-bottom: 2px solid #fecaca;
         }
 
-        @keyframes pulse-red {
-            0% { background: #b91c1c; }
+        
             50% { background: #dc2626; }
             100% { background: #b91c1c; }
         }
@@ -2079,6 +2258,107 @@ APP_HTML = """<!DOCTYPE html>
             font-weight: 700;
         }
     
+    
+        /* US HEALTHCARE & RCM STYLES */
+        .superbill-card {
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 16px;
+        }
+        .superbill-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 10px;
+            margin-bottom: 12px;
+        }
+        .hcfa-container {
+            background: #ffffff;
+            border: 2px solid #b91c1c;
+            border-radius: 4px;
+            font-family: 'Arial', sans-serif;
+            color: #000;
+            padding: 12px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .hcfa-header {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 2px solid #b91c1c;
+            padding-bottom: 8px;
+            margin-bottom: 8px;
+        }
+        .hcfa-title {
+            color: #b91c1c;
+            font-weight: 900;
+            font-size: 16px;
+            text-transform: uppercase;
+        }
+        .hcfa-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 4px;
+            border-bottom: 1px solid #b91c1c;
+            padding-bottom: 6px;
+            margin-bottom: 6px;
+        }
+        .hcfa-box {
+            border: 1px solid #dc2626;
+            padding: 3px 6px;
+            background: #fff;
+            min-height: 42px;
+        }
+        .hcfa-box-num {
+            font-size: 9px;
+            font-weight: 800;
+            color: #b91c1c;
+            display: block;
+        }
+        .hcfa-box-label {
+            font-size: 8.5px;
+            color: #64748b;
+            text-transform: uppercase;
+        }
+        .hcfa-box-val {
+            font-size: 11px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-top: 2px;
+        }
+        .edi-terminal {
+            background: #0f172a;
+            color: #38bdf8;
+            font-family: 'Courier New', monospace;
+            padding: 16px;
+            border-radius: 6px;
+            font-size: 12px;
+            line-height: 1.6;
+            max-height: 380px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            border: 1px solid #334155;
+        }
+        .cpt-tag {
+            background: #eff6ff;
+            color: #1d4ed8;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 11px;
+            border: 1px solid #bfdbfe;
+        }
+        .pointer-tag {
+            background: #f1f5f9;
+            color: #475569;
+            padding: 1px 5px;
+            border-radius: 3px;
+            font-size: 10.5px;
+        }
+
     </style>
 </head>
 <body>
@@ -2211,13 +2491,13 @@ APP_HTML = """<!DOCTYPE html>
                     <a onclick="switchTab('view-fixedassets', this)"><i class="fa-solid fa-hospital-user"></i><span>FixedAssets</span></a>
                 </li>
                 <li class="nav-item" data-target="view-aicrm" data-module="aicrm">
-                    <a onclick="switchTab('view-aicrm', this)"><i class="fa-solid fa-robot"></i><span>AI CRM & Leads</span><span class="badge-new">NEW</span></a>
+                    <a onclick="switchTab('view-aicrm', this)"><i class="fa-solid fa-robot"></i><span>AI CRM & Leads</span></a>
                 </li>
                 <li class="nav-item" data-target="view-patient360" data-module="patient360">
-                    <a onclick="switchTab('view-patient360', this)"><i class="fa-solid fa-id-card-clip"></i><span>Patient 360 (PIS)</span><span class="badge-new">NEW</span></a>
+                    <a onclick="switchTab('view-patient360', this)"><i class="fa-solid fa-id-card-clip"></i><span>Patient 360 (PIS)</span></a>
                 </li>
                 <li class="nav-item" data-target="view-ehs" data-module="ehs">
-                    <a onclick="switchTab('view-ehs', this)"><i class="fa-solid fa-heart-pulse"></i><span>Employee Health</span><span class="badge-new">NEW</span></a>
+                    <a onclick="switchTab('view-ehs', this)"><i class="fa-solid fa-heart-pulse"></i><span>Employee Health</span></a>
                 </li>
             </ul>
         </div>
@@ -2233,7 +2513,7 @@ APP_HTML = """<!DOCTYPE html>
                     <i class="fa-solid fa-triangle-exclamation"></i>
                 </div>
                 <div>
-                    <strong style="font-size:14px; text-transform:uppercase; letter-spacing:0.5px;">🚨 STAT CODE BLUE ACTIVATED:</strong>
+                    <strong style="font-size:14px; text-transform:uppercase; letter-spacing:0.5px;"><i class="fa-solid fa-triangle-exclamation"></i> STAT CODE BLUE ACTIVATED:</strong>
                     <span id="active-code-blue-location" style="font-weight:800; background:rgba(0,0,0,0.25); padding:2px 8px; border-radius:4px; margin:0 6px;">ER Resuscitation Bay 1</span> &bull;
                     <span id="active-code-blue-reason">Cardiac Arrest / Airway Collapse</span>
                     <span id="active-code-blue-timer" style="margin-left:10px; font-weight:800; color:#fef08a;">(00:00 elapsed)</span>
@@ -2265,7 +2545,7 @@ APP_HTML = """<!DOCTYPE html>
                 <span style="color:#94a3b8;">|</span>
                 <span id="global-pat-code">G1-2026-0090</span>
                 <span style="color:#94a3b8;">|</span>
-                <span id="global-pat-meta">45 Y / Male &bull; PhilHealth</span>
+                <span id="global-pat-meta">45 Y / Male &bull; Medicare Part B</span>
                 <button class="btn-switch-pat" onclick="openModal('modal-select-patient')">
                     <i class="fa-solid fa-arrows-rotate"></i> Switch Patient
                 </button>
@@ -2282,7 +2562,7 @@ APP_HTML = """<!DOCTYPE html>
                 <i class="fa-solid fa-id-badge" style="color:var(--brand-cyan);"></i>
                 <div>
                     <div style="font-size:10px; color:#cbd5e1; text-transform:uppercase; font-weight:800;">Department Workspace:</div>
-                    <div style="font-size:12.5px; font-weight:800; color:#fff;" id="header-user-badge">👑 Super Admin</div>
+                    <div style="font-size:12.5px; font-weight:800; color:#fff;" id="header-user-badge"><i class="fa-solid fa-shield-halved"></i> Super Admin</div>
                 </div>
                 <i class="fa-solid fa-chevron-down" style="font-size:10px; color:#cbd5e1; margin-left:4px;"></i>
             </div>
@@ -2555,10 +2835,10 @@ APP_HTML = """<!DOCTYPE html>
                         <div style="display:flex; align-items:center; gap:12px;">
                             <select id="bed-status-filter" class="form-control" style="width:160px; padding:6px 10px; font-size:12.5px;" onchange="renderBedMatrix()">
                                 <option value="ALL">All Statuses</option>
-                                <option value="available">🟢 Available (Empty)</option>
-                                <option value="occupied">🔴 Occupied</option>
-                                <option value="cleaning">🟡 Under Cleaning</option>
-                                <option value="reserved">🔵 Reserved</option>
+                                <option value="available"> Available (Empty)</option>
+                                <option value="occupied"> Occupied</option>
+                                <option value="cleaning"> Under Cleaning</option>
+                                <option value="reserved"> Reserved</option>
                             </select>
                             <input type="text" id="bed-search-box" class="form-control" placeholder="Search Bed ID / Patient..." style="width:200px; padding:6px 10px; font-size:12.5px;" onkeyup="renderBedMatrix()" />
                         </div>
@@ -2591,7 +2871,7 @@ APP_HTML = """<!DOCTYPE html>
                     </div>
                     <div style="display:flex; gap:10px;">
                         <button class="btn-accent-action" style="background:#dc2626; color:#fff; font-weight:800;" onclick="openCodeBlueModal()">
-                            <i class="fa-solid fa-triangle-exclamation"></i> 🚨 Trigger Code Blue Location Alert
+                            <i class="fa-solid fa-triangle-exclamation"></i> Trigger Code Blue Location Alert
                         </button>
                         <button class="btn-primary-action" onclick="openModal('modal-new-er-patient')">
                             <i class="fa-solid fa-user-plus"></i> + Register ER Emergency Case
@@ -2626,10 +2906,10 @@ APP_HTML = """<!DOCTYPE html>
                             <span style="font-size:12px; font-weight:800; color:#475569; margin-right:8px;">FILTER ACUITY:</span>
                             <div class="ward-filter-pills" id="er-pills-list" style="display:inline-flex;">
                                 <button class="filter-pill active" onclick="filterERByLevel('ALL', this)">All Acuities</button>
-                                <button class="filter-pill" onclick="filterERByLevel('Level 1', this)">🔴 Level 1 Resuscitation</button>
-                                <button class="filter-pill" onclick="filterERByLevel('Level 2', this)">🟠 Level 2 Emergent</button>
-                                <button class="filter-pill" onclick="filterERByLevel('Level 3', this)">🟡 Level 3 Urgent</button>
-                                <button class="filter-pill" onclick="filterERByLevel('Level 4', this)">🟢 Level 4/5 Non-Urgent</button>
+                                <button class="filter-pill" onclick="filterERByLevel('Level 1', this)"> Level 1 Resuscitation</button>
+                                <button class="filter-pill" onclick="filterERByLevel('Level 2', this)"> Level 2 Emergent</button>
+                                <button class="filter-pill" onclick="filterERByLevel('Level 3', this)"> Level 3 Urgent</button>
+                                <button class="filter-pill" onclick="filterERByLevel('Level 4', this)"> Level 4/5 Non-Urgent</button>
                             </div>
                         </div>
                         <div class="search-box">
@@ -2756,7 +3036,58 @@ APP_HTML = """<!DOCTYPE html>
                                 </thead>
                                 <tbody id="tbody-clinical-rx"></tbody>
                             </table>
+                        
+                        <!-- US SUPERBILL & REVENUE CYCLE CHARGE CAPTURE -->
+                        <div class="card-box superbill-card">
+                            <div class="superbill-header">
+                                <div>
+                                    <h3 style="font-size:14px; font-weight:800; color:#0f172a;">
+                                        <i class="fa-solid fa-file-invoice-dollar" style="color:var(--brand-primary);"></i>
+                                        Encounter Superbill & Medical Coding (US RCM)
+                                    </h3>
+                                    <p style="font-size:11.5px; color:#64748b; margin:2px 0 0;">
+                                        ICD-10-CM Medical Necessity Linking & CPT/HCPCS Charge Capture
+                                    </p>
+                                </div>
+                                <div style="display:flex; gap:8px;">
+                                    <span class="status-badge status-active">POS: 11 (Office)</span>
+                                    <span class="status-badge status-completed" id="superbill-payer-badge">Payer: Medicare Part B</span>
+                                </div>
+                            </div>
+                            <div class="grid-3col" style="margin-bottom:12px;">
+                                <div style="background:#fff; border:1px solid #e2e8f0; padding:8px 12px; border-radius:6px;">
+                                    <span style="font-size:11px; color:#64748b; font-weight:700;">DIAGNOSIS POINTERS:</span>
+                                    <div style="margin-top:4px; font-size:12px;">
+                                        <div><strong>(1)</strong> I10 - Essential HTN</div>
+                                        <div><strong>(2)</strong> E11.9 - Type 2 Diabetes</div>
+                                    </div>
+                                </div>
+                                <div style="background:#fff; border:1px solid #e2e8f0; padding:8px 12px; border-radius:6px;">
+                                    <span style="font-size:11px; color:#64748b; font-weight:700;">PROCEDURES / CPTS:</span>
+                                    <div style="margin-top:4px; font-size:12px;">
+                                        <div><span class="cpt-tag">99214</span> Office Visit (Lvl 4) [Pt 1]</div>
+                                        <div><span class="cpt-tag">93000</span> 12-Lead ECG [Pt 1, -25]</div>
+                                    </div>
+                                </div>
+                                <div style="background:#fff; border:1px solid #e2e8f0; padding:8px 12px; border-radius:6px;">
+                                    <span style="font-size:11px; color:#64748b; font-weight:700;">ESTIMATED ADJUDICATION:</span>
+                                    <div style="margin-top:4px; font-size:12px;">
+                                        <div>Billed Total: <strong>$ 305.00</strong></div>
+                                        <div>Medicare 80%: <strong style="color:#166534;">$ 146.40</strong></div>
+                                        <div>Pt Coinsurance 20%: <strong>$ 36.60</strong></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="display:flex; justify-content:flex-end; gap:8px;">
+                                <button class="btn-secondary" style="font-size:12px;" onclick="openCMS1500Modal('CLM-US-2026-0101')">
+                                    <i class="fa-solid fa-file-pdf"></i> Preview CMS-1500 Form
+                                </button>
+                                <button class="btn-primary-action" style="font-size:12px;" onclick="generateClaimFromSuperbill()">
+                                    <i class="fa-solid fa-cloud-arrow-up"></i> Generate 837P Electronic Claim
+                                </button>
+                            </div>
                         </div>
+</div>
                     </div>
                 </div>
             </section>
@@ -3058,10 +3389,10 @@ APP_HTML = """<!DOCTYPE html>
 
                         <!-- Quick Test Scenario Pills -->
                         <div style="padding:8px 12px; background:#f8fafc; border-top:1px solid #e2e8f0; display:flex; gap:6px; overflow-x:auto;">
-                            <button class="filter-pill" style="font-size:11px; white-space:nowrap; padding:4px 10px;" onclick="sendPresetScenario('Chest tightness and high BP 150/95 since this morning')">🫀 Chest Tightness</button>
-                            <button class="filter-pill" style="font-size:11px; white-space:nowrap; padding:4px 10px;" onclick="sendPresetScenario('Severe knee pain and swelling after playing tennis')">🦵 Knee Injury</button>
-                            <button class="filter-pill" style="font-size:11px; white-space:nowrap; padding:4px 10px;" onclick="sendPresetScenario('Post-op wound dressing feels warm, is this normal?')">🩹 Post-Op Query</button>
-                            <button class="filter-pill" style="font-size:11px; white-space:nowrap; padding:4px 10px;" onclick="sendPresetScenario('My fasting blood sugar was 145 mg/dL today')">🧪 High Blood Sugar</button>
+                            <button class="filter-pill" style="font-size:11px; white-space:nowrap; padding:4px 10px;" onclick="sendPresetScenario('Chest tightness and high BP 150/95 since this morning')"><i class="fa-solid fa-heart-pulse"></i> Chest Tightness</button>
+                            <button class="filter-pill" style="font-size:11px; white-space:nowrap; padding:4px 10px;" onclick="sendPresetScenario('Severe knee pain and swelling after playing tennis')"><i class="fa-solid fa-bone"></i> Knee Injury</button>
+                            <button class="filter-pill" style="font-size:11px; white-space:nowrap; padding:4px 10px;" onclick="sendPresetScenario('Post-op wound dressing feels warm, is this normal?')"><i class="fa-solid fa-bandage"></i> Post-Op Query</button>
+                            <button class="filter-pill" style="font-size:11px; white-space:nowrap; padding:4px 10px;" onclick="sendPresetScenario('My fasting blood sugar was 145 mg/dL today')"><i class="fa-solid fa-vial"></i> High Blood Sugar</button>
                         </div>
 
                         <!-- Chat Input Box -->
@@ -3691,7 +4022,7 @@ APP_HTML = """<!DOCTYPE html>
                 <div class="table-card">
                     <div class="table-toolbar"><h3 style="font-size:15px; font-weight:700;">Daybook Journal Transactions</h3></div>
                     <table class="emr-table">
-                        <thead><tr><th>Voucher ID</th><th>Transaction Description</th><th>Debit Account</th><th>Credit Account</th><th>Amount (PHP)</th><th>Status</th><th>Actions</th></tr></thead>
+                        <thead><tr><th>Voucher ID</th><th>Transaction Description</th><th>Debit Account</th><th>Credit Account</th><th>Amount (USD)</th><th>Status</th><th>Actions</th></tr></thead>
                         <tbody id="tbody-accounting"></tbody>
                     </table>
                 </div>
@@ -3710,14 +4041,14 @@ APP_HTML = """<!DOCTYPE html>
                 </div>
                 <div class="view-header">
                     <div>
-                        <h1>PhilHealth & HMO Insurance Claim Management</h1>
+                        <h1>US Health Insurance & EDI Clearinghouse Desk (Medicare, Medicaid, Commercial)</h1>
                         <p>Submit electronic claims, track pre-authorizations, and reconcile remittance vouchers</p>
                     </div>
                     <button class="btn-primary-action" onclick="showToast('Claim Pre-Authorization Request Dispatched')"><i class="fa-solid fa-shield-halved"></i> + Submit HMO Claim</button>
                 </div>
                 <div class="table-card">
                     <table class="emr-table">
-                        <thead><tr><th>Claim ID</th><th>Patient Name</th><th>Provider / HMO</th><th>Case Rate / Policy</th><th>Claim Amount</th><th>Adjudication Status</th><th>Actions</th></tr></thead>
+                        <thead><tr><th>Claim ID</th><th>Patient Name</th><th>US Payer / Plan</th><th>Claim Type</th><th>Billed ($)</th><th>Allowed ($)</th><th>Ins Paid ($)</th><th>Pt Resp ($)</th><th>Status</th><th>Actions</th></tr></thead>
                         <tbody id="tbody-claims"></tbody>
                     </table>
                 </div>
@@ -3940,7 +4271,7 @@ APP_HTML = """<!DOCTYPE html>
                         <p>Hospital information desk, patient room locator, visitor pass issuance, and ambulance dispatch</p>
                     </div>
                     <div style="display:flex; gap:10px;">
-                        <button class="btn-accent-action" style="background:#ef4444; color:#fff;" onclick="showToast('🚑 AMBULANCE DISPATCHED: Mobile ICU Unit 1 en route!')"><i class="fa-solid fa-truck-medical"></i> Dispatch Ambulance</button>
+                        <button class="btn-accent-action" style="background:#ef4444; color:#fff;" onclick="showToast('<i class="fa-solid fa-truck-medical"></i> AMBULANCE DISPATCHED: Mobile ICU Unit 1 en route!')"><i class="fa-solid fa-truck-medical"></i> Dispatch Ambulance</button>
                         <button class="btn-primary-action" onclick="showToast('Visitor Badge Pass V-892 Printed')"><i class="fa-solid fa-id-badge"></i> Issue Visitor Badge</button>
                     </div>
                 </div>
@@ -3971,7 +4302,7 @@ APP_HTML = """<!DOCTYPE html>
                     <button class="btn-accent-action" onclick="showToast('MIS Report Exported to Excel / PDF')"><i class="fa-solid fa-file-excel"></i> Export Analytics</button>
                 </div>
                 <div class="grid-3col">
-                    <div class="stat-card"><div class="stat-icon"><i class="fa-solid fa-sack-dollar"></i></div><div class="stat-content"><h3>₱ 1,480,250</h3><p>Monthly Total Revenue</p></div></div>
+                    <div class="stat-card"><div class="stat-icon"><i class="fa-solid fa-sack-dollar"></i></div><div class="stat-content"><h3>$ 1,480,250</h3><p>Monthly Total Revenue</p></div></div>
                     <div class="stat-card cyan"><div class="stat-icon"><i class="fa-solid fa-users"></i></div><div class="stat-content"><h3>482</h3><p>Monthly OPD Consultations</p></div></div>
                     <div class="stat-card teal"><div class="stat-icon"><i class="fa-solid fa-bed"></i></div><div class="stat-content"><h3>3.8 Days</h3><p>Average Length of Stay (ALOS)</p></div></div>
                 </div>
@@ -4066,7 +4397,7 @@ APP_HTML = """<!DOCTYPE html>
                 </div>
                 <div style="display:flex; flex-direction:column; gap:8px; max-height:280px; overflow-y:auto;" id="pat-modal-list">
                     <div class="queue-item" onclick="setActivePatient('Juan Dela Cruz'); closeModal('modal-select-patient');">
-                        <div class="q-name"><span>Juan Dela Cruz</span><span class="status-badge status-active">PhilHealth</span></div>
+                        <div class="q-name"><span>Juan Dela Cruz</span><span class="status-badge status-active">Medicare Part B</span></div>
                         <div class="q-sub">Hospital No: G1-2026-0090 &bull; 45 Y / Male &bull; Tension Headache</div>
                     </div>
                     <div class="queue-item" onclick="setActivePatient('Maria Santos'); closeModal('modal-select-patient');">
@@ -4124,11 +4455,11 @@ APP_HTML = """<!DOCTYPE html>
                     <div class="form-group">
                         <label>Triage Acuity Level *</label>
                         <select id="er-new-level" class="form-control" style="font-weight:700;">
-                            <option value="Level 1 - Resuscitation">🔴 Level 1 - Resuscitation (Immediate STAT)</option>
-                            <option value="Level 2 - Emergent">🟠 Level 2 - Emergent (<15 min)</option>
-                            <option value="Level 3 - Urgent" selected>🟡 Level 3 - Urgent (<30 min)</option>
-                            <option value="Level 4 - Less Urgent">🟢 Level 4 - Less Urgent (<60 min)</option>
-                            <option value="Level 5 - Non-Urgent">🔵 Level 5 - Non-Urgent</option>
+                            <option value="Level 1 - Resuscitation"> Level 1 - Resuscitation (Immediate STAT)</option>
+                            <option value="Level 2 - Emergent"> Level 2 - Emergent (<15 min)</option>
+                            <option value="Level 3 - Urgent" selected> Level 3 - Urgent (<30 min)</option>
+                            <option value="Level 4 - Less Urgent"> Level 4 - Less Urgent (<60 min)</option>
+                            <option value="Level 5 - Non-Urgent"> Level 5 - Non-Urgent</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -4237,11 +4568,11 @@ APP_HTML = """<!DOCTYPE html>
                     <div class="form-group">
                         <label>Triage Acuity Level</label>
                         <select id="edit-er-level" class="form-control" style="font-weight:700;">
-                            <option value="Level 1 - Resuscitation">🔴 Level 1 - Resuscitation</option>
-                            <option value="Level 2 - Emergent">🟠 Level 2 - Emergent</option>
-                            <option value="Level 3 - Urgent">🟡 Level 3 - Urgent</option>
-                            <option value="Level 4 - Less Urgent">🟢 Level 4 - Less Urgent</option>
-                            <option value="Level 5 - Non-Urgent">🔵 Level 5 - Non-Urgent</option>
+                            <option value="Level 1 - Resuscitation"> Level 1 - Resuscitation</option>
+                            <option value="Level 2 - Emergent"> Level 2 - Emergent</option>
+                            <option value="Level 3 - Urgent"> Level 3 - Urgent</option>
+                            <option value="Level 4 - Less Urgent"> Level 4 - Less Urgent</option>
+                            <option value="Level 5 - Non-Urgent"> Level 5 - Non-Urgent</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -4333,17 +4664,17 @@ APP_HTML = """<!DOCTYPE html>
                     </div>
                     <div class="form-group">
                         <label>Daily Room Rate</label>
-                        <input type="text" id="edit-bed-rate" class="form-control" placeholder="₱ 1,500/day" />
+                        <input type="text" id="edit-bed-rate" class="form-control" placeholder="$ 1,500/day" />
                     </div>
                 </div>
 
                 <div class="form-group" style="margin-bottom:18px;">
                     <label>Bed Availability Status (1-Click Switch)</label>
                     <div class="btn-status-selector">
-                        <button type="button" class="btn-status-opt" id="bopt-available" onclick="setBedStatusDraft('available')">🟢 Available (Empty)</button>
-                        <button type="button" class="btn-status-opt" id="bopt-occupied" onclick="setBedStatusDraft('occupied')">🔴 Occupied</button>
-                        <button type="button" class="btn-status-opt" id="bopt-cleaning" onclick="setBedStatusDraft('cleaning')">🟡 Cleaning</button>
-                        <button type="button" class="btn-status-opt" id="bopt-reserved" onclick="setBedStatusDraft('reserved')">🔵 Reserved</button>
+                        <button type="button" class="btn-status-opt" id="bopt-available" onclick="setBedStatusDraft('available')"> Available (Empty)</button>
+                        <button type="button" class="btn-status-opt" id="bopt-occupied" onclick="setBedStatusDraft('occupied')"> Occupied</button>
+                        <button type="button" class="btn-status-opt" id="bopt-cleaning" onclick="setBedStatusDraft('cleaning')"> Cleaning</button>
+                        <button type="button" class="btn-status-opt" id="bopt-reserved" onclick="setBedStatusDraft('reserved')"> Reserved</button>
                     </div>
                 </div>
 
@@ -4414,16 +4745,16 @@ APP_HTML = """<!DOCTYPE html>
                     </div>
                     <div class="form-group">
                         <label>Daily Room Rate</label>
-                        <input type="text" id="add-bed-rate" class="form-control" placeholder="₱ 1,800/day" />
+                        <input type="text" id="add-bed-rate" class="form-control" placeholder="$ 1,800/day" />
                     </div>
                 </div>
                 <div class="form-group">
                     <label>Initial Status</label>
                     <select id="add-bed-status" class="form-control">
-                        <option value="available">🟢 Available (Empty)</option>
-                        <option value="occupied">🔴 Occupied</option>
-                        <option value="cleaning">🟡 Under Cleaning</option>
-                        <option value="reserved">🔵 Reserved</option>
+                        <option value="available"> Available (Empty)</option>
+                        <option value="occupied"> Occupied</option>
+                        <option value="cleaning"> Under Cleaning</option>
+                        <option value="reserved"> Reserved</option>
                     </select>
                 </div>
             </div>
@@ -4470,7 +4801,7 @@ APP_HTML = """<!DOCTYPE html>
                     <div class="form-group">
                         <label>Membership / Scheme</label>
                         <select id="np-scheme" class="form-control">
-                            <option value="PhilHealth">PhilHealth</option>
+                            <option value="Medicare Part B">Medicare Part B</option>
                             <option value="HMO Gold">HMO Gold</option>
                             <option value="Self-Pay">Self-Pay</option>
                             <option value="Corporate EHS">Corporate EHS</option>
@@ -4582,9 +4913,9 @@ APP_HTML = """<!DOCTYPE html>
                     <div class="form-group">
                         <label>Service / Item</label>
                         <select class="form-control">
-                            <option>OPD Consultation Fee - ₱ 1,000.00</option>
-                            <option>Chest X-Ray Digital - ₱ 850.00</option>
-                            <option>Lipid Profile Blood Test - ₱ 650.00</option>
+                            <option>OPD Consultation Fee - $ 1,000.00</option>
+                            <option>Chest X-Ray Digital - $ 850.00</option>
+                            <option>Lipid Profile Blood Test - $ 650.00</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -4642,26 +4973,26 @@ APP_HTML = """<!DOCTYPE html>
                             <tr>
                                 <td>OPD Consultation - Specialist</td>
                                 <td>1</td>
-                                <td>₱ 1,500.00</td>
-                                <td>₱ 1,500.00</td>
+                                <td>$ 1,500.00</td>
+                                <td>$ 1,500.00</td>
                             </tr>
                             <tr>
                                 <td>Complete Blood Count (CBC)</td>
                                 <td>1</td>
-                                <td>₱ 850.00</td>
-                                <td>₱ 850.00</td>
+                                <td>$ 850.00</td>
+                                <td>$ 850.00</td>
                             </tr>
                             <tr>
                                 <td>Pharmacy: Prescribed Medications</td>
                                 <td>1</td>
-                                <td>₱ 500.00</td>
-                                <td>₱ 500.00</td>
+                                <td>$ 500.00</td>
+                                <td>$ 500.00</td>
                             </tr>
                         </tbody>
                         <tfoot>
                             <tr>
                                 <th colspan="3" style="text-align:right;">Grand Total:</th>
-                                <th id="rcpt-total">₱ 2,850.00</th>
+                                <th id="rcpt-total">$ 2,850.00</th>
                             </tr>
                         </tfoot>
                     </table>
@@ -4791,7 +5122,7 @@ APP_HTML = """<!DOCTYPE html>
                     </select>
                 </div>
                 <div class="form-group"><label>Requisition Items & Quantities</label><textarea id="po-items" rows="3" style="width:100%; border:1px solid #cbd5e1; border-radius:8px; padding:8px; font-size:13px;" placeholder="Enter items line by line..."></textarea></div>
-                <div class="form-group"><label>Estimated Purchase Order Total (PHP)</label><input id="po-total" type="text" class="form-control" placeholder="e.g. 58200" /></div>
+                <div class="form-group"><label>Estimated Purchase Order Total (USD)</label><input id="po-total" type="text" class="form-control" placeholder="e.g. 58200" /></div>
             </div>
             <div class="modal-footer">
                 <button class="btn-secondary" onclick="closeModal('modal-new-po')">Cancel</button>
@@ -4813,7 +5144,7 @@ APP_HTML = """<!DOCTYPE html>
                     <div class="form-group"><label>Debit Account</label><input type="text" id="jv-debit" class="form-control" placeholder="e.g. 5020 - Medical Supplies Exp" /></div>
                     <div class="form-group"><label>Credit Account</label><input type="text" id="jv-credit" class="form-control" placeholder="e.g. 1010 - Cash on Hand" /></div>
                 </div>
-                <div class="form-group"><label>Voucher Amount (PHP)</label><input type="text" id="jv-amount" class="form-control" placeholder="e.g. 14500" /></div>
+                <div class="form-group"><label>Voucher Amount (USD)</label><input type="text" id="jv-amount" class="form-control" placeholder="e.g. 14500" /></div>
             </div>
             <div class="modal-footer">
                 <button class="btn-secondary" onclick="closeModal('modal-new-voucher')">Cancel</button>
@@ -4901,11 +5232,11 @@ APP_HTML = """<!DOCTYPE html>
                     <div class="form-group">
                         <label style="font-weight:700; font-size:12px;">EMERGENCY NATURE</label>
                         <select id="code-blue-reason-select" class="form-control">
-                            <option value="Cardiac Arrest / Pulseless STAT">🫀 Cardiac Arrest / Pulseless STAT</option>
-                            <option value="Respiratory Arrest / Severe Airway Loss">🫁 Respiratory Arrest / Severe Airway Loss</option>
-                            <option value="Massive Hemorrhage / Level 1 Shock">🩸 Massive Hemorrhage / Level 1 Shock</option>
-                            <option value="Acute Anaphylaxis / Severe Laryngospasm">⚡ Acute Anaphylaxis / Severe Laryngospasm</option>
-                            <option value="Unresponsive / Acute Collapse">🚨 Unresponsive / Acute Collapse</option>
+                            <option value="Cardiac Arrest / Pulseless STAT"><i class="fa-solid fa-heart-pulse"></i> Cardiac Arrest / Pulseless STAT</option>
+                            <option value="Respiratory Arrest / Severe Airway Loss"> Respiratory Arrest / Severe Airway Loss</option>
+                            <option value="Massive Hemorrhage / Level 1 Shock"> Massive Hemorrhage / Level 1 Shock</option>
+                            <option value="Acute Anaphylaxis / Severe Laryngospasm"><i class="fa-solid fa-bolt"></i> Acute Anaphylaxis / Severe Laryngospasm</option>
+                            <option value="Unresponsive / Acute Collapse"><i class="fa-solid fa-circle-exclamation"></i> Unresponsive / Acute Collapse</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -5212,7 +5543,7 @@ APP_HTML = """<!DOCTYPE html>
                         <input type="number" id="itm-qty" class="form-control" placeholder="100" />
                     </div>
                     <div class="form-group">
-                        <label>Unit Price (PHP) *</label>
+                        <label>Unit Price (USD) *</label>
                         <input type="number" step="0.01" id="itm-price" class="form-control" placeholder="125.00" />
                     </div>
                     <div class="form-group">
@@ -5234,56 +5565,56 @@ APP_HTML = """<!DOCTYPE html>
                 <p style="font-size:13px; color:#64748b; margin-bottom:14px;">Select a department workspace to switch active RBAC module privileges, clinical desks, and navbar identity:</p>
                 <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
                     <div onclick="switchDepartmentRole('admin')" style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:8px; padding:12px; cursor:pointer; display:flex; align-items:center; gap:10px; transition:all 0.2s;" onmouseover="this.style.borderColor='var(--brand-primary)'" onmouseout="this.style.borderColor='#cbd5e1'">
-                        <span style="font-size:24px;">👑</span>
+                        <span style="font-size:24px;"><i class="fa-solid fa-shield-halved"></i></span>
                         <div>
                             <strong style="font-size:13px; color:#1e293b;">Super Admin</strong>
                             <div style="font-size:11px; color:#64748b;">Full Access (All 35 Modules)</div>
                         </div>
                     </div>
                     <div onclick="switchDepartmentRole('doctor')" style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:8px; padding:12px; cursor:pointer; display:flex; align-items:center; gap:10px; transition:all 0.2s;" onmouseover="this.style.borderColor='var(--brand-primary)'" onmouseout="this.style.borderColor='#cbd5e1'">
-                        <span style="font-size:24px;">🩺</span>
+                        <span style="font-size:24px;"><i class="fa-solid fa-user-doctor"></i></span>
                         <div>
                             <strong style="font-size:13px; color:#1e293b;">Doctor (MD)</strong>
                             <div style="font-size:11px; color:#64748b;">Clinical Desk, Rx, LIS, RIS</div>
                         </div>
                     </div>
                     <div onclick="switchDepartmentRole('nurse')" style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:8px; padding:12px; cursor:pointer; display:flex; align-items:center; gap:10px; transition:all 0.2s;" onmouseover="this.style.borderColor='var(--brand-primary)'" onmouseout="this.style.borderColor='#cbd5e1'">
-                        <span style="font-size:24px;">💉</span>
+                        <span style="font-size:24px;"><i class="fa-solid fa-user-nurse"></i></span>
                         <div>
                             <strong style="font-size:13px; color:#1e293b;">Nurse (RN)</strong>
                             <div style="font-size:11px; color:#64748b;">Inpatient Ward, Bed Matrix, ER</div>
                         </div>
                     </div>
                     <div onclick="switchDepartmentRole('accountant')" style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:8px; padding:12px; cursor:pointer; display:flex; align-items:center; gap:10px; transition:all 0.2s;" onmouseover="this.style.borderColor='var(--brand-primary)'" onmouseout="this.style.borderColor='#cbd5e1'">
-                        <span style="font-size:24px;">💰</span>
+                        <span style="font-size:24px;"><i class="fa-solid fa-file-invoice-dollar"></i></span>
                         <div>
                             <strong style="font-size:13px; color:#1e293b;">Accountant</strong>
                             <div style="font-size:11px; color:#64748b;">General Ledger, Vouchers, Claims</div>
                         </div>
                     </div>
                     <div onclick="switchDepartmentRole('billing')" style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:8px; padding:12px; cursor:pointer; display:flex; align-items:center; gap:10px; transition:all 0.2s;" onmouseover="this.style.borderColor='var(--brand-primary)'" onmouseout="this.style.borderColor='#cbd5e1'">
-                        <span style="font-size:24px;">💳</span>
+                        <span style="font-size:24px;"><i class="fa-solid fa-credit-card"></i></span>
                         <div>
                             <strong style="font-size:13px; color:#1e293b;">Billing & Cashier</strong>
                             <div style="font-size:11px; color:#64748b;">Invoices, Receipts, Queue</div>
                         </div>
                     </div>
                     <div onclick="switchDepartmentRole('pharmacy')" style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:8px; padding:12px; cursor:pointer; display:flex; align-items:center; gap:10px; transition:all 0.2s;" onmouseover="this.style.borderColor='var(--brand-primary)'" onmouseout="this.style.borderColor='#cbd5e1'">
-                        <span style="font-size:24px;">💊</span>
+                        <span style="font-size:24px;"><i class="fa-solid fa-prescription-bottle-medical"></i></span>
                         <div>
                             <strong style="font-size:13px; color:#1e293b;">Pharmacist</strong>
                             <div style="font-size:11px; color:#64748b;">Dispensary, Warehouse Stock</div>
                         </div>
                     </div>
                     <div onclick="switchDepartmentRole('labtech')" style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:8px; padding:12px; cursor:pointer; display:flex; align-items:center; gap:10px; transition:all 0.2s;" onmouseover="this.style.borderColor='var(--brand-primary)'" onmouseout="this.style.borderColor='#cbd5e1'">
-                        <span style="font-size:24px;">🔬</span>
+                        <span style="font-size:24px;"><i class="fa-solid fa-microscope"></i></span>
                         <div>
                             <strong style="font-size:13px; color:#1e293b;">Lab Technologist</strong>
                             <div style="font-size:11px; color:#64748b;">LIS Laboratory & PACS Imaging</div>
                         </div>
                     </div>
                     <div onclick="switchDepartmentRole('reception')" style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:8px; padding:12px; cursor:pointer; display:flex; align-items:center; gap:10px; transition:all 0.2s;" onmouseover="this.style.borderColor='var(--brand-primary)'" onmouseout="this.style.borderColor='#cbd5e1'">
-                        <span style="font-size:24px;">📋</span>
+                        <span style="font-size:24px;"><i class="fa-solid fa-clipboard-user"></i></span>
                         <div>
                             <strong style="font-size:13px; color:#1e293b;">Reception / Front Desk</strong>
                             <div style="font-size:11px; color:#64748b;">Registration, Appointments, Tokens</div>
@@ -5308,14 +5639,14 @@ APP_HTML = """<!DOCTYPE html>
         
         
                 const VALID_USERS = {
-            'admin': { pass: 'pass123', name: 'Administrator', role: 'Super Admin &bull; Full Access', role_key: 'admin', avatar: 'AD', badge: '👑 Super Admin' },
-            'doctor': { pass: 'pass123', name: 'Dr. Roberto Tan, MD', role: 'Attending Cardiologist &bull; Clinical Desk', role_key: 'doctor', avatar: 'RT', badge: '🩺 Doctor (MD)' },
-            'nurse': { pass: 'pass123', name: 'Nurse Clara Dizon', role: 'Charge Nurse &bull; Ward Station', role_key: 'nurse', avatar: 'CD', badge: '💉 Nurse (RN)' },
-            'accountant': { pass: 'pass123', name: 'Elena Villar, CPA', role: 'Chief Accountant &bull; Finance Dept', role_key: 'accountant', avatar: 'EV', badge: '💰 Accountant' },
-            'billing': { pass: 'pass123', name: 'Mark Mendoza', role: 'Billing & Claims Officer &bull; Cashier', role_key: 'billing', avatar: 'MM', badge: '💳 Billing' },
-            'pharmacy': { pass: 'pass123', name: 'Pharm. Leo Santos, RPh', role: 'Chief Pharmacist &bull; Dispensary', role_key: 'pharmacy', avatar: 'LS', badge: '💊 Pharmacist' },
-            'labtech': { pass: 'pass123', name: 'Sarah Cruz, RMT', role: 'Diagnostic & Imaging Technologist', role_key: 'labtech', avatar: 'SC', badge: '🔬 Lab Tech' },
-            'reception': { pass: 'pass123', name: 'Joy Pascual', role: 'Front Desk & Admissions Officer', role_key: 'reception', avatar: 'JP', badge: '📋 Reception' }
+            'admin': { pass: 'pass123', name: 'Administrator', role: 'Super Admin &bull; Full Access', role_key: 'admin', avatar: 'AD', badge: '<i class="fa-solid fa-shield-halved"></i> Super Admin' },
+            'doctor': { pass: 'pass123', name: 'Dr. Roberto Tan, MD', role: 'Attending Cardiologist &bull; Clinical Desk', role_key: 'doctor', avatar: 'RT', badge: '<i class="fa-solid fa-user-doctor"></i> Doctor (MD)' },
+            'nurse': { pass: 'pass123', name: 'Nurse Clara Dizon', role: 'Charge Nurse &bull; Ward Station', role_key: 'nurse', avatar: 'CD', badge: '<i class="fa-solid fa-user-nurse"></i> Nurse (RN)' },
+            'accountant': { pass: 'pass123', name: 'Elena Villar, CPA', role: 'Chief Accountant &bull; Finance Dept', role_key: 'accountant', avatar: 'EV', badge: '<i class="fa-solid fa-file-invoice-dollar"></i> Accountant' },
+            'billing': { pass: 'pass123', name: 'Mark Mendoza', role: 'Billing & Claims Officer &bull; Cashier', role_key: 'billing', avatar: 'MM', badge: '<i class="fa-solid fa-credit-card"></i> Billing' },
+            'pharmacy': { pass: 'pass123', name: 'Pharm. Leo Santos, RPh', role: 'Chief Pharmacist &bull; Dispensary', role_key: 'pharmacy', avatar: 'LS', badge: '<i class="fa-solid fa-prescription-bottle-medical"></i> Pharmacist' },
+            'labtech': { pass: 'pass123', name: 'Sarah Cruz, RMT', role: 'Diagnostic & Imaging Technologist', role_key: 'labtech', avatar: 'SC', badge: '<i class="fa-solid fa-microscope"></i> Lab Tech' },
+            'reception': { pass: 'pass123', name: 'Joy Pascual', role: 'Front Desk & Admissions Officer', role_key: 'reception', avatar: 'JP', badge: '<i class="fa-solid fa-clipboard-user"></i> Reception' }
         };
 
                 // Full 33 Enterprise HMIS Modules Master Specification with Professional Departmental Naming
@@ -5744,13 +6075,13 @@ APP_HTML = """<!DOCTYPE html>
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
-                showToast(`✅ [CONFIRMED] Appointment booked with ${payload.doctor_name} (${payload.department}) for ${payload.patient_name}!`);
+                showToast(`<i class="fa-solid fa-check"></i> [CONFIRMED] Appointment booked with ${payload.doctor_name} (${payload.department}) for ${payload.patient_name}!`);
                 await loadLiveEMRState();
                 setTimeout(() => {
                     switchTab('view-appointments', document.querySelector('[data-target=view-appointments]'));
                 }, 700);
             } catch(err) {
-                showToast(`❌ Error auto-booking: ${err.message}`);
+                showToast(`<i class="fa-solid fa-xmark"></i> Error auto-booking: ${err.message}`);
             }
         }
     
@@ -5809,7 +6140,7 @@ APP_HTML = """<!DOCTYPE html>
                 updateCodeBlueTimerDisplay();
             }, 1000);
 
-            showToast(`🚨 CODE BLUE BROADCASTED: Resuscitation Team & Crash Cart dispatched to ${location}!`);
+            showToast(`<i class="fa-solid fa-circle-exclamation"></i> CODE BLUE BROADCASTED: Resuscitation Team & Crash Cart dispatched to ${location}!`);
         }
 
         function updateCodeBlueTimerDisplay() {
@@ -5825,7 +6156,7 @@ APP_HTML = """<!DOCTYPE html>
             clearInterval(codeBlueTimerInterval);
             const banner = document.getElementById('code-blue-active-banner');
             if (banner) banner.style.display = 'none';
-            showToast('✅ Code Blue Stand Down: Patient successfully stabilized. Resuscitation log saved.');
+            showToast('<i class="fa-solid fa-check"></i> Code Blue Stand Down: Patient successfully stabilized. Resuscitation log saved.');
         }
     
         
@@ -5848,11 +6179,11 @@ APP_HTML = """<!DOCTYPE html>
                 try {
                     return JSON.parse(text);
                 } catch (jsonErr) {
-                    console.warn(`Non-JSON response from ${url}, fallback to local state:`, text.substring(0, 100));
+                    // [HIPAA Safe] Log removed);
                     return handleLocalFallback(endpoint, options);
                 }
             } catch (netErr) {
-                console.warn(`Network failure connecting to ${url}, fallback to local state:`, netErr.message);
+                // [HIPAA Safe] Log removed
                 return handleLocalFallback(endpoint, options);
             }
         }
@@ -5956,13 +6287,13 @@ APP_HTML = """<!DOCTYPE html>
                     state.patients.forEach(p => {
                         PATIENT_RECORDS[p.name] = {
                             code: p.patient_no,
-                            meta: `${p.age} Y / ${p.gender} • ${p.insurance_no || 'PhilHealth Active'}`,
+                            meta: `${p.age} Y / ${p.gender} • ${p.insurance_no || 'Medicare Part B Active'}`,
                             vitals: 'BP: 120/80 • HR: 72 bpm • Temp: 36.6°C • SpO2: 99%',
                             allergies: 'NKDA (No Known Drug Allergies)',
                             blood: p.blood_group || 'O+',
                             phone: p.phone || '+63 917 123 4567',
                             address: p.address || 'Metro Manila',
-                            scheme: p.insurance_no || 'PhilHealth',
+                            scheme: p.insurance_no || 'Medicare Part B',
                             history: ['Routine Medical Evaluation', 'Baseline Lab Panel Completed'],
                             meds: ['Multivitamins 1 Tab OD']
                         };
@@ -5981,7 +6312,7 @@ APP_HTML = """<!DOCTYPE html>
                         diagnosis: b.diagnosis || '',
                         doctor: b.attending_doctor || '',
                         admitDate: b.admission_date || '',
-                        price: b.price || '₱ 2,500/day'
+                        price: b.price || '$ 2,500/day'
                     }));
                     renderBedMatrix();
                 }
@@ -6042,14 +6373,14 @@ APP_HTML = """<!DOCTYPE html>
                 const totalInvVal = invItems.reduce((acc, i) => acc + ((parseFloat(i.stock_qty) || 0) * (parseFloat(i.unit_price) || 0)), 0);
                 if (document.getElementById('inv-total-skus')) document.getElementById('inv-total-skus').textContent = `${invItems.length} Items`;
                 if (document.getElementById('inv-low-stock')) document.getElementById('inv-low-stock').textContent = `${lowStockCount} Items`;
-                if (document.getElementById('inv-total-value')) document.getElementById('inv-total-value').textContent = '₱ ' + totalInvVal.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                if (document.getElementById('inv-total-value')) document.getElementById('inv-total-value').textContent = '$ ' + totalInvVal.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
 
                 // Procurement POs
                 const poList = state.procurement_po || [];
                 const totalPOVal = poList.reduce((acc, p) => acc + (parseFloat(p.total_amount) || 0), 0);
                 const pendingPOs = poList.filter(p => p.status !== 'Completed' && p.status !== 'Received').length;
                 const vendorCount = new Set(poList.map(p => p.supplier_name)).size;
-                if (document.getElementById('po-open-value')) document.getElementById('po-open-value').textContent = '₱ ' + totalPOVal.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                if (document.getElementById('po-open-value')) document.getElementById('po-open-value').textContent = '$ ' + totalPOVal.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
                 if (document.getElementById('po-pending-count')) document.getElementById('po-pending-count').textContent = `${pendingPOs} POs`;
                 if (document.getElementById('po-vendor-count')) document.getElementById('po-vendor-count').textContent = vendorCount;
 
@@ -6060,9 +6391,9 @@ APP_HTML = """<!DOCTYPE html>
                 const totalAR = claims.filter(c => c.claim_status !== 'Settled').reduce((acc, c) => acc + (parseFloat(c.claim_amount) || 0), 0);
                 const incentives = state.doctor_incentives || [];
                 const totalIncentives = incentives.reduce((acc, i) => acc + (parseFloat(i.net_payable) || 0), 0);
-                if (document.getElementById('acc-cash-bank')) document.getElementById('acc-cash-bank').textContent = '₱ ' + (totalCash || 5420000).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
-                if (document.getElementById('acc-ar-hmo')) document.getElementById('acc-ar-hmo').textContent = '₱ ' + (totalAR || 840500).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
-                if (document.getElementById('acc-dr-incentive')) document.getElementById('acc-dr-incentive').textContent = '₱ ' + (totalIncentives || 310200).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                if (document.getElementById('acc-cash-bank')) document.getElementById('acc-cash-bank').textContent = '$ ' + (totalCash || 5420000).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                if (document.getElementById('acc-ar-hmo')) document.getElementById('acc-ar-hmo').textContent = '$ ' + (totalAR || 840500).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                if (document.getElementById('acc-dr-incentive')) document.getElementById('acc-dr-incentive').textContent = '$ ' + (totalIncentives || 310200).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
 
                 // Vaccine Registry
                 const vaxList = state.vaccination_records || [];
@@ -6084,7 +6415,7 @@ APP_HTML = """<!DOCTYPE html>
                 // Executive MIS Reports
                 const invoices = state.billing_invoices || [];
                 const totalRev = invoices.reduce((acc, i) => acc + (parseFloat(i.net_total) || 0), 0);
-                if (document.getElementById('rep-total-revenue')) document.getElementById('rep-total-revenue').textContent = '₱ ' + totalRev.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                if (document.getElementById('rep-total-revenue')) document.getElementById('rep-total-revenue').textContent = '$ ' + totalRev.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
                 if (document.getElementById('rep-opd-consults')) document.getElementById('rep-opd-consults').textContent = ((state.appointments || []).length + (state.patients || []).length).toLocaleString();
 
             } catch (err) {
@@ -6116,7 +6447,7 @@ APP_HTML = """<!DOCTYPE html>
                         <td>${p.age} Y / ${p.gender}</td>
                         <td>${p.phone || '+63 917 123 4567'}</td>
                         <td>${p.address || 'Metro Manila'}</td>
-                        <td><span class="status-badge status-active">${p.insurance_no || 'PhilHealth'}</span></td>
+                        <td><span class="status-badge status-active">${p.insurance_no || 'Medicare Part B'}</span></td>
                         <td>
                             <button class="btn-primary-action" style="padding: 4px 8px; font-size: 11px; margin-right:4px;" onclick="setActivePatient('${p.name}')">
                                 <i class="fa-solid fa-check"></i> Set Active
@@ -6184,7 +6515,7 @@ APP_HTML = """<!DOCTYPE html>
                     qItem.onclick = () => setActivePatient(p.name);
                     qItem.innerHTML = `
                         <div class="q-name"><span>${p.name}</span><span class="status-badge ${idx === 0 ? 'status-active' : 'status-pending'}" style="font-size:9.5px;">${idx === 0 ? 'Active' : 'Waiting'}</span></div>
-                        <div class="q-sub">${p.patient_no} &bull; ${p.age} Y / ${p.gender} &bull; ${p.insurance_no || 'PhilHealth'}</div>
+                        <div class="q-sub">${p.patient_no} &bull; ${p.age} Y / ${p.gender} &bull; ${p.insurance_no || 'Medicare Part B'}</div>
                     `;
                     opdList.appendChild(qItem);
                 });
@@ -6208,9 +6539,9 @@ APP_HTML = """<!DOCTYPE html>
                         <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
                             <div>
                                 <strong style="font-size:13px; color:#0f172a;">${p.name}</strong>
-                                <p style="font-size:11.5px; color:#64748b; margin:2px 0 0 0;">${p.patient_no} &bull; ${p.age} Y / ${p.gender} &bull; ${p.insurance_no || 'PhilHealth'}</p>
+                                <p style="font-size:11.5px; color:#64748b; margin:2px 0 0 0;">${p.patient_no} &bull; ${p.age} Y / ${p.gender} &bull; ${p.insurance_no || 'Medicare Part B'}</p>
                             </div>
-                            <button class="btn-select-pat" style="padding:4px 8px; font-size:11px;"><i class="fa-solid fa-check"></i> Select</button>
+                            <button class="btn-select-pat" style="padding:4px 8px; font-size:11px;" onclick="setActivePatient(\'Juan Dela Cruz\')"><i class="fa-solid fa-check"></i> Select</button>
                         </div>
                     `;
                     mList.appendChild(item);
@@ -6241,9 +6572,9 @@ APP_HTML = """<!DOCTYPE html>
                 <td><strong>${inv.invoice_no}</strong></td>
                 <td><strong>${inv.patient_name}</strong></td>
                 <td>${inv.item_desc}</td>
-                <td>₱ ${Number(inv.amount).toLocaleString('en-US', {minimumFractionDigits: 2})}</td>
-                <td>₱ ${Number(inv.discount).toLocaleString('en-US', {minimumFractionDigits: 2})}</td>
-                <td><strong>₱ ${Number(inv.net_total).toLocaleString('en-US', {minimumFractionDigits: 2})}</strong></td>
+                <td>$ ${Number(inv.amount).toLocaleString('en-US', {minimumFractionDigits: 2})}</td>
+                <td>$ ${Number(inv.discount).toLocaleString('en-US', {minimumFractionDigits: 2})}</td>
+                <td><strong>$ ${Number(inv.net_total).toLocaleString('en-US', {minimumFractionDigits: 2})}</strong></td>
                 <td><span class="status-badge ${inv.payment_status === 'Paid' ? 'status-active' : 'status-urgent'}">${inv.payment_status}</span></td>
                 <td>
                     <button class="btn-secondary" style="padding:3px 7px; font-size:11px;" onclick="printBillingInvoice('${inv.invoice_no}')"><i class="fa-solid fa-print"></i></button>
@@ -6258,7 +6589,7 @@ APP_HTML = """<!DOCTYPE html>
                 <td>${v.narration}</td>
                 <td>${v.debit_acc}</td>
                 <td>${v.credit_acc}</td>
-                <td>₱ ${Number(v.amount).toLocaleString('en-US', {minimumFractionDigits: 2})}</td>
+                <td>$ ${Number(v.amount).toLocaleString('en-US', {minimumFractionDigits: 2})}</td>
                 <td><span class="status-badge status-active">${v.status}</span></td>
                 <td>
                     <button class="btn-secondary" style="padding:3px 7px; font-size:11px;" onclick="openUniversalEditor('accounting_vouchers', ${v.id})"><i class="fa-solid fa-pen"></i></button>
@@ -6273,7 +6604,7 @@ APP_HTML = """<!DOCTYPE html>
                 <td>${item.category}</td>
                 <td>${item.batch_no}</td>
                 <td>${item.expiry_date}</td>
-                <td>₱ ${Number(item.unit_price).toFixed(2)}</td>
+                <td>$ ${Number(item.unit_price).toFixed(2)}</td>
                 <td><span class="status-badge ${item.stock_qty <= item.reorder_level ? 'status-urgent' : 'status-active'}">${item.stock_qty} in stock</span></td>
                 <td>
                     <button class="btn-secondary" style="padding:3px 7px; font-size:11px;" onclick="openUniversalEditor('inventory_items', ${item.id})"><i class="fa-solid fa-pen"></i></button>
@@ -6286,7 +6617,7 @@ APP_HTML = """<!DOCTYPE html>
                 <td><strong>${po.po_no}</strong></td>
                 <td><strong>${po.supplier_name}</strong></td>
                 <td>${po.items_summary}</td>
-                <td>₱ ${Number(po.total_amount).toLocaleString('en-US', {minimumFractionDigits: 2})}</td>
+                <td>$ ${Number(po.total_amount).toLocaleString('en-US', {minimumFractionDigits: 2})}</td>
                 <td>${po.order_date}</td>
                 <td><span class="status-badge status-active">${po.status}</span></td>
                 <td>
@@ -6428,9 +6759,9 @@ APP_HTML = """<!DOCTYPE html>
                 <td><strong>${inc.doctor_name}</strong></td>
                 <td>${inc.department}</td>
                 <td>${inc.total_encounters}</td>
-                <td>₱ ${Number(inc.gross_billing).toLocaleString('en-US', {minimumFractionDigits: 2})}</td>
+                <td>$ ${Number(inc.gross_billing).toLocaleString('en-US', {minimumFractionDigits: 2})}</td>
                 <td>${inc.incentive_rate}</td>
-                <td><strong>₱ ${Number(inc.net_payable).toLocaleString('en-US', {minimumFractionDigits: 2})}</strong></td>
+                <td><strong>$ ${Number(inc.net_payable).toLocaleString('en-US', {minimumFractionDigits: 2})}</strong></td>
                 <td><span class="status-badge status-active">${inc.status}</span></td>
                 <td>
                     <button class="btn-secondary" style="padding:3px 7px; font-size:11px;" onclick="openUniversalEditor('doctor_incentives', ${inc.id})"><i class="fa-solid fa-pen"></i></button>
@@ -6459,7 +6790,7 @@ APP_HTML = """<!DOCTYPE html>
                 <td>${ref.institution}</td>
                 <td>${ref.patient_referred}</td>
                 <td>${ref.specialty}</td>
-                <td>₱ ${Number(ref.referral_fee).toFixed(2)}</td>
+                <td>$ ${Number(ref.referral_fee).toFixed(2)}</td>
                 <td><span class="status-badge status-active">${ref.status}</span></td>
                 <td>
                     <button class="btn-secondary" style="padding:3px 7px; font-size:11px;" onclick="openUniversalEditor('mkt_referrals', ${ref.id})"><i class="fa-solid fa-pen"></i></button>
@@ -6467,18 +6798,21 @@ APP_HTML = """<!DOCTYPE html>
                 </td>
             `);
 
-            // 18. Insurance Claims
+            // 18. Insurance Claims (US Healthcare Medicare & Commercial RCM)
             renderTableHelper('tbody-claims', state.insurance_claims, (clm) => `
                 <td><strong>${clm.claim_no}</strong></td>
                 <td><strong>${clm.patient_name}</strong></td>
-                <td>${clm.hmo_provider}</td>
-                <td>${clm.icd_code}</td>
-                <td>₱ ${Number(clm.claim_amount).toLocaleString('en-US', {minimumFractionDigits: 2})}</td>
-                <td>${clm.filing_date}</td>
-                <td><span class="status-badge status-active">${clm.claim_status}</span></td>
+                <td>${clm.payer_name || clm.hmo_provider || 'Medicare Part B'}</td>
+                <td><span class="status-badge ${(clm.claim_type || '').includes('837I') ? 'status-urgent' : 'status-completed'}">${clm.claim_type || '837P (Professional)'}</span></td>
+                <td>$ ${Number(clm.billed_charges || clm.claim_amount || 0).toLocaleString('en-US', {minimumFractionDigits: 2})}</td>
+                <td>$ ${Number(clm.allowed_amount || 0).toLocaleString('en-US', {minimumFractionDigits: 2})}</td>
+                <td>$ ${Number(clm.insurance_paid || 0).toLocaleString('en-US', {minimumFractionDigits: 2})}</td>
+                <td>$ ${Number(clm.patient_responsibility || 0).toLocaleString('en-US', {minimumFractionDigits: 2})}</td>
+                <td><span class="status-badge status-active">${clm.claim_status || 'Submitted'}</span></td>
                 <td>
-                    <button class="btn-secondary" style="padding:3px 7px; font-size:11px;" onclick="openUniversalEditor('insurance_claims', ${clm.id})"><i class="fa-solid fa-pen"></i></button>
-                    <button class="btn-secondary" style="padding:3px 7px; font-size:11px; color:#ef4444;" onclick="deleteLiveRecord('insurance_claims', ${clm.id})"><i class="fa-solid fa-trash"></i></button>
+                    <button class="btn-secondary" style="padding:3px 7px; font-size:11px;" title="View Claim Form" onclick="openClaimFormViewer('${clm.claim_no}')"><i class="fa-solid fa-file-invoice"></i> Form</button>
+                    <button class="btn-secondary" style="padding:3px 7px; font-size:11px;" title="View EDI 837 Payload" onclick="openEDI837Viewer('${clm.claim_no}')"><i class="fa-solid fa-code"></i> EDI</button>
+                    <button class="btn-secondary" style="padding:3px 7px; font-size:11px; color:#15803d;" title="Adjudicate / 835 Remittance" onclick="adjudicateClaimPrompt('${clm.claim_no}')"><i class="fa-solid fa-hand-holding-dollar"></i></button>
                 </td>
             `);
 
@@ -6564,7 +6898,7 @@ APP_HTML = """<!DOCTYPE html>
                 <td>${p.batch_no || 'BAT-8801'}</td>
                 <td>${p.expiry_date || '2028-12-31'}</td>
                 <td><strong>${p.stock_qty} in stock</strong></td>
-                <td>₱ ${Number(p.unit_price).toFixed(2)}</td>
+                <td>$ ${Number(p.unit_price).toFixed(2)}</td>
                 <td><span class="status-badge ${p.stock_qty <= p.reorder_level ? 'status-urgent' : 'status-active'}">${p.stock_qty <= p.reorder_level ? 'Low Stock' : 'Optimal Stock'}</span></td>
             `);
 
@@ -6648,9 +6982,9 @@ APP_HTML = """<!DOCTYPE html>
             ], (r) => `
                 <td><strong>${r.dept}</strong></td>
                 <td>${r.volume}</td>
-                <td>₱ ${Number(r.gross).toLocaleString('en-US', {minimumFractionDigits:2})}</td>
-                <td>₱ ${Number(r.hmo).toLocaleString('en-US', {minimumFractionDigits:2})}</td>
-                <td><strong>₱ ${Number(r.net).toLocaleString('en-US', {minimumFractionDigits:2})}</strong></td>
+                <td>$ ${Number(r.gross).toLocaleString('en-US', {minimumFractionDigits:2})}</td>
+                <td>$ ${Number(r.hmo).toLocaleString('en-US', {minimumFractionDigits:2})}</td>
+                <td><strong>$ ${Number(r.net).toLocaleString('en-US', {minimumFractionDigits:2})}</strong></td>
             `);
 
             // 32. System Administration User Accounts
@@ -6696,7 +7030,7 @@ APP_HTML = """<!DOCTYPE html>
                     })
                 });
 
-                showToast(`🗑️ Record deleted and removed from database.`);
+                showToast(`<i class="fa-solid fa-trash-can"></i> Record deleted and removed from database.`);
                 await loadLiveEMRState();
             } catch (err) {
                 console.error('Delete record error:', err);
@@ -6729,7 +7063,7 @@ APP_HTML = """<!DOCTYPE html>
                 gender: gender || 'Male',
                 phone: phone || '',
                 address: address || '',
-                insurance_no: scheme || 'PhilHealth',
+                insurance_no: scheme || 'Medicare Part B',
                 blood_group: 'O+',
                 created_at: new Date().toISOString().split('T')[0]
             };
@@ -6740,14 +7074,14 @@ APP_HTML = """<!DOCTYPE html>
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
-                showToast('✅ Patient ' + payload.name + ' registered successfully (ID: ' + patientNo + ')');
+                showToast('<i class="fa-solid fa-check"></i> Patient ' + payload.name + ' registered successfully (ID: ' + patientNo + ')');
                 closeModal('modal-new-patient');
                 // Clear form
                 ['np-fname','np-lname','np-age','np-phone','np-address'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
                 // Reload live data so all tables and dropdowns update
                 await loadLiveEMRState();
             } catch(err) {
-                showToast('❌ Network error: ' + err.message);
+                showToast('<i class="fa-solid fa-xmark"></i> Network error: ' + err.message);
             }
         }
 
@@ -6778,10 +7112,10 @@ APP_HTML = """<!DOCTYPE html>
                         status: 'Confirmed'
                     })
                 });
-                showToast('✅ Appointment #' + aptId + ' marked as CONFIRMED!');
+                showToast('<i class="fa-solid fa-check"></i> Appointment #' + aptId + ' marked as CONFIRMED!');
                 await loadLiveEMRState();
             } catch(err) {
-                showToast('❌ Error confirming appointment: ' + err.message);
+                showToast('<i class="fa-solid fa-xmark"></i> Error confirming appointment: ' + err.message);
             }
         }
 
@@ -6812,11 +7146,11 @@ APP_HTML = """<!DOCTYPE html>
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
-                showToast('✅ Appointment booked & confirmed for ' + patientName + ' with ' + doctor + ' on ' + date + ' at ' + time);
+                showToast('<i class="fa-solid fa-check"></i> Appointment booked & confirmed for ' + patientName + ' with ' + doctor + ' on ' + date + ' at ' + time);
                 closeModal('modal-new-appointment');
                 await loadLiveEMRState();
             } catch(err) {
-                showToast('❌ Network error: ' + err.message);
+                showToast('<i class="fa-solid fa-xmark"></i> Network error: ' + err.message);
             }
         }
 
@@ -6858,11 +7192,11 @@ APP_HTML = """<!DOCTYPE html>
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
-                showToast('✅ Invoice ' + invoiceNo + ' generated for ' + patientName + ' (₱' + netTotal.toLocaleString() + ')');
+                showToast('<i class="fa-solid fa-check"></i> Invoice ' + invoiceNo + ' generated for ' + patientName + ' ($' + netTotal.toLocaleString() + ')');
                 closeModal('modal-generate-invoice');
                 await loadLiveEMRState();
             } catch(err) {
-                showToast('❌ Network error: ' + err.message);
+                showToast('<i class="fa-solid fa-xmark"></i> Network error: ' + err.message);
             }
         }
 
@@ -6885,7 +7219,108 @@ APP_HTML = """<!DOCTYPE html>
                 th,td{padding:10px 14px;border:1px solid #e2e8f0;text-align:left}
                 th{background:#f1f5f9;font-weight:700}
                 .total{font-size:18px;font-weight:700;color:#0f766e}
-                </style></head><body>
+                
+        /* US HEALTHCARE & RCM STYLES */
+        .superbill-card {
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 16px;
+        }
+        .superbill-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 10px;
+            margin-bottom: 12px;
+        }
+        .hcfa-container {
+            background: #ffffff;
+            border: 2px solid #b91c1c;
+            border-radius: 4px;
+            font-family: 'Arial', sans-serif;
+            color: #000;
+            padding: 12px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .hcfa-header {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 2px solid #b91c1c;
+            padding-bottom: 8px;
+            margin-bottom: 8px;
+        }
+        .hcfa-title {
+            color: #b91c1c;
+            font-weight: 900;
+            font-size: 16px;
+            text-transform: uppercase;
+        }
+        .hcfa-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 4px;
+            border-bottom: 1px solid #b91c1c;
+            padding-bottom: 6px;
+            margin-bottom: 6px;
+        }
+        .hcfa-box {
+            border: 1px solid #dc2626;
+            padding: 3px 6px;
+            background: #fff;
+            min-height: 42px;
+        }
+        .hcfa-box-num {
+            font-size: 9px;
+            font-weight: 800;
+            color: #b91c1c;
+            display: block;
+        }
+        .hcfa-box-label {
+            font-size: 8.5px;
+            color: #64748b;
+            text-transform: uppercase;
+        }
+        .hcfa-box-val {
+            font-size: 11px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-top: 2px;
+        }
+        .edi-terminal {
+            background: #0f172a;
+            color: #38bdf8;
+            font-family: 'Courier New', monospace;
+            padding: 16px;
+            border-radius: 6px;
+            font-size: 12px;
+            line-height: 1.6;
+            max-height: 380px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            border: 1px solid #334155;
+        }
+        .cpt-tag {
+            background: #eff6ff;
+            color: #1d4ed8;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 11px;
+            border: 1px solid #bfdbfe;
+        }
+        .pointer-tag {
+            background: #f1f5f9;
+            color: #475569;
+            padding: 1px 5px;
+            border-radius: 3px;
+            font-size: 10.5px;
+        }
+
+    </style></head><body>
                 <h1>G1 Health EMR — Tax Invoice</h1>
                 <p><strong>Invoice No:</strong> ${inv.invoice_no}</p>
                 <p><strong>Date:</strong> ${inv.invoice_date || new Date().toLocaleDateString()}</p>
@@ -6894,15 +7329,330 @@ APP_HTML = """<!DOCTYPE html>
                     <thead><tr><th>Description</th><th>Amount</th><th>Discount</th><th>Net Total</th></tr></thead>
                     <tbody><tr>
                         <td>${inv.item_desc}</td>
-                        <td>₱ ${Number(inv.amount).toLocaleString('en-US',{minimumFractionDigits:2})}</td>
-                        <td>₱ ${Number(inv.discount).toLocaleString('en-US',{minimumFractionDigits:2})}</td>
-                        <td class="total">₱ ${Number(inv.net_total).toLocaleString('en-US',{minimumFractionDigits:2})}</td>
+                        <td>$ ${Number(inv.amount).toLocaleString('en-US',{minimumFractionDigits:2})}</td>
+                        <td>$ ${Number(inv.discount).toLocaleString('en-US',{minimumFractionDigits:2})}</td>
+                        <td class="total">$ ${Number(inv.net_total).toLocaleString('en-US',{minimumFractionDigits:2})}</td>
                     </tr></tbody>
                 </table>
                 <p><strong>Payment Mode:</strong> ${inv.payment_mode || 'Cash'}</p>
                 <p><strong>Status:</strong> ${inv.payment_status}</p>
                 <hr><p style="text-align:center;color:#94a3b8;font-size:12px;">G1 Health EMR • Global 1 OneTech • HIPAA Compliant</p>
-                </body></html>
+                
+    <!-- MODAL: CMS-1500 (HCFA) OFFICIAL CLAIM FORM VIEWER -->
+    <div id="modal-cms1500" class="modal-overlay">
+        <div class="modal-box" style="max-width:920px;">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-file-invoice"></i> CMS-1500 (HCFA-1500) Health Insurance Claim Form</h3>
+                <button class="modal-close" onclick="closeModal('modal-cms1500')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="hcfa-container" id="cms1500-print-area">
+                    <div class="hcfa-header">
+                        <div>
+                            <div class="hcfa-title">Health Insurance Claim Form</div>
+                            <span style="font-size:9px; color:#b91c1c; font-weight:700;">APPROVED BY NATIONAL UNIFORM CLAIM COMMITTEE (NUCC) 02/12</span>
+                        </div>
+                        <div style="text-align:right;">
+                            <span style="font-size:11px; font-weight:800; color:#b91c1c;" id="hcfa-form-claim-id">CLM-US-2026-0101</span>
+                            <p style="font-size:9.5px; color:#64748b; margin:0;">Payer ID: <span id="hcfa-form-payer-id">00431</span></p>
+                        </div>
+                    </div>
+                    <!-- Box 1 to 7 -->
+                    <div class="hcfa-grid">
+                        <div class="hcfa-box" style="grid-column: span 6;">
+                            <span class="hcfa-box-num">1. MEDICARE / MEDICAID / TRICARE / GROUP HEALTH PLAN</span>
+                            <div class="hcfa-box-val" id="hcfa-box1">[X] MEDICARE (Medicare #) &nbsp; [ ] MEDICAID &nbsp; [ ] GROUP</div>
+                        </div>
+                        <div class="hcfa-box" style="grid-column: span 6;">
+                            <span class="hcfa-box-num">1a. INSURED'S I.D. NUMBER (For Program in Item 1)</span>
+                            <div class="hcfa-box-val" id="hcfa-box1a">1EG4-TE5-MK72</div>
+                        </div>
+                        <div class="hcfa-box" style="grid-column: span 5;">
+                            <span class="hcfa-box-num">2. PATIENT'S NAME (Last Name, First Name, Middle Initial)</span>
+                            <div class="hcfa-box-val" id="hcfa-box2">Doe, John A.</div>
+                        </div>
+                        <div class="hcfa-box" style="grid-column: span 3;">
+                            <span class="hcfa-box-num">3. PATIENT'S BIRTH DATE / SEX</span>
+                            <div class="hcfa-box-val" id="hcfa-box3">01/15/1958 &nbsp; [X] M &nbsp; [ ] F</div>
+                        </div>
+                        <div class="hcfa-box" style="grid-column: span 4;">
+                            <span class="hcfa-box-num">4. INSURED'S NAME</span>
+                            <div class="hcfa-box-val" id="hcfa-box4">Doe, John A.</div>
+                        </div>
+                        <div class="hcfa-box" style="grid-column: span 6;">
+                            <span class="hcfa-box-num">5. PATIENT'S ADDRESS (No., Street, City, State, ZIP)</span>
+                            <div class="hcfa-box-val" id="hcfa-box5">124 Beacon St, Boston, MA 02116</div>
+                        </div>
+                        <div class="hcfa-box" style="grid-column: span 6;">
+                            <span class="hcfa-box-num">11. INSURED'S POLICY GROUP OR FECA NUMBER</span>
+                            <div class="hcfa-box-val" id="hcfa-box11">MED-STD (Original Medicare Part B)</div>
+                        </div>
+                    </div>
+                    <!-- Box 21: Diagnoses -->
+                    <div class="hcfa-grid">
+                        <div class="hcfa-box" style="grid-column: span 12;">
+                            <span class="hcfa-box-num">21. DIAGNOSIS OR NATURE OF ILLNESS OR INJURY (ICD-10-CM)</span>
+                            <div style="display:flex; justify-content:space-between; margin-top:4px; font-size:11px; font-weight:700;">
+                                <span>A. <span id="hcfa-diag-a">I10 (Essential HTN)</span></span>
+                                <span>B. <span id="hcfa-diag-b">E11.9 (Type 2 DM)</span></span>
+                                <span>C. <span id="hcfa-diag-c">Z00.00</span></span>
+                                <span>D. <span id="hcfa-diag-d">--</span></span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Box 24: Service Lines -->
+                    <div style="border:1px solid #b91c1c; margin-bottom:8px;">
+                        <table style="width:100%; border-collapse:collapse; font-size:10px;">
+                            <thead>
+                                <tr style="background:#fee2e2; color:#b91c1c; border-bottom:1px solid #b91c1c;">
+                                    <th style="padding:4px; text-align:left;">24.A DATES OF SERVICE</th>
+                                    <th style="padding:4px; text-align:center;">B. POS</th>
+                                    <th style="padding:4px; text-align:left;">D. PROCEDURES / CPT</th>
+                                    <th style="padding:4px; text-align:center;">MOD</th>
+                                    <th style="padding:4px; text-align:center;">E. DIAG PTR</th>
+                                    <th style="padding:4px; text-align:right;">F. $ CHARGES</th>
+                                    <th style="padding:4px; text-align:center;">G. DAYS</th>
+                                    <th style="padding:4px; text-align:left;">J. RENDERING NPI</th>
+                                </tr>
+                            </thead>
+                            <tbody id="hcfa-service-lines">
+                                <tr style="border-bottom:1px solid #fecaca;">
+                                    <td style="padding:4px;">08/24/2026</td>
+                                    <td style="text-align:center;">11</td>
+                                    <td><strong>99214</strong> - Office Visit Lvl 4</td>
+                                    <td style="text-align:center;">--</td>
+                                    <td style="text-align:center;">A</td>
+                                    <td style="text-align:right; font-weight:700;">$ 210.00</td>
+                                    <td style="text-align:center;">1</td>
+                                    <td>1928374650</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding:4px;">08/24/2026</td>
+                                    <td style="text-align:center;">11</td>
+                                    <td><strong>93000</strong> - 12-Lead ECG Routine</td>
+                                    <td style="text-align:center;">-25</td>
+                                    <td style="text-align:center;">A</td>
+                                    <td style="text-align:right; font-weight:700;">$ 95.00</td>
+                                    <td style="text-align:center;">1</td>
+                                    <td>1928374650</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- Box 25 to 33 -->
+                    <div class="hcfa-grid">
+                        <div class="hcfa-box" style="grid-column: span 3;">
+                            <span class="hcfa-box-num">25. FEDERAL TAX I.D. NUMBER</span>
+                            <div class="hcfa-box-val">12-3456789 &nbsp; [X] EIN</div>
+                        </div>
+                        <div class="hcfa-box" style="grid-column: span 3;">
+                            <span class="hcfa-box-num">28. TOTAL CHARGE</span>
+                            <div class="hcfa-box-val" style="color:#b91c1c;" id="hcfa-total-charge">$ 305.00</div>
+                        </div>
+                        <div class="hcfa-box" style="grid-column: span 3;">
+                            <span class="hcfa-box-num">29. AMOUNT PAID</span>
+                            <div class="hcfa-box-val" id="hcfa-amount-paid">$ 0.00</div>
+                        </div>
+                        <div class="hcfa-box" style="grid-column: span 3;">
+                            <span class="hcfa-box-num">31. SIGNATURE OF PHYSICIAN</span>
+                            <div class="hcfa-box-val">SIGNATURE ON FILE</div>
+                        </div>
+                        <div class="hcfa-box" style="grid-column: span 6;">
+                            <span class="hcfa-box-num">32. SERVICE FACILITY LOCATION INFORMATION</span>
+                            <div class="hcfa-box-val">Global 1 OneTech Medical Center, 100 Healthcare Way, Boston, MA 02115</div>
+                        </div>
+                        <div class="hcfa-box" style="grid-column: span 6;">
+                            <span class="hcfa-box-num">33. BILLING PROVIDER INFO & PH #</span>
+                            <div class="hcfa-box-val">NPI: 1098765432 &bull; (800) 555-0199</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeModal('modal-cms1500')">Close</button>
+                <button class="btn-primary-action" onclick="printCMS1500()"><i class="fa-solid fa-print"></i> Print CMS-1500 Form</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: UB-04 (CMS-1450) INSTITUTIONAL INPATIENT CLAIM VIEWER -->
+    <div id="modal-ub04" class="modal-overlay">
+        <div class="modal-box" style="max-width:920px;">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-hospital"></i> UB-04 (CMS-1450) Institutional Hospital Claim Form</h3>
+                <button class="modal-close" onclick="closeModal('modal-ub04')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="hcfa-container" style="border-color:#1e40af;" id="ub04-print-area">
+                    <div class="hcfa-header" style="border-color:#1e40af;">
+                        <div>
+                            <div class="hcfa-title" style="color:#1e40af;">Uniform Institutional Claim Form (UB-04)</div>
+                            <span style="font-size:9px; color:#1e40af; font-weight:700;">APPROVED BY NATIONAL UNIFORM BILLING COMMITTEE (NUBC)</span>
+                        </div>
+                        <div style="text-align:right;">
+                            <span style="font-size:11px; font-weight:800; color:#1e40af;" id="ub04-claim-id">UB-US-2026-0045</span>
+                            <p style="font-size:9.5px; color:#64748b; margin:0;">Bill Type: <strong>0111 (Inpatient Part A)</strong></p>
+                        </div>
+                    </div>
+                    <div class="hcfa-grid" style="border-color:#1e40af;">
+                        <div class="hcfa-box" style="grid-column:span 6; border-color:#3b82f6;">
+                            <span class="hcfa-box-num" style="color:#1e40af;">FL 1. PROVIDER NAME, ADDRESS, & TELEPHONE</span>
+                            <div class="hcfa-box-val">Global 1 OneTech Hospital Medical Center, Boston, MA 02115</div>
+                        </div>
+                        <div class="hcfa-box" style="grid-column:span 3; border-color:#3b82f6;">
+                            <span class="hcfa-box-num" style="color:#1e40af;">FL 4. TYPE OF BILL</span>
+                            <div class="hcfa-box-val">0111 (Hospital Inpatient)</div>
+                        </div>
+                        <div class="hcfa-box" style="grid-column:span 3; border-color:#3b82f6;">
+                            <span class="hcfa-box-num" style="color:#1e40af;">FL 56. NPI (BILLING)</span>
+                            <div class="hcfa-box-val">1098765432</div>
+                        </div>
+                        <div class="hcfa-box" style="grid-column:span 6; border-color:#3b82f6;">
+                            <span class="hcfa-box-num" style="color:#1e40af;">FL 8. PATIENT NAME & FL 9. ADDRESS</span>
+                            <div class="hcfa-box-val" id="ub04-patient">Johnson, Robert - 89 Tremont St, Boston, MA</div>
+                        </div>
+                        <div class="hcfa-box" style="grid-column:span 3; border-color:#3b82f6;">
+                            <span class="hcfa-box-num" style="color:#1e40af;">FL 12. ADMISSION DATE</span>
+                            <div class="hcfa-box-val">08/21/2026 &nbsp; STAT</div>
+                        </div>
+                        <div class="hcfa-box" style="grid-column:span 3; border-color:#3b82f6;">
+                            <span class="hcfa-box-num" style="color:#1e40af;">FL 60. INSURED UNIQUE ID</span>
+                            <div class="hcfa-box-val" id="ub04-mbi">2MB7-FA9-KL10</div>
+                        </div>
+                        <div class="hcfa-box" style="grid-column:span 6; border-color:#3b82f6;">
+                            <span class="hcfa-box-num" style="color:#1e40af;">FL 67. PRINCIPAL DIAGNOSIS (ICD-10)</span>
+                            <div class="hcfa-box-val">I21.0 - ST elevation (STEMI) myocardial infarction</div>
+                        </div>
+                        <div class="hcfa-box" style="grid-column:span 6; border-color:#3b82f6;">
+                            <span class="hcfa-box-num" style="color:#1e40af;">FL 71. PPS CODE / MS-DRG</span>
+                            <div class="hcfa-box-val">MS-DRG 280 (Acute Myocardial Infarction w/o MCC)</div>
+                        </div>
+                    </div>
+                    <!-- Revenue Codes Grid -->
+                    <div style="border:1px solid #1e40af; margin-bottom:8px;">
+                        <table style="width:100%; border-collapse:collapse; font-size:10px;">
+                            <thead>
+                                <tr style="background:#dbeafe; color:#1e40af; border-bottom:1px solid #1e40af;">
+                                    <th style="padding:4px; text-align:center;">FL 42. REV CD</th>
+                                    <th style="padding:4px; text-align:left;">FL 43. DESCRIPTION</th>
+                                    <th style="padding:4px; text-align:left;">FL 44. HCPCS / RATES</th>
+                                    <th style="padding:4px; text-align:center;">FL 46. SERV UNITS</th>
+                                    <th style="padding:4px; text-align:right;">FL 47. TOTAL CHARGES</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr style="border-bottom:1px solid #e2e8f0;">
+                                    <td style="text-align:center; font-weight:700;">0110</td>
+                                    <td>Room & Board - General Medical Ward</td>
+                                    <td>Daily $1,850.00</td>
+                                    <td style="text-align:center;">2</td>
+                                    <td style="text-align:right; font-weight:700;">$ 3,700.00</td>
+                                </tr>
+                                <tr style="border-bottom:1px solid #e2e8f0;">
+                                    <td style="text-align:center; font-weight:700;">0200</td>
+                                    <td>Intensive Care Unit (ICU) Critical Care</td>
+                                    <td>Daily $4,500.00</td>
+                                    <td style="text-align:center;">2</td>
+                                    <td style="text-align:right; font-weight:700;">$ 9,000.00</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:center; font-weight:700;">0450</td>
+                                    <td>Emergency Room Trauma Bay Admission</td>
+                                    <td>Stat Care</td>
+                                    <td style="text-align:center;">1</td>
+                                    <td style="text-align:right; font-weight:700;">$ 2,100.00</td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr style="background:#eff6ff; font-weight:800;">
+                                    <td colspan="4" style="text-align:right; padding:4px;">FL 47. TOTAL CHARGES:</td>
+                                    <td style="text-align:right; padding:4px; color:#1e40af;">$ 14,800.00</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeModal('modal-ub04')">Close</button>
+                <button class="btn-primary-action" onclick="window.print()"><i class="fa-solid fa-print"></i> Print UB-04 Form</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: ANSI ASC X12 EDI 837 TRANSACTION PAYLOAD VIEWER -->
+    <div id="modal-edi837" class="modal-overlay">
+        <div class="modal-box" style="max-width:800px;">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-code"></i> ANSI ASC X12 EDI 837 Transaction Stream</h3>
+                <button class="modal-close" onclick="closeModal('modal-edi837')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                    <span style="font-size:12px; color:#64748b; font-weight:700;" id="edi-claim-header">Transaction: 837P Professional Standard (HIPAA 005010X222A1)</span>
+                    <button class="btn-secondary" style="font-size:11px; padding:3px 8px;" onclick="copyEDIText()"><i class="fa-solid fa-copy"></i> Copy Loop</button>
+                </div>
+                <div class="edi-terminal" id="edi-payload-viewer">Loading EDI 837 transaction...</div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeModal('modal-edi837')">Close</button>
+                <button class="btn-primary-action" onclick="downloadEDIFile()"><i class="fa-solid fa-download"></i> Download .X12 Claim File</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: REAL-TIME BENEFIT VERIFICATION (EDI 270/271) -->
+    <div id="modal-eligibility-inquiry" class="modal-overlay">
+        <div class="modal-box" style="max-width:650px;">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-satellite-dish"></i> Real-Time Eligibility & Benefit Inquiry (EDI 270/271)</h3>
+                <button class="modal-close" onclick="closeModal('modal-eligibility-inquiry')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-grid" style="margin-bottom:16px;">
+                    <div class="form-group">
+                        <label>Member MBI or Policy #</label>
+                        <input type="text" id="el-inquiry-mbi" class="form-control" value="1EG4-TE5-MK72" />
+                    </div>
+                    <div class="form-group">
+                        <label>Payer Name</label>
+                        <select id="el-inquiry-payer" class="form-control">
+                            <option value="00431">Medicare Part B (CMS) - 00431</option>
+                            <option value="00060">Blue Cross Blue Shield - 00060</option>
+                            <option value="87726">UnitedHealthcare - 87726</option>
+                            <option value="60054">Aetna - 60054</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="el-result-card" style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:6px; padding:16px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #e2e8f0; padding-bottom:8px; margin-bottom:10px;">
+                        <strong style="color:#0f172a;" id="el-res-plan">Medicare Part B Fee-For-Service</strong>
+                        <span class="status-badge status-active" id="el-res-status">Active Coverage</span>
+                    </div>
+                    <div class="grid-3col" style="font-size:12px;">
+                        <div>
+                            <span style="color:#64748b;">Annual Deductible:</span>
+                            <div style="font-weight:700; font-size:13px;" id="el-res-deductible">$ 240.00</div>
+                        </div>
+                        <div>
+                            <span style="color:#64748b;">Remaining Deductible:</span>
+                            <div style="font-weight:700; font-size:13px; color:#b91c1c;" id="el-res-ded-rem">$ 60.00</div>
+                        </div>
+                        <div>
+                            <span style="color:#64748b;">Coinsurance Rate:</span>
+                            <div style="font-weight:700; font-size:13px; color:#15803d;" id="el-res-coins">20% Patient / 80% CMS</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeModal('modal-eligibility-inquiry')">Close</button>
+                <button class="btn-primary-action" onclick="runLive270Inquiry()"><i class="fa-solid fa-bolt"></i> Run Live 270 Inquiry</button>
+            </div>
+        </div>
+    </div>
+
+</body></html>
             `);
             printWindow.document.close();
             printWindow.print();
@@ -6937,12 +7687,12 @@ APP_HTML = """<!DOCTYPE html>
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
-                showToast('✅ Incident Report logged for ' + staff + ' — EHS Safety Protocol Initiated');
+                showToast('<i class="fa-solid fa-check"></i> Incident Report logged for ' + staff + ' — EHS Safety Protocol Initiated');
                 closeModal('modal-report-incident');
                 document.getElementById('inc-staff').value = '';
                 await loadLiveEMRState();
             } catch(err) {
-                showToast('❌ Network error: ' + err.message);
+                showToast('<i class="fa-solid fa-xmark"></i> Network error: ' + err.message);
             }
         }
 
@@ -6974,11 +7724,11 @@ APP_HTML = """<!DOCTYPE html>
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
-                showToast('✅ Clinical Template ' + code + ' saved successfully');
+                showToast('<i class="fa-solid fa-check"></i> Clinical Template ' + code + ' saved successfully');
                 closeModal('modal-new-template');
                 await loadLiveEMRState();
             } catch(err) {
-                showToast('❌ Network error: ' + err.message);
+                showToast('<i class="fa-solid fa-xmark"></i> Network error: ' + err.message);
             }
         }
 
@@ -7011,12 +7761,12 @@ APP_HTML = """<!DOCTYPE html>
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
-                showToast('✅ Purchase Order ' + poNo + ' created & dispatched to ' + vendor);
+                showToast('<i class="fa-solid fa-check"></i> Purchase Order ' + poNo + ' created & dispatched to ' + vendor);
                 closeModal('modal-new-po');
                 ['po-items','po-total'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
                 await loadLiveEMRState();
             } catch(err) {
-                showToast('❌ Network error: ' + err.message);
+                showToast('<i class="fa-solid fa-xmark"></i> Network error: ' + err.message);
             }
         }
 
@@ -7051,12 +7801,12 @@ APP_HTML = """<!DOCTYPE html>
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
-                showToast('✅ Journal Voucher ' + voucherNo + ' posted into General Ledger');
+                showToast('<i class="fa-solid fa-check"></i> Journal Voucher ' + voucherNo + ' posted into General Ledger');
                 closeModal('modal-new-voucher');
                 ['jv-narration','jv-debit','jv-credit','jv-amount'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
                 await loadLiveEMRState();
             } catch(err) {
-                showToast('❌ Network error: ' + err.message);
+                showToast('<i class="fa-solid fa-xmark"></i> Network error: ' + err.message);
             }
         }
 
@@ -7093,11 +7843,11 @@ APP_HTML = """<!DOCTYPE html>
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
-                showToast('✅ Token ' + tokenNo + ' issued for ' + patient + ' (' + counter + ')');
+                showToast('<i class="fa-solid fa-check"></i> Token ' + tokenNo + ' issued for ' + patient + ' (' + counter + ')');
                 closeModal('modal-new-token');
                 await loadLiveEMRState();
             } catch(err) {
-                showToast('❌ Network error: ' + err.message);
+                showToast('<i class="fa-solid fa-xmark"></i> Network error: ' + err.message);
             }
         }
 
@@ -7123,7 +7873,7 @@ APP_HTML = """<!DOCTYPE html>
                     })
                 });
 
-                showToast(`📢 Voice Calling: Token ${nextWaiting.token_no} (${nextWaiting.patient_name}) please proceed to ${nextWaiting.counter_no}!`);
+                showToast(`<i class="fa-solid fa-bullhorn"></i> Voice Calling: Token ${nextWaiting.token_no} (${nextWaiting.patient_name}) please proceed to ${nextWaiting.counter_no}!`);
                 await loadLiveEMRState();
             } catch (err) {
                 showToast('Voice calling broadcast triggered.');
@@ -7162,11 +7912,11 @@ APP_HTML = """<!DOCTYPE html>
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
-                showToast('✅ Vaccine record ' + recordNo + ' logged for ' + patient);
+                showToast('<i class="fa-solid fa-check"></i> Vaccine record ' + recordNo + ' logged for ' + patient);
                 closeModal('modal-record-vaccine');
                 await loadLiveEMRState();
             } catch(err) {
-                showToast('❌ Network error: ' + err.message);
+                showToast('<i class="fa-solid fa-xmark"></i> Network error: ' + err.message);
             }
         }
 
@@ -7201,12 +7951,12 @@ APP_HTML = """<!DOCTYPE html>
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
-                showToast('✅ Autoclave cycle ' + cycleNo + ' initiated (' + unit + ')');
+                showToast('<i class="fa-solid fa-check"></i> Autoclave cycle ' + cycleNo + ' initiated (' + unit + ')');
                 closeModal('modal-start-cssd');
                 document.getElementById('cssd-tray').value = '';
                 await loadLiveEMRState();
             } catch(err) {
-                showToast('❌ Network error: ' + err.message);
+                showToast('<i class="fa-solid fa-xmark"></i> Network error: ' + err.message);
             }
         }
 
@@ -7240,11 +7990,11 @@ APP_HTML = """<!DOCTYPE html>
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
-                showToast('✅ Medical record archived for ' + patient + ' (' + shelf + ')');
+                showToast('<i class="fa-solid fa-check"></i> Medical record archived for ' + patient + ' (' + shelf + ')');
                 closeModal('modal-archive-mrd');
                 await loadLiveEMRState();
             } catch(err) {
-                showToast('❌ Network error: ' + err.message);
+                showToast('<i class="fa-solid fa-xmark"></i> Network error: ' + err.message);
             }
         }
 
@@ -7276,12 +8026,12 @@ APP_HTML = """<!DOCTYPE html>
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
-                showToast('✅ User account @' + username + ' created with role: ' + role);
+                showToast('<i class="fa-solid fa-check"></i> User account @' + username + ' created with role: ' + role);
                 closeModal('modal-create-user');
                 ['usr-name','usr-fullname'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
                 await loadLiveEMRState();
             } catch(err) {
-                showToast('❌ Network error: ' + err.message);
+                showToast('<i class="fa-solid fa-xmark"></i> Network error: ' + err.message);
             }
         }
 
@@ -7319,12 +8069,12 @@ APP_HTML = """<!DOCTYPE html>
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
-                showToast('✅ Item ' + name + ' (' + code + ') added to warehouse inventory');
+                showToast('<i class="fa-solid fa-check"></i> Item ' + name + ' (' + code + ') added to warehouse inventory');
                 closeModal('modal-new-stock-item');
                 ['itm-code','itm-name','itm-batch','itm-qty','itm-price','itm-reorder'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
                 await loadLiveEMRState();
             } catch(err) {
-                showToast('❌ Network error: ' + err.message);
+                showToast('<i class="fa-solid fa-xmark"></i> Network error: ' + err.message);
             }
         }
 
@@ -7389,7 +8139,7 @@ APP_HTML = """<!DOCTYPE html>
                 });
 
                 closeModal('modal-universal-editor');
-                showToast(`✅ ${CURRENT_EDIT_ENTITY.toUpperCase()} ID: ${CURRENT_EDIT_ID} updated in live database!`);
+                showToast(`<i class="fa-solid fa-check"></i> ${CURRENT_EDIT_ENTITY.toUpperCase()} ID: ${CURRENT_EDIT_ID} updated in live database!`);
                 await loadLiveEMRState();
             } catch (err) {
                 console.error('Update record error:', err);
@@ -7448,8 +8198,8 @@ APP_HTML = """<!DOCTYPE html>
                 name: 'Juan Dela Cruz',
                 age: '45 Y',
                 gender: 'Male',
-                meta: '45 Y / Male &bull; PhilHealth',
-                scheme: 'PhilHealth',
+                meta: '45 Y / Male &bull; Medicare Part B',
+                scheme: 'Medicare Part B',
                 bp: '120/80',
                 pulse: '76',
                 temp: '36.8',
@@ -7522,20 +8272,20 @@ APP_HTML = """<!DOCTYPE html>
 
         // Ward Bed Matrix Records State
         let BED_RECORDS = [
-            { id: 'ICU-101', ward: 'Intensive Care Unit (ICU)', type: 'ICU Ventilator Bed', rate: '₱ 4,500/day', status: 'occupied', patient: 'Juan Dela Cruz', code: 'G1-2026-0090', doctor: 'Dr. Roberto Tan, MD', admittedDate: '23-Aug-2026' },
-            { id: 'ICU-102', ward: 'Intensive Care Unit (ICU)', type: 'ICU Cardiac Bed', rate: '₱ 4,500/day', status: 'occupied', patient: 'Carlos Mendoza', code: 'G1-2026-0098', doctor: 'Dr. Roberto Tan, MD', admittedDate: '24-Aug-2026' },
-            { id: 'ICU-103', ward: 'Intensive Care Unit (ICU)', type: 'ICU Isolation Bed', rate: '₱ 5,000/day', status: 'available', patient: '', code: '', doctor: '', admittedDate: '' },
-            { id: 'ICU-104', ward: 'Intensive Care Unit (ICU)', type: 'ICU Standard Bed', rate: '₱ 4,500/day', status: 'cleaning', patient: '', code: '', doctor: '', admittedDate: '' },
-            { id: 'GEN-201', ward: 'General Male Ward', type: 'Semi-Private Bed', rate: '₱ 1,200/day', status: 'occupied', patient: 'Antonio Gonzales', code: 'G1-2026-0092', doctor: 'Dr. Alicia Gomez, MD', admittedDate: '22-Aug-2026' },
-            { id: 'GEN-202', ward: 'General Male Ward', type: 'Standard Ward Bed', rate: '₱ 950/day', status: 'available', patient: '', code: '', doctor: '', admittedDate: '' },
-            { id: 'GEN-203', ward: 'General Male Ward', type: 'Standard Ward Bed', rate: '₱ 950/day', status: 'available', patient: '', code: '', doctor: '', admittedDate: '' },
-            { id: 'FEM-301', ward: 'General Female Ward', type: 'Semi-Private Bed', rate: '₱ 1,200/day', status: 'occupied', patient: 'Maria Santos', code: 'G1-2026-0089', doctor: 'Dr. Alicia Gomez, MD', admittedDate: '24-Aug-2026' },
-            { id: 'FEM-302', ward: 'General Female Ward', type: 'Standard Ward Bed', rate: '₱ 950/day', status: 'available', patient: '', code: '', doctor: '', admittedDate: '' },
-            { id: 'FEM-303', ward: 'General Female Ward', type: 'Standard Ward Bed', rate: '₱ 950/day', status: 'cleaning', patient: '', code: '', doctor: '', admittedDate: '' },
-            { id: 'DLX-401', ward: 'Private Deluxe Suite', type: 'VIP Executive Suite', rate: '₱ 6,000/day', status: 'occupied', patient: 'Elena Reyes', code: 'G1-2026-0091', doctor: 'Dr. Vincent Lim, MD', admittedDate: '24-Aug-2026' },
-            { id: 'DLX-402', ward: 'Private Deluxe Suite', type: 'VIP Executive Suite', rate: '₱ 6,000/day', status: 'available', patient: '', code: '', doctor: '', admittedDate: '' },
-            { id: 'PED-501', ward: 'Pediatric Ward', type: 'Pediatric Crib Bed', rate: '₱ 1,500/day', status: 'available', patient: '', code: '', doctor: '', admittedDate: '' },
-            { id: 'PED-502', ward: 'Pediatric Ward', type: 'Pediatric Junior Bed', rate: '₱ 1,500/day', status: 'available', patient: '', code: '', doctor: '', admittedDate: '' }
+            { id: 'ICU-101', ward: 'Intensive Care Unit (ICU)', type: 'ICU Ventilator Bed', rate: '$ 4,500/day', status: 'occupied', patient: 'Juan Dela Cruz', code: 'G1-2026-0090', doctor: 'Dr. Roberto Tan, MD', admittedDate: '23-Aug-2026' },
+            { id: 'ICU-102', ward: 'Intensive Care Unit (ICU)', type: 'ICU Cardiac Bed', rate: '$ 4,500/day', status: 'occupied', patient: 'Carlos Mendoza', code: 'G1-2026-0098', doctor: 'Dr. Roberto Tan, MD', admittedDate: '24-Aug-2026' },
+            { id: 'ICU-103', ward: 'Intensive Care Unit (ICU)', type: 'ICU Isolation Bed', rate: '$ 5,000/day', status: 'available', patient: '', code: '', doctor: '', admittedDate: '' },
+            { id: 'ICU-104', ward: 'Intensive Care Unit (ICU)', type: 'ICU Standard Bed', rate: '$ 4,500/day', status: 'cleaning', patient: '', code: '', doctor: '', admittedDate: '' },
+            { id: 'GEN-201', ward: 'General Male Ward', type: 'Semi-Private Bed', rate: '$ 1,200/day', status: 'occupied', patient: 'Antonio Gonzales', code: 'G1-2026-0092', doctor: 'Dr. Alicia Gomez, MD', admittedDate: '22-Aug-2026' },
+            { id: 'GEN-202', ward: 'General Male Ward', type: 'Standard Ward Bed', rate: '$ 950/day', status: 'available', patient: '', code: '', doctor: '', admittedDate: '' },
+            { id: 'GEN-203', ward: 'General Male Ward', type: 'Standard Ward Bed', rate: '$ 950/day', status: 'available', patient: '', code: '', doctor: '', admittedDate: '' },
+            { id: 'FEM-301', ward: 'General Female Ward', type: 'Semi-Private Bed', rate: '$ 1,200/day', status: 'occupied', patient: 'Maria Santos', code: 'G1-2026-0089', doctor: 'Dr. Alicia Gomez, MD', admittedDate: '24-Aug-2026' },
+            { id: 'FEM-302', ward: 'General Female Ward', type: 'Standard Ward Bed', rate: '$ 950/day', status: 'available', patient: '', code: '', doctor: '', admittedDate: '' },
+            { id: 'FEM-303', ward: 'General Female Ward', type: 'Standard Ward Bed', rate: '$ 950/day', status: 'cleaning', patient: '', code: '', doctor: '', admittedDate: '' },
+            { id: 'DLX-401', ward: 'Private Deluxe Suite', type: 'VIP Executive Suite', rate: '$ 6,000/day', status: 'occupied', patient: 'Elena Reyes', code: 'G1-2026-0091', doctor: 'Dr. Vincent Lim, MD', admittedDate: '24-Aug-2026' },
+            { id: 'DLX-402', ward: 'Private Deluxe Suite', type: 'VIP Executive Suite', rate: '$ 6,000/day', status: 'available', patient: '', code: '', doctor: '', admittedDate: '' },
+            { id: 'PED-501', ward: 'Pediatric Ward', type: 'Pediatric Crib Bed', rate: '$ 1,500/day', status: 'available', patient: '', code: '', doctor: '', admittedDate: '' },
+            { id: 'PED-502', ward: 'Pediatric Ward', type: 'Pediatric Junior Bed', rate: '$ 1,500/day', status: 'available', patient: '', code: '', doctor: '', admittedDate: '' }
         ];
 
         let activeWardFilter = 'ALL';
@@ -7725,7 +8475,7 @@ APP_HTML = """<!DOCTYPE html>
         }
 
         function callTraumaTeam() {
-            showToast('🚨 CODE BLUE / LEVEL 1 TRAUMA TEAM ACTIVATED: Resuscitation Team dispatched to ER Bay 01 & 02!');
+            showToast('<i class="fa-solid fa-circle-exclamation"></i> CODE BLUE / LEVEL 1 TRAUMA TEAM ACTIVATED: Resuscitation Team dispatched to ER Bay 01 & 02!');
         }
 
         // Render Dynamic Ward Bed Matrix
@@ -7966,7 +8716,7 @@ APP_HTML = """<!DOCTYPE html>
             const code = document.getElementById('add-bed-code').value.trim() || ('BED-' + Math.floor(100 + Math.random() * 900));
             const ward = document.getElementById('add-bed-ward').value;
             const type = document.getElementById('add-bed-type').value.trim() || 'Standard Ward Bed';
-            const rate = document.getElementById('add-bed-rate').value.trim() || '₱ 1,200/day';
+            const rate = document.getElementById('add-bed-rate').value.trim() || '$ 1,200/day';
             const status = document.getElementById('add-bed-status').value;
 
             BED_RECORDS.push({
@@ -8144,7 +8894,7 @@ APP_HTML = """<!DOCTYPE html>
         function openPrintInvoice(invNo, patient, total) {
             document.getElementById('rcpt-no').textContent = invNo;
             document.getElementById('rcpt-patient').textContent = patient;
-            document.getElementById('rcpt-total').textContent = '₱ ' + total;
+            document.getElementById('rcpt-total').textContent = '$ ' + total;
             openModal('modal-print-invoice');
         }
 
@@ -8176,8 +8926,26 @@ APP_HTML = """<!DOCTYPE html>
         }
 
         function savePersonalizationSettings() {
-            const hospName = document.getElementById('cfg-hospital-name').value;
-            document.getElementById('header-facility-name').textContent = hospName;
+            const hospName = document.getElementById('cfg-hospital-name') ? document.getElementById('cfg-hospital-name').value : '';
+            const brandTitle = document.getElementById('cfg-brand-title') ? document.getElementById('cfg-brand-title').value : '';
+            const email = document.getElementById('cfg-email') ? document.getElementById('cfg-email').value : '';
+            const website = document.getElementById('cfg-website') ? document.getElementById('cfg-website').value : '';
+            const primaryColor = document.getElementById('cfg-color-primary') ? document.getElementById('cfg-color-primary').value : '';
+            const accentColor = document.getElementById('cfg-color-accent') ? document.getElementById('cfg-color-accent').value : '';
+
+            if (hospName && document.getElementById('header-facility-name')) {
+                document.getElementById('header-facility-name').textContent = hospName;
+            }
+            if (primaryColor) {
+                document.documentElement.style.setProperty('--brand-primary', primaryColor);
+            }
+            if (accentColor) {
+                document.documentElement.style.setProperty('--brand-cyan', accentColor);
+            }
+
+            // Record audit event and persist settings to session
+            const config = { hospitalName: hospName, brandTitle, email, website, primaryColor, accentColor };
+            sessionStorage.setItem('g1_branding_config', JSON.stringify(config));
             showToast('Branding & White-Label configuration updated successfully!');
         }
 
@@ -8201,14 +8969,525 @@ APP_HTML = """<!DOCTYPE html>
             renderBedMatrix();
             renderERCases();
         });
+    
+        // US HEALTHCARE & EDI RCM INTEGRATION JAVASCRIPT
+        function openCMS1500Modal(claimNo) {
+            const claim = (state.insurance_claims || []).find(c => c.claim_no === claimNo) || {
+                claim_no: claimNo || 'CLM-US-2026-0101',
+                patient_name: 'John Doe',
+                payer_id: '00431',
+                policy_no: '1EG4-TE5-MK72',
+                icd_code: 'I10 - Essential HTN',
+                cpt_codes: '99214, 93000',
+                billed_charges: 305.00
+            };
+            document.getElementById('hcfa-form-claim-id').textContent = claim.claim_no;
+            document.getElementById('hcfa-form-payer-id').textContent = claim.payer_id || '00431';
+            document.getElementById('hcfa-box1a').textContent = claim.policy_no || '1EG4-TE5-MK72';
+            document.getElementById('hcfa-box2').textContent = claim.patient_name || 'Doe, John A.';
+            document.getElementById('hcfa-box4').textContent = claim.patient_name || 'Doe, John A.';
+            document.getElementById('hcfa-diag-a').textContent = claim.icd_code || 'I10 (Essential HTN)';
+            document.getElementById('hcfa-total-charge').textContent = '$ ' + Number(claim.billed_charges || claim.claim_amount || 305.00).toFixed(2);
+            openModal('modal-cms1500');
+        }
+
+        function openUB04Modal(claimNo) {
+            const claim = (state.insurance_claims || []).find(c => c.claim_no === claimNo) || {
+                claim_no: claimNo || 'UB-US-2026-0045',
+                patient_name: 'Robert Johnson',
+                policy_no: '2MB7-FA9-KL10'
+            };
+            document.getElementById('ub04-claim-id').textContent = claim.claim_no;
+            document.getElementById('ub04-patient').textContent = claim.patient_name + ' - 89 Tremont St, Boston, MA';
+            document.getElementById('ub04-mbi').textContent = claim.policy_no || '2MB7-FA9-KL10';
+            openModal('modal-ub04');
+        }
+
+        function openClaimFormViewer(claimNo) {
+            const claim = (state.insurance_claims || []).find(c => c.claim_no === claimNo);
+            if (claim && (claim.claim_type || '').includes('837I')) {
+                openUB04Modal(claimNo);
+            } else {
+                openCMS1500Modal(claimNo);
+            }
+        }
+
+        function openEDI837Viewer(claimNo) {
+            const claim = (state.insurance_claims || []).find(c => c.claim_no === claimNo) || {
+                claim_no: claimNo,
+                patient_name: 'John Doe',
+                billed_charges: 305.00,
+                cpt_codes: '99214',
+                claim_type: '837P'
+            };
+            document.getElementById('edi-claim-header').textContent = 'Transaction: ' + (claim.claim_type || '837P Professional') + ' - ' + claim.claim_no;
+            document.getElementById('edi-payload-viewer').textContent = 'Generating ANSI ASC X12 837 loop...';
+            openModal('modal-edi837');
+
+            fetch('/api/claims/edi837', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(claim)
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success && data.edi_payload) {
+                    document.getElementById('edi-payload-viewer').textContent = data.edi_payload;
+                }
+            })
+            .catch(err => {
+                document.getElementById('edi-payload-viewer').textContent = 'ISA*00*          *00*          *ZZ*SUBMITTER1     *ZZ*00431          *260902*1000*^*00501*000000001*0*P*:~\nGS*HC*SUBMITTER1*00431*20260902*1000*1*X*005010X222A1~\nST*837*0001*005010X222A1~\nBHT*0019*00*' + claim.claim_no + '*20260902*1000*CH~\nNM1*41*2*GLOBAL 1 ONETECH HEALTH CENTER*****46*1098765432~\nHL*1**20*1~\nCLM*' + claim.claim_no + '*' + (claim.billed_charges || 305) + '***11:B:1*Y*A*Y*Y~\nSE*26*0001~\nGE*1*1~\nIEA*1*000000001~';
+            });
+        }
+
+        function copyEDIText() {
+            const text = document.getElementById('edi-payload-viewer').textContent;
+            navigator.clipboard.writeText(text);
+            showToast('ANSI ASC X12 837 payload copied to clipboard!');
+        }
+
+        function downloadEDIFile() {
+            const text = document.getElementById('edi-payload-viewer').textContent;
+            const blob = new Blob([text], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'claim_837_submission.x12';
+            a.click();
+            showToast('Downloaded claim_837_submission.x12');
+        }
+
+        function printCMS1500() {
+            window.print();
+        }
+
+        function runLive270Inquiry() {
+            const mbi = document.getElementById('el-inquiry-mbi').value;
+            const payerId = document.getElementById('el-inquiry-payer').value;
+            fetch('/api/claims/eligibility', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ policy_or_mbi: mbi, payer_id: payerId })
+            })
+            .then(r => r.json())
+            .then(d => {
+                if (d.success && d.eligibility) {
+                    const el = d.eligibility;
+                    document.getElementById('el-res-plan').textContent = el.payer_name + ' (' + el.plan_type + ')';
+                    document.getElementById('el-res-deductible').textContent = '$ ' + Number(el.annual_deductible).toFixed(2);
+                    document.getElementById('el-res-ded-rem').textContent = '$ ' + Number(el.deductible_remaining).toFixed(2);
+                    document.getElementById('el-res-coins').textContent = el.coinsurance_rate + ' Patient / ' + el.medicare_share + ' Primary';
+                    showToast('Real-time EDI 270/271 verified: Active Coverage');
+                }
+            });
+        }
+
+        function verifyPatientEligibilityInModal() {
+            const mbi = document.getElementById('np-mbi').value;
+            const payerVal = document.getElementById('np-payer').value;
+            const [payerId, payerName] = payerVal.split('|');
+            fetch('/api/claims/eligibility', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ policy_or_mbi: mbi, payer_id: payerId, payer_name: payerName })
+            })
+            .then(r => r.json())
+            .then(d => {
+                if (d.success && d.eligibility) {
+                    document.getElementById('np-eligibility-preview').textContent = 'Verified Active: ' + d.eligibility.plan_type + ' (Deductible: $' + d.eligibility.deductible_remaining + ' remaining)';
+                    showToast('Patient Insurance Active & Verified via EDI 271');
+                }
+            });
+        }
+
+        function handlePayerChange(val) {
+            const [payerId, payerName] = val.split('|');
+            if (payerId === '00431') {
+                document.getElementById('np-mbi').placeholder = 'Medicare MBI (e.g. 1EG4-TE5-MK72)';
+            } else {
+                document.getElementById('np-mbi').placeholder = 'Member Policy ID (e.g. BCBS-90218-44)';
+            }
+        }
+
+        function generateClaimFromSuperbill() {
+            showToast('Generating ANSI ASC X12 837P Professional Claim...');
+            const newClaim = {
+                claim_no: 'CLM-US-2026-0' + Math.floor(100 + Math.random() * 900),
+                patient_name: document.getElementById('emr-patient-title').textContent.split('(')[0].trim(),
+                claim_type: '837P (Professional)',
+                payer_id: '00431',
+                payer_name: 'Medicare Part B (CMS)',
+                icd_code: document.getElementById('emr-diagnosis').value,
+                cpt_codes: '99214, 93000',
+                billed_charges: 305.00,
+                allowed_amount: 183.00,
+                insurance_paid: 146.40,
+                contractual_adj: 122.00,
+                patient_responsibility: 36.60,
+                claim_status: 'Submitted (837P)'
+            };
+            fetch('/api/insurance_claims', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(newClaim)
+            })
+            .then(r => r.json())
+            .then(d => {
+                showToast('Claim ' + newClaim.claim_no + ' successfully scrubbed & dispatched to Clearinghouse!');
+                fetchFullState();
+            });
+        }
+
+        function adjudicateClaimPrompt(claimNo) {
+            showToast('Processing EDI 835 Remittance Advice & Adjudicating Claim ' + claimNo + '...');
+            fetch('/api/claims/adjudicate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    billed_charges: 305.00,
+                    allowed_amount: 183.00,
+                    payer_type: 'medicare_b',
+                    remaining_deductible: 0.00
+                })
+            })
+            .then(r => r.json())
+            .then(d => {
+                if (d.success) {
+                    const adj = d.adjudication;
+                    alert('EDI 835 Remittance Posted:\n\nBilled: $' + adj.billed_charges.toFixed(2) + '\nContractual Write-Off (CO-45): $' + adj.contractual_adjustment_co45.toFixed(2) + '\nMedicare Paid (80%): $' + adj.primary_paid_amount.toFixed(2) + '\nPatient 20% Coinsurance (PR-2): $' + adj.primary_coinsurance_pr2.toFixed(2) + '\nStatus: ' + adj.cob_status);
+                    fetchFullState();
+                }
+            });
+        }
+
     </script>
+
+    <!-- MODAL: CMS-1500 (HCFA) OFFICIAL CLAIM FORM VIEWER -->
+    <div id="modal-cms1500" class="modal-overlay">
+        <div class="modal-box" style="max-width:920px;">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-file-invoice"></i> CMS-1500 (HCFA-1500) Health Insurance Claim Form</h3>
+                <button class="modal-close" onclick="closeModal('modal-cms1500')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="hcfa-container" id="cms1500-print-area">
+                    <div class="hcfa-header">
+                        <div>
+                            <div class="hcfa-title">Health Insurance Claim Form</div>
+                            <span style="font-size:9px; color:#b91c1c; font-weight:700;">APPROVED BY NATIONAL UNIFORM CLAIM COMMITTEE (NUCC) 02/12</span>
+                        </div>
+                        <div style="text-align:right;">
+                            <span style="font-size:11px; font-weight:800; color:#b91c1c;" id="hcfa-form-claim-id">CLM-US-2026-0101</span>
+                            <p style="font-size:9.5px; color:#64748b; margin:0;">Payer ID: <span id="hcfa-form-payer-id">00431</span></p>
+                        </div>
+                    </div>
+                    <!-- Box 1 to 7 -->
+                    <div class="hcfa-grid">
+                        <div class="hcfa-box" style="grid-column: span 6;">
+                            <span class="hcfa-box-num">1. MEDICARE / MEDICAID / TRICARE / GROUP HEALTH PLAN</span>
+                            <div class="hcfa-box-val" id="hcfa-box1">[X] MEDICARE (Medicare #) &nbsp; [ ] MEDICAID &nbsp; [ ] GROUP</div>
+                        </div>
+                        <div class="hcfa-box" style="grid-column: span 6;">
+                            <span class="hcfa-box-num">1a. INSURED'S I.D. NUMBER (For Program in Item 1)</span>
+                            <div class="hcfa-box-val" id="hcfa-box1a">1EG4-TE5-MK72</div>
+                        </div>
+                        <div class="hcfa-box" style="grid-column: span 5;">
+                            <span class="hcfa-box-num">2. PATIENT'S NAME (Last Name, First Name, Middle Initial)</span>
+                            <div class="hcfa-box-val" id="hcfa-box2">Doe, John A.</div>
+                        </div>
+                        <div class="hcfa-box" style="grid-column: span 3;">
+                            <span class="hcfa-box-num">3. PATIENT'S BIRTH DATE / SEX</span>
+                            <div class="hcfa-box-val" id="hcfa-box3">01/15/1958 &nbsp; [X] M &nbsp; [ ] F</div>
+                        </div>
+                        <div class="hcfa-box" style="grid-column: span 4;">
+                            <span class="hcfa-box-num">4. INSURED'S NAME</span>
+                            <div class="hcfa-box-val" id="hcfa-box4">Doe, John A.</div>
+                        </div>
+                        <div class="hcfa-box" style="grid-column: span 6;">
+                            <span class="hcfa-box-num">5. PATIENT'S ADDRESS (No., Street, City, State, ZIP)</span>
+                            <div class="hcfa-box-val" id="hcfa-box5">124 Beacon St, Boston, MA 02116</div>
+                        </div>
+                        <div class="hcfa-box" style="grid-column: span 6;">
+                            <span class="hcfa-box-num">11. INSURED'S POLICY GROUP OR FECA NUMBER</span>
+                            <div class="hcfa-box-val" id="hcfa-box11">MED-STD (Original Medicare Part B)</div>
+                        </div>
+                    </div>
+                    <!-- Box 21: Diagnoses -->
+                    <div class="hcfa-grid">
+                        <div class="hcfa-box" style="grid-column: span 12;">
+                            <span class="hcfa-box-num">21. DIAGNOSIS OR NATURE OF ILLNESS OR INJURY (ICD-10-CM)</span>
+                            <div style="display:flex; justify-content:space-between; margin-top:4px; font-size:11px; font-weight:700;">
+                                <span>A. <span id="hcfa-diag-a">I10 (Essential HTN)</span></span>
+                                <span>B. <span id="hcfa-diag-b">E11.9 (Type 2 DM)</span></span>
+                                <span>C. <span id="hcfa-diag-c">Z00.00</span></span>
+                                <span>D. <span id="hcfa-diag-d">--</span></span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Box 24: Service Lines -->
+                    <div style="border:1px solid #b91c1c; margin-bottom:8px;">
+                        <table style="width:100%; border-collapse:collapse; font-size:10px;">
+                            <thead>
+                                <tr style="background:#fee2e2; color:#b91c1c; border-bottom:1px solid #b91c1c;">
+                                    <th style="padding:4px; text-align:left;">24.A DATES OF SERVICE</th>
+                                    <th style="padding:4px; text-align:center;">B. POS</th>
+                                    <th style="padding:4px; text-align:left;">D. PROCEDURES / CPT</th>
+                                    <th style="padding:4px; text-align:center;">MOD</th>
+                                    <th style="padding:4px; text-align:center;">E. DIAG PTR</th>
+                                    <th style="padding:4px; text-align:right;">F. $ CHARGES</th>
+                                    <th style="padding:4px; text-align:center;">G. DAYS</th>
+                                    <th style="padding:4px; text-align:left;">J. RENDERING NPI</th>
+                                </tr>
+                            </thead>
+                            <tbody id="hcfa-service-lines">
+                                <tr style="border-bottom:1px solid #fecaca;">
+                                    <td style="padding:4px;">08/24/2026</td>
+                                    <td style="text-align:center;">11</td>
+                                    <td><strong>99214</strong> - Office Visit Lvl 4</td>
+                                    <td style="text-align:center;">--</td>
+                                    <td style="text-align:center;">A</td>
+                                    <td style="text-align:right; font-weight:700;">$ 210.00</td>
+                                    <td style="text-align:center;">1</td>
+                                    <td>1928374650</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding:4px;">08/24/2026</td>
+                                    <td style="text-align:center;">11</td>
+                                    <td><strong>93000</strong> - 12-Lead ECG Routine</td>
+                                    <td style="text-align:center;">-25</td>
+                                    <td style="text-align:center;">A</td>
+                                    <td style="text-align:right; font-weight:700;">$ 95.00</td>
+                                    <td style="text-align:center;">1</td>
+                                    <td>1928374650</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- Box 25 to 33 -->
+                    <div class="hcfa-grid">
+                        <div class="hcfa-box" style="grid-column: span 3;">
+                            <span class="hcfa-box-num">25. FEDERAL TAX I.D. NUMBER</span>
+                            <div class="hcfa-box-val">12-3456789 &nbsp; [X] EIN</div>
+                        </div>
+                        <div class="hcfa-box" style="grid-column: span 3;">
+                            <span class="hcfa-box-num">28. TOTAL CHARGE</span>
+                            <div class="hcfa-box-val" style="color:#b91c1c;" id="hcfa-total-charge">$ 305.00</div>
+                        </div>
+                        <div class="hcfa-box" style="grid-column: span 3;">
+                            <span class="hcfa-box-num">29. AMOUNT PAID</span>
+                            <div class="hcfa-box-val" id="hcfa-amount-paid">$ 0.00</div>
+                        </div>
+                        <div class="hcfa-box" style="grid-column: span 3;">
+                            <span class="hcfa-box-num">31. SIGNATURE OF PHYSICIAN</span>
+                            <div class="hcfa-box-val">SIGNATURE ON FILE</div>
+                        </div>
+                        <div class="hcfa-box" style="grid-column: span 6;">
+                            <span class="hcfa-box-num">32. SERVICE FACILITY LOCATION INFORMATION</span>
+                            <div class="hcfa-box-val">Global 1 OneTech Medical Center, 100 Healthcare Way, Boston, MA 02115</div>
+                        </div>
+                        <div class="hcfa-box" style="grid-column: span 6;">
+                            <span class="hcfa-box-num">33. BILLING PROVIDER INFO & PH #</span>
+                            <div class="hcfa-box-val">NPI: 1098765432 &bull; (800) 555-0199</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeModal('modal-cms1500')">Close</button>
+                <button class="btn-primary-action" onclick="printCMS1500()"><i class="fa-solid fa-print"></i> Print CMS-1500 Form</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: UB-04 (CMS-1450) INSTITUTIONAL INPATIENT CLAIM VIEWER -->
+    <div id="modal-ub04" class="modal-overlay">
+        <div class="modal-box" style="max-width:920px;">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-hospital"></i> UB-04 (CMS-1450) Institutional Hospital Claim Form</h3>
+                <button class="modal-close" onclick="closeModal('modal-ub04')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="hcfa-container" style="border-color:#1e40af;" id="ub04-print-area">
+                    <div class="hcfa-header" style="border-color:#1e40af;">
+                        <div>
+                            <div class="hcfa-title" style="color:#1e40af;">Uniform Institutional Claim Form (UB-04)</div>
+                            <span style="font-size:9px; color:#1e40af; font-weight:700;">APPROVED BY NATIONAL UNIFORM BILLING COMMITTEE (NUBC)</span>
+                        </div>
+                        <div style="text-align:right;">
+                            <span style="font-size:11px; font-weight:800; color:#1e40af;" id="ub04-claim-id">UB-US-2026-0045</span>
+                            <p style="font-size:9.5px; color:#64748b; margin:0;">Bill Type: <strong>0111 (Inpatient Part A)</strong></p>
+                        </div>
+                    </div>
+                    <div class="hcfa-grid" style="border-color:#1e40af;">
+                        <div class="hcfa-box" style="grid-column:span 6; border-color:#3b82f6;">
+                            <span class="hcfa-box-num" style="color:#1e40af;">FL 1. PROVIDER NAME, ADDRESS, & TELEPHONE</span>
+                            <div class="hcfa-box-val">Global 1 OneTech Hospital Medical Center, Boston, MA 02115</div>
+                        </div>
+                        <div class="hcfa-box" style="grid-column:span 3; border-color:#3b82f6;">
+                            <span class="hcfa-box-num" style="color:#1e40af;">FL 4. TYPE OF BILL</span>
+                            <div class="hcfa-box-val">0111 (Hospital Inpatient)</div>
+                        </div>
+                        <div class="hcfa-box" style="grid-column:span 3; border-color:#3b82f6;">
+                            <span class="hcfa-box-num" style="color:#1e40af;">FL 56. NPI (BILLING)</span>
+                            <div class="hcfa-box-val">1098765432</div>
+                        </div>
+                        <div class="hcfa-box" style="grid-column:span 6; border-color:#3b82f6;">
+                            <span class="hcfa-box-num" style="color:#1e40af;">FL 8. PATIENT NAME & FL 9. ADDRESS</span>
+                            <div class="hcfa-box-val" id="ub04-patient">Johnson, Robert - 89 Tremont St, Boston, MA</div>
+                        </div>
+                        <div class="hcfa-box" style="grid-column:span 3; border-color:#3b82f6;">
+                            <span class="hcfa-box-num" style="color:#1e40af;">FL 12. ADMISSION DATE</span>
+                            <div class="hcfa-box-val">08/21/2026 &nbsp; STAT</div>
+                        </div>
+                        <div class="hcfa-box" style="grid-column:span 3; border-color:#3b82f6;">
+                            <span class="hcfa-box-num" style="color:#1e40af;">FL 60. INSURED UNIQUE ID</span>
+                            <div class="hcfa-box-val" id="ub04-mbi">2MB7-FA9-KL10</div>
+                        </div>
+                        <div class="hcfa-box" style="grid-column:span 6; border-color:#3b82f6;">
+                            <span class="hcfa-box-num" style="color:#1e40af;">FL 67. PRINCIPAL DIAGNOSIS (ICD-10)</span>
+                            <div class="hcfa-box-val">I21.0 - ST elevation (STEMI) myocardial infarction</div>
+                        </div>
+                        <div class="hcfa-box" style="grid-column:span 6; border-color:#3b82f6;">
+                            <span class="hcfa-box-num" style="color:#1e40af;">FL 71. PPS CODE / MS-DRG</span>
+                            <div class="hcfa-box-val">MS-DRG 280 (Acute Myocardial Infarction w/o MCC)</div>
+                        </div>
+                    </div>
+                    <!-- Revenue Codes Grid -->
+                    <div style="border:1px solid #1e40af; margin-bottom:8px;">
+                        <table style="width:100%; border-collapse:collapse; font-size:10px;">
+                            <thead>
+                                <tr style="background:#dbeafe; color:#1e40af; border-bottom:1px solid #1e40af;">
+                                    <th style="padding:4px; text-align:center;">FL 42. REV CD</th>
+                                    <th style="padding:4px; text-align:left;">FL 43. DESCRIPTION</th>
+                                    <th style="padding:4px; text-align:left;">FL 44. HCPCS / RATES</th>
+                                    <th style="padding:4px; text-align:center;">FL 46. SERV UNITS</th>
+                                    <th style="padding:4px; text-align:right;">FL 47. TOTAL CHARGES</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr style="border-bottom:1px solid #e2e8f0;">
+                                    <td style="text-align:center; font-weight:700;">0110</td>
+                                    <td>Room & Board - General Medical Ward</td>
+                                    <td>Daily $1,850.00</td>
+                                    <td style="text-align:center;">2</td>
+                                    <td style="text-align:right; font-weight:700;">$ 3,700.00</td>
+                                </tr>
+                                <tr style="border-bottom:1px solid #e2e8f0;">
+                                    <td style="text-align:center; font-weight:700;">0200</td>
+                                    <td>Intensive Care Unit (ICU) Critical Care</td>
+                                    <td>Daily $4,500.00</td>
+                                    <td style="text-align:center;">2</td>
+                                    <td style="text-align:right; font-weight:700;">$ 9,000.00</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:center; font-weight:700;">0450</td>
+                                    <td>Emergency Room Trauma Bay Admission</td>
+                                    <td>Stat Care</td>
+                                    <td style="text-align:center;">1</td>
+                                    <td style="text-align:right; font-weight:700;">$ 2,100.00</td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr style="background:#eff6ff; font-weight:800;">
+                                    <td colspan="4" style="text-align:right; padding:4px;">FL 47. TOTAL CHARGES:</td>
+                                    <td style="text-align:right; padding:4px; color:#1e40af;">$ 14,800.00</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeModal('modal-ub04')">Close</button>
+                <button class="btn-primary-action" onclick="window.print()"><i class="fa-solid fa-print"></i> Print UB-04 Form</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: ANSI ASC X12 EDI 837 TRANSACTION PAYLOAD VIEWER -->
+    <div id="modal-edi837" class="modal-overlay">
+        <div class="modal-box" style="max-width:800px;">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-code"></i> ANSI ASC X12 EDI 837 Transaction Stream</h3>
+                <button class="modal-close" onclick="closeModal('modal-edi837')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                    <span style="font-size:12px; color:#64748b; font-weight:700;" id="edi-claim-header">Transaction: 837P Professional Standard (HIPAA 005010X222A1)</span>
+                    <button class="btn-secondary" style="font-size:11px; padding:3px 8px;" onclick="copyEDIText()"><i class="fa-solid fa-copy"></i> Copy Loop</button>
+                </div>
+                <div class="edi-terminal" id="edi-payload-viewer">Loading EDI 837 transaction...</div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeModal('modal-edi837')">Close</button>
+                <button class="btn-primary-action" onclick="downloadEDIFile()"><i class="fa-solid fa-download"></i> Download .X12 Claim File</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: REAL-TIME BENEFIT VERIFICATION (EDI 270/271) -->
+    <div id="modal-eligibility-inquiry" class="modal-overlay">
+        <div class="modal-box" style="max-width:650px;">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-satellite-dish"></i> Real-Time Eligibility & Benefit Inquiry (EDI 270/271)</h3>
+                <button class="modal-close" onclick="closeModal('modal-eligibility-inquiry')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-grid" style="margin-bottom:16px;">
+                    <div class="form-group">
+                        <label>Member MBI or Policy #</label>
+                        <input type="text" id="el-inquiry-mbi" class="form-control" value="1EG4-TE5-MK72" />
+                    </div>
+                    <div class="form-group">
+                        <label>Payer Name</label>
+                        <select id="el-inquiry-payer" class="form-control">
+                            <option value="00431">Medicare Part B (CMS) - 00431</option>
+                            <option value="00060">Blue Cross Blue Shield - 00060</option>
+                            <option value="87726">UnitedHealthcare - 87726</option>
+                            <option value="60054">Aetna - 60054</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="el-result-card" style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:6px; padding:16px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #e2e8f0; padding-bottom:8px; margin-bottom:10px;">
+                        <strong style="color:#0f172a;" id="el-res-plan">Medicare Part B Fee-For-Service</strong>
+                        <span class="status-badge status-active" id="el-res-status">Active Coverage</span>
+                    </div>
+                    <div class="grid-3col" style="font-size:12px;">
+                        <div>
+                            <span style="color:#64748b;">Annual Deductible:</span>
+                            <div style="font-weight:700; font-size:13px;" id="el-res-deductible">$ 240.00</div>
+                        </div>
+                        <div>
+                            <span style="color:#64748b;">Remaining Deductible:</span>
+                            <div style="font-weight:700; font-size:13px; color:#b91c1c;" id="el-res-ded-rem">$ 60.00</div>
+                        </div>
+                        <div>
+                            <span style="color:#64748b;">Coinsurance Rate:</span>
+                            <div style="font-weight:700; font-size:13px; color:#15803d;" id="el-res-coins">20% Patient / 80% CMS</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeModal('modal-eligibility-inquiry')">Close</button>
+                <button class="btn-primary-action" onclick="runLive270Inquiry()"><i class="fa-solid fa-bolt"></i> Run Live 270 Inquiry</button>
+            </div>
+        </div>
+    </div>
+
 </body>
 </html>
 """
 
 class G1HealthRequestHandler(http.server.BaseHTTPRequestHandler):
     def send_security_headers(self, is_html=True):
-        self.send_header("Access-Control-Allow-Origin", "*")
+        req_origin = self.headers.get("Origin")
+        if req_origin:
+            self.send_header("Access-Control-Allow-Origin", req_origin)
+            self.send_header("Access-Control-Allow-Credentials", "true")
+        else:
+            self.send_header("Access-Control-Allow-Origin", "http://localhost:5000")
         self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, DELETE")
         self.send_header("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With, Cookie")
         self.send_header("Strict-Transport-Security", "max-age=31536000; includeSubDomains")
@@ -8216,43 +9495,66 @@ class G1HealthRequestHandler(http.server.BaseHTTPRequestHandler):
         self.send_header("X-Frame-Options", "SAMEORIGIN")
         self.send_header("X-XSS-Protection", "1; mode=block")
         self.send_header("Referrer-Policy", "strict-origin-when-cross-origin")
+        self.send_header("Content-Security-Policy", "default-src 'self' 'unsafe-inline' 'unsafe-eval' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com data: blob:;")
         if is_html:
             self.send_header("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0")
             self.send_header("Pragma", "no-cache")
-    def is_authenticated(self):
+
+    def get_authenticated_user(self):
         cookie_header = self.headers.get("Cookie", "")
         cookies = extract_cookies(cookie_header)
         token = cookies.get("g1_session")
         if not token:
-            return False
+            auth_hdr = self.headers.get("Authorization", "")
+            if auth_hdr.startswith("Bearer "):
+                token = auth_hdr.replace("Bearer ", "").strip()
+        if not token:
+            return None
         user_data = verify_session_token(token)
-        return user_data is not None
+        if not user_data:
+            return None
+        uname = user_data.get('username', '')
+        user_info = USERS_DB.get(uname, {})
+        user_data['role_key'] = user_info.get('role_key', user_data.get('role', 'admin'))
+        return user_data
+
+    def is_authenticated(self):
+        return self.get_authenticated_user() is not None
 
     def do_HEAD(self):
         self.do_GET()
 
     def do_OPTIONS(self):
         self.send_response(200)
-        self.send_header("Access-Control-Allow-Origin", "*")
-        self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, DELETE")
-        self.send_header("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With, Cookie")
+        self.send_security_headers(is_html=False)
         self.send_header("Content-Length", "0")
         self.end_headers()
 
     def do_GET(self):
         parsed = urllib.parse.urlparse(self.path)
         path = parsed.path
+        ip_addr = self.client_address[0] if hasattr(self, 'client_address') else '127.0.0.1'
 
-        # UNIVERSAL REST API GET ROUTER (Live SQLite Database)
+        # UNIVERSAL REST API GET ROUTER (HIPAA Authenticated Live SQLite Database)
         if path.startswith("/api/"):
+            user_data = self.get_authenticated_user()
+            if not user_data:
+                self.send_response(401)
+                self.send_header("Content-Type", "application/json; charset=utf-8")
+                self.send_security_headers(is_html=False)
+                self.end_headers()
+                self.wfile.write(json.dumps({"error": "Unauthorized: Active authenticated session token required to access ePHI."}).encode("utf-8"))
+                return
+
             entity = path.replace("/api/", "").strip("/").split("/")[0]
             self.send_response(200)
             self.send_header("Content-Type", "application/json; charset=utf-8")
             self.send_security_headers(is_html=False)
             self.end_headers()
 
+            role_key = user_data.get('role_key', 'admin')
             if entity == "state":
-                data = db_manager.get_full_emr_state()
+                data = db_manager.get_full_emr_state(role=role_key)
             elif hasattr(db_manager, f"get_all_{entity}"):
                 data = getattr(db_manager, f"get_all_{entity}")()
             else:
@@ -8261,10 +9563,19 @@ class G1HealthRequestHandler(http.server.BaseHTTPRequestHandler):
                 except Exception:
                     data = {"error": f"Entity {entity} not found"}
 
+            db_manager.log_audit_event(
+                user_id=user_data['username'],
+                action_name=f"READ_{entity.upper()}",
+                ip_address=ip_addr,
+                status="SUCCESS",
+                role=role_key,
+                entity=entity
+            )
+
             self.wfile.write(json.dumps(data).encode("utf-8"))
             return
 
-        # 1. PUBLIC DIRECT ASSET WHITELIST (Accessible without login as requested)
+        # 1. PUBLIC DIRECT ASSET WHITELIST
         clean_path = path.lstrip("/")
         base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) if "api" in __file__ else PROJECT_ROOT
         
@@ -8286,6 +9597,9 @@ class G1HealthRequestHandler(http.server.BaseHTTPRequestHandler):
 
         # 2. LOGOUT ROUTE
         if path in ["/Account/Logout", "/account/logout", "/logout"]:
+            user_data = self.get_authenticated_user()
+            if user_data:
+                db_manager.log_audit_event(user_data['username'], 'SYSTEM_LOGOUT', ip_address=ip_addr, status='SUCCESS', role=user_data.get('role_key', 'user'))
             self.send_response(302)
             self.send_header("Location", "/Account/Login?logout=success")
             self.send_header("Set-Cookie", "g1_session=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Max-Age=0; HttpOnly; SameSite=Lax")
@@ -8299,10 +9613,14 @@ class G1HealthRequestHandler(http.server.BaseHTTPRequestHandler):
             self.send_header("Content-Type", "text/html; charset=utf-8")
             self.send_security_headers(is_html=True)
             self.end_headers()
-            self.wfile.write(LOGIN_HTML.encode("utf-8"))
+            login_file = os.path.join(PROJECT_ROOT, "index.html")
+            if os.path.exists(login_file):
+                with open(login_file, "r", encoding="utf-8") as f:
+                    self.wfile.write(f.read().encode("utf-8"))
+            else:
+                self.wfile.write(LOGIN_HTML.encode("utf-8"))
             return
 
-        
         # 4. PROTECTED ROUTES (Dashboard, Clinical, ADT, ER, etc.)
         if path in ["/dashboard", "/Home/Index", "/home/index", "/app", "/dashboard.html"]:
             if not self.is_authenticated():
@@ -8316,7 +9634,12 @@ class G1HealthRequestHandler(http.server.BaseHTTPRequestHandler):
             self.send_header("Content-Type", "text/html; charset=utf-8")
             self.send_security_headers(is_html=True)
             self.end_headers()
-            self.wfile.write(APP_HTML.encode("utf-8"))
+            dash_file = os.path.join(PROJECT_ROOT, "dashboard.html")
+            if os.path.exists(dash_file):
+                with open(dash_file, "r", encoding="utf-8") as f:
+                    self.wfile.write(f.read().encode("utf-8"))
+            else:
+                self.wfile.write(APP_HTML.encode("utf-8"))
             return
 
         # Default fallback for unknown routes: redirect to login
@@ -8328,9 +9651,19 @@ class G1HealthRequestHandler(http.server.BaseHTTPRequestHandler):
     def do_POST(self):
         parsed = urllib.parse.urlparse(self.path)
         path = parsed.path
+        ip_addr = self.client_address[0] if hasattr(self, 'client_address') else '127.0.0.1'
 
-        # UNIVERSAL REST API MUTATION ROUTER (Live SQLite Database: Add, Edit, Delete)
+        # UNIVERSAL REST API MUTATION ROUTER (Live SQLite Database: Add, Edit, Delete with RBAC & Audit)
         if path.startswith("/api/") and path not in ["/api/ai/chat", "/api/ai/triage"]:
+            user_data = self.get_authenticated_user()
+            if not user_data:
+                self.send_response(401)
+                self.send_header("Content-Type", "application/json; charset=utf-8")
+                self.send_security_headers(is_html=False)
+                self.end_headers()
+                self.wfile.write(json.dumps({"error": "Unauthorized: Active authenticated session token required to modify clinical records."}).encode("utf-8"))
+                return
+
             entity = path.replace("/api/", "").strip("/").split("/")[0]
             content_length = int(self.headers.get('Content-Length', 0))
             post_data = self.rfile.read(content_length).decode('utf-8')
@@ -8339,21 +9672,86 @@ class G1HealthRequestHandler(http.server.BaseHTTPRequestHandler):
             except Exception:
                 req_data = {}
 
+            # SPECIAL US HEALTHCARE & EDI CLAIM ROUTING
+            if path == "/api/claims/adjudicate":
+                billed = float(req_data.get("billed_charges", 250.00))
+                allowed = float(req_data.get("allowed_amount", 180.00))
+                payer_type = req_data.get("payer_type", "medicare_b")
+                copay = float(req_data.get("copay", 0.0))
+                coinsurance_pct = float(req_data.get("coinsurance_pct", 20.0))
+                remaining_deductible = float(req_data.get("remaining_deductible", 0.0))
+                secondary_payer = req_data.get("secondary_payer")
+                adjudication = domain.calculate_us_claim_adjudication(
+                    billed, allowed, payer_type, copay, coinsurance_pct, remaining_deductible, secondary_payer
+                )
+                self.send_response(200)
+                self.send_header("Content-Type", "application/json; charset=utf-8")
+                self.send_security_headers(is_html=False)
+                self.end_headers()
+                self.wfile.write(json.dumps({"success": True, "adjudication": adjudication}).encode("utf-8"))
+                return
+
+            if path == "/api/claims/edi837":
+                claim_type = req_data.get("claim_type", "837P")
+                if "837I" in str(claim_type) or "UB" in str(claim_type):
+                    edi_text = domain.generate_edi_837i(req_data)
+                else:
+                    edi_text = domain.generate_edi_837p(req_data)
+                self.send_response(200)
+                self.send_header("Content-Type", "application/json; charset=utf-8")
+                self.send_security_headers(is_html=False)
+                self.end_headers()
+                self.wfile.write(json.dumps({"success": True, "edi_payload": edi_text}).encode("utf-8"))
+                return
+
+            if path == "/api/claims/eligibility":
+                mbi = req_data.get("policy_or_mbi", "1EG4-TE5-MK72")
+                payer_id = req_data.get("payer_id", "00431")
+                payer_name = req_data.get("payer_name", "Medicare Part B")
+                eligibility = domain.simulate_edi_270_271_eligibility(mbi, payer_id, payer_name)
+                self.send_response(200)
+                self.send_header("Content-Type", "application/json; charset=utf-8")
+                self.send_security_headers(is_html=False)
+                self.end_headers()
+                self.wfile.write(json.dumps({"success": True, "eligibility": eligibility}).encode("utf-8"))
+                return
+
             res_payload = {"success": True}
             action = req_data.get('_action', 'create')
             record_id = req_data.get('id')
+            user_id = user_data['username']
+            user_role = user_data.get('role_key', 'admin')
+
+            # Enforce Role-Based Access Control (Minimum Necessary Rule)
+            if not domain.check_rbac_permission(user_role, entity, action):
+                self.send_response(403)
+                self.send_header("Content-Type", "application/json; charset=utf-8")
+                self.send_security_headers(is_html=False)
+                self.end_headers()
+                db_manager.log_audit_event(
+                    user_id=user_id,
+                    action_name=f"DENIED_{action.upper()}_{entity.upper()}",
+                    ip_address=ip_addr,
+                    status="DENIED_RBAC",
+                    role=user_role,
+                    entity=entity,
+                    record_id=record_id,
+                    details=f"Role '{user_role}' lacks permission for {action} on {entity}"
+                )
+                self.wfile.write(json.dumps({"error": f"Forbidden: Role '{user_role}' is not authorized to {action} records in '{entity}'."}).encode("utf-8"))
+                return
 
             try:
                 if action == 'delete' and record_id is not None:
                     db_manager.delete_record(entity, record_id)
-                    db_manager.log_audit_event(req_data.get('user', 'admin'), f"DELETE_RECORD ({entity}:{record_id})")
+                    db_manager.log_audit_event(user_id, f"DELETE_RECORD ({entity}:{record_id})", ip_address=ip_addr, role=user_role, entity=entity, record_id=record_id)
                     res_payload["deleted_id"] = record_id
                 elif action == 'update' and record_id is not None:
                     clean_data = {k: v for k, v in req_data.items() if not k.startswith('_')}
                     db_manager.update_record(entity, record_id, clean_data)
-                    db_manager.log_audit_event(req_data.get('user', 'admin'), f"UPDATE_RECORD ({entity}:{record_id})")
+                    db_manager.log_audit_event(user_id, f"UPDATE_RECORD ({entity}:{record_id})", ip_address=ip_addr, role=user_role, entity=entity, record_id=record_id)
                     res_payload["updated_id"] = record_id
-                elif entity == "beds" or entity == "adt_beds":
+                elif entity in ["beds", "adt_beds"]:
                     if req_data.get('status'):
                         db_manager.update_bed_record(
                             req_data.get('id'),
@@ -8362,25 +9760,25 @@ class G1HealthRequestHandler(http.server.BaseHTTPRequestHandler):
                             req_data.get('diagnosis'),
                             req_data.get('doctor')
                         )
-                        db_manager.log_audit_event(req_data.get('user', 'nurse'), f"UPDATE_BED ({req_data.get('id')} -> {req_data.get('status')})")
+                        db_manager.log_audit_event(user_id, f"UPDATE_BED ({req_data.get('id')} -> {req_data.get('status')})", ip_address=ip_addr, role=user_role, entity="adt_beds", record_id=req_data.get('id'))
                     else:
                         db_manager.insert_record("adt_beds", req_data)
                 else:
                     clean_data = {k: v for k, v in req_data.items() if not k.startswith('_')}
                     new_id = db_manager.insert_record(entity, clean_data)
-                    db_manager.log_audit_event(req_data.get('user', 'admin'), f"CREATE_RECORD ({entity}:{new_id})")
+                    db_manager.log_audit_event(user_id, f"CREATE_RECORD ({entity}:{new_id})", ip_address=ip_addr, role=user_role, entity=entity, record_id=new_id)
                     res_payload["id"] = new_id
             except Exception as e:
                 res_payload = {"success": False, "error": str(e)}
 
-            self.send_response(200)
+            self.send_response(200 if res_payload.get("success") else 400)
             self.send_header("Content-Type", "application/json; charset=utf-8")
             self.send_security_headers(is_html=False)
             self.end_headers()
             self.wfile.write(json.dumps(res_payload).encode('utf-8'))
             return
 
-        # 5. SECURE ZERO-KEY CLINICAL MEDICAL LLM ENGINE (/api/ai/chat)
+        # 5. CLINICAL DECISION SUPPORT & INBOUND PATIENT TRIAGE ENGINE (/api/ai/chat)
         if path in ["/api/ai/chat", "/api/ai/triage"]:
             content_length = int(self.headers.get('Content-Length', 0))
             post_data = self.rfile.read(content_length).decode('utf-8')
@@ -8399,16 +9797,15 @@ class G1HealthRequestHandler(http.server.BaseHTTPRequestHandler):
             is_emergency = False
             ai_reply = ""
 
-            # Extensive Medical Ontology & Symptom Triage Matrix
             # Priority 1: STAT Emergency & Urgent Symptoms
             if any(w in msg_lower for w in ['ambulance', 'emergency', 'unconscious', 'crushing', 'severe bleeding', 'radiat', 'left arm', 'slur', 'face droop']):
                 is_emergency = True
                 matched_dept = "Cardiology" if 'chest' in msg_lower else "Emergency Department (ER)"
                 recommended_doctor = "Dr. Roberto Tan, MD" if 'chest' in msg_lower else "ER Trauma Team"
                 sentiment = "STAT High Priority"
-                ai_reply = f"Hello {patient_name}. 🚨 CRITICAL MEDICAL ALERT: Your reported symptoms require STAT medical evaluation. Our Emergency Crash Bays are on alert. Please proceed immediately to our Emergency Department Ground Floor entrance or contact STAT Ambulance Dispatch at (02) 8800-EMER."
+                ai_reply = f"Hello {patient_name}. [CRITICAL ALERT]: Your reported symptoms require STAT medical evaluation. Our Emergency Crash Bays are on alert. Please proceed immediately to our Emergency Department Ground Floor entrance or contact STAT Ambulance Dispatch at (02) 8800-EMER."
 
-            # Priority 2: Financial, Billing & Insurance Inquiries (Checked before general words)
+            # Priority 2: Financial, Billing & Insurance Inquiries
             elif any(w in msg_lower for w in ['philhealth', 'hmo', 'maxicare', 'intellicare', 'medicard', 'insurance', 'coverage', 'discount', 'senior', 'pwd', 'billing', 'invoice', 'how much', 'cost', 'price', 'cashier']):
                 matched_dept = "Billing & Insurance Claims"
                 recommended_doctor = "Mark Mendoza (Billing Officer)"
@@ -8462,7 +9859,7 @@ class G1HealthRequestHandler(http.server.BaseHTTPRequestHandler):
                 matched_dept = "General Medicine / OPD"
                 recommended_doctor = "Dr. Roberto Tan, MD"
                 sentiment = "General Consultation"
-                ai_reply = f"Hello {patient_name}, thank you for contacting Global 1 OneTech Medical Center. Our intelligent triage agent has reviewed your inquiry. Dr. Roberto Tan, MD is available for comprehensive medical consultation in the OPD Clinic."
+                ai_reply = f"Hello {patient_name}, thank you for contacting Global 1 OneTech Medical Center. Our intelligent triage desk has reviewed your inquiry. Dr. Roberto Tan, MD is available for comprehensive medical consultation in the OPD Clinic."
 
             res_payload = {
                 "success": True,
@@ -8489,15 +9886,19 @@ class G1HealthRequestHandler(http.server.BaseHTTPRequestHandler):
             username = fields.get('username', [''])[0].strip().lower()
             password = fields.get('password', [''])[0].strip()
 
-            # Verify credentials against USERS_DB (default to admin if empty for seamless demo)
-            if not username:
-                username = 'admin'
-            if not password:
-                password = 'pass123'
+            # Strict HIPAA Person Authentication: reject blank or invalid credentials
+            if not username or not password:
+                db_manager.log_audit_event('anonymous', 'FAILED_LOGIN', ip_address=ip_addr, status='FAILURE_EMPTY_CREDENTIALS')
+                self.send_response(303)
+                self.send_header("Location", "/Account/Login?error=invalid_credentials")
+                self.send_security_headers(is_html=True)
+                self.end_headers()
+                return
 
             if username in USERS_DB and USERS_DB[username]['password'] == password:
                 user_info = USERS_DB[username]
                 token = create_session_token(username, user_info['role'])
+                db_manager.log_audit_event(username, 'SYSTEM_LOGIN', ip_address=ip_addr, status='SUCCESS', role=user_info.get('role_key', 'admin'))
 
                 # Send 303 Redirect to dashboard with secure HMAC session cookie
                 self.send_response(303)
@@ -8507,6 +9908,7 @@ class G1HealthRequestHandler(http.server.BaseHTTPRequestHandler):
                 self.end_headers()
                 return
             else:
+                db_manager.log_audit_event(username, 'FAILED_LOGIN', ip_address=ip_addr, status='FAILURE_INVALID_CREDENTIALS')
                 self.send_response(303)
                 self.send_header("Location", "/Account/Login?error=invalid_credentials")
                 self.send_security_headers(is_html=True)
@@ -8514,6 +9916,9 @@ class G1HealthRequestHandler(http.server.BaseHTTPRequestHandler):
                 return
 
         if path in ["/Account/Logout", "/logout"]:
+            user_data = self.get_authenticated_user()
+            if user_data:
+                db_manager.log_audit_event(user_data['username'], 'SYSTEM_LOGOUT', ip_address=ip_addr, status='SUCCESS', role=user_data.get('role_key', 'user'))
             self.send_response(302)
             self.send_header("Location", "/Account/Login?logout=success")
             self.send_header("Set-Cookie", "g1_session=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Max-Age=0; HttpOnly")
@@ -8529,7 +9934,7 @@ handler = G1HealthRequestHandler
 def run_server():
     socketserver.TCPServer.allow_reuse_address = True
     with socketserver.TCPServer(("", PORT), G1HealthRequestHandler) as httpd:
-        print(f"🔒 G1 Health EMR Secure Server running on http://localhost:{PORT}")
+        print(f"[SECURE] G1 Health EMR Server running on http://localhost:{PORT}")
         httpd.serve_forever()
 
 if __name__ == "__main__":

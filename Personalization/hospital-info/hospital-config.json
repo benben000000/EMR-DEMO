@@ -1,20 +1,26 @@
 {
-  "TenantCode": "GLOBAL1_ONETECH",
+  "TenantCode": "GLOBAL1_ONETECH_US",
   "HospitalName": "Global 1 OneTech Medical & Health Center",
   "ShortName": "G1 Health EMR",
-  "Tagline": "Driving Digital Transformation Through Smart Healthcare Solutions",
+  "Tagline": "Smart Healthcare Management Solution for US Health Systems",
   "Contact": {
-    "Address": "Technology Innovation Center, Metro Manila",
-    "City": "Manila",
-    "Country": "Philippines",
-    "Phone": "+63-2-8000-1111",
+    "Address": "100 Healthcare Innovation Way, Suite 400",
+    "City": "Boston",
+    "State": "MA",
+    "Zip": "02115",
+    "Country": "United States",
+    "Phone": "+1 (800) 555-0199",
     "Email": "info@global1onetech.com",
     "Website": "https://global1onetech.com/",
-    "TaxRegistrationNumber": "TIN-987-654-321-000"
+    "FederalEIN": "12-3456789",
+    "OrganizationNPI": "1098765432",
+    "MedicareCCN": "050123",
+    "Currency": "USD",
+    "CurrencySymbol": "$"
   },
   "PrintSettings": {
-    "InvoiceHeaderNote": "Powered by Global 1 OneTech Smart Health Cloud",
-    "InvoiceFooterNote": "Thank you for choosing Global 1 OneTech Medical Center. Wishing you a speedy recovery!",
+    "InvoiceHeaderNote": "Global 1 OneTech US Health System - CMS Certified Facility",
+    "InvoiceFooterNote": "Thank you for choosing Global 1 OneTech Medical Center. Wishing you good health!",
     "ShowWatermarkOnPrint": true
   }
 }
