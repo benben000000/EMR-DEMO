@@ -1747,39 +1747,14 @@
                 </div>
             </div>
 
-            <!-- Global Active Patient Context Pill -->
-            <div class="active-patient-badge" id="global-active-patient-bar">
-                <div class="pat-name">
-                    <i class="fa-solid fa-user-circle"></i>
-                    <span id="global-pat-name">Juan Dela Cruz</span>
-                </div>
-                <span style="color:#94a3b8;">|</span>
-                <span id="global-pat-code">G1-2026-0090</span>
-                <span style="color:#94a3b8;">|</span>
-                <span id="global-pat-meta">45 Y / Male &bull; Medicare Part B</span>
-                <button class="btn-switch-pat" onclick="openModal('modal-select-patient')">
-                    <i class="fa-solid fa-arrows-rotate"></i> Switch Patient
-                </button>
-            </div>
-
             <!-- Global Search -->
             <div class="global-search-wrapper">
                 <i class="fa-solid fa-magnifying-glass"></i>
-                <input type="text" class="global-search-input" placeholder="Quick Search Patient..." onkeyup="handleGlobalPatientSearch(this)" />
-            </div>
-
-            <!-- Department Role Switcher Pill -->
-            <div style="background:rgba(0,0,0,0.3); border:1px solid rgba(0,255,161,0.35); border-radius:8px; padding:4px 10px; display:flex; align-items:center; gap:8px; cursor:pointer;" onclick="openModal('modal-switch-role')">
-                <i class="fa-solid fa-id-badge" style="color:var(--brand-cyan);"></i>
-                <div>
-                    <div style="font-size:10px; color:#cbd5e1; text-transform:uppercase; font-weight:800;">Department Workspace:</div>
-                    <div style="font-size:12.5px; font-weight:800; color:#fff;" id="header-user-badge"><i class="fa-solid fa-shield-halved"></i> Super Admin</div>
-                </div>
-                <i class="fa-solid fa-chevron-down" style="font-size:10px; color:#cbd5e1; margin-left:4px;"></i>
+                <input type="text" class="global-search-input" placeholder="Quick Search Patient, Chart, CPT..." onkeyup="handleGlobalPatientSearch(this)" />
             </div>
 
             <!-- User Profile & Secure Sign Out -->
-            <div class="user-profile">
+            <div class="user-profile" onclick="openModal('modal-switch-role')" style="cursor:pointer;" title="Click to switch workspace role">
                 <div class="user-avatar" id="header-user-avatar">AD</div>
                 <div>
                     <div style="font-size: 13px; font-weight: 700;" id="header-user-name">Administrator</div>
@@ -2193,10 +2168,10 @@
                             <div class="card-box-header">
                                 <h3>
                                     <i class="fa-solid fa-user-tag" style="color:var(--brand-primary);"></i>
-                                    Active Chart: <span id="emr-patient-title">Juan Dela Cruz (45 Y / Male)</span>
+                                    Active Chart: <span id="emr-patient-title">John Doe (68 Y / Male)</span>
                                 </h3>
                                 <div style="display:flex; gap:8px;">
-                                    <span class="status-badge status-active" id="emr-hospital-badge">Hospital No: G1-2026-0090</span>
+                                    <span class="status-badge status-active" id="emr-hospital-badge">Hospital No: G1-US-0090</span>
                                     <button class="btn-switch-pat" onclick="openModal('modal-select-patient')">Switch</button>
                                 </div>
                             </div>
@@ -2702,8 +2677,8 @@
                                 <span id="p360-avatar">MS</span>
                             </div>
                             <div>
-                                <h2 style="font-size:20px; font-weight:800; color:#0f172a;" id="p360-name">Maria Santos</h2>
-                                <p style="font-size:13px; color:#64748b;">Hospital No: <strong id="p360-code">G1-2026-0089</strong> &bull; <span id="p360-submeta">34 Y / Female &bull; Blood Group: B+ &bull; HMO: Gold Care</span></p>
+                                <h2 style="font-size:20px; font-weight:800; color:#0f172a;" id="p360-name">Mary Smith</h2>
+                                <p style="font-size:13px; color:#64748b;">Hospital No: <strong id="p360-code">G1-US-0091</strong> &bull; <span id="p360-submeta">34 Y / Female &bull; Blood Group: B+ &bull; HMO: Gold Care</span></p>
                             </div>
                         </div>
                         <div style="display:flex; gap:10px;">
@@ -3607,21 +3582,21 @@
                     <input type="text" id="modal-pat-filter" placeholder="Filter patient by name..." onkeyup="filterPatientModalList(this)" />
                 </div>
                 <div style="display:flex; flex-direction:column; gap:8px; max-height:280px; overflow-y:auto;" id="pat-modal-list">
-                    <div class="queue-item" onclick="setActivePatient('Juan Dela Cruz'); closeModal('modal-select-patient');">
-                        <div class="q-name"><span>Juan Dela Cruz</span><span class="status-badge status-active">Medicare Part B</span></div>
-                        <div class="q-sub">Hospital No: G1-2026-0090 &bull; 45 Y / Male &bull; Tension Headache</div>
+                    <div class="queue-item" onclick="setActivePatient('John Doe'); closeModal('modal-select-patient');">
+                        <div class="q-name"><span>John Doe</span><span class="status-badge status-active">Medicare Part B</span></div>
+                        <div class="q-sub">Hospital No: G1-US-0090 &bull; 68 Y / Male &bull; Tension Headache</div>
                     </div>
-                    <div class="queue-item" onclick="setActivePatient('Maria Santos'); closeModal('modal-select-patient');">
-                        <div class="q-name"><span>Maria Santos</span><span class="status-badge status-completed">HMO Gold</span></div>
-                        <div class="q-sub">Hospital No: G1-2026-0089 &bull; 34 Y / Female &bull; Cardiology Follow-up</div>
+                    <div class="queue-item" onclick="setActivePatient('Mary Smith'); closeModal('modal-select-patient');">
+                        <div class="q-name"><span>Mary Smith</span><span class="status-badge status-completed">Blue Cross Blue Shield</span></div>
+                        <div class="q-sub">Hospital No: G1-US-0091 &bull; 34 Y / Female &bull; Cardiology Follow-up</div>
                     </div>
-                    <div class="queue-item" onclick="setActivePatient('Elena Reyes'); closeModal('modal-select-patient');">
-                        <div class="q-name"><span>Elena Reyes</span><span class="status-badge status-pending">Self-Pay</span></div>
-                        <div class="q-sub">Hospital No: G1-2026-0091 &bull; 28 Y / Female &bull; Neurological Checkup</div>
+                    <div class="queue-item" onclick="setActivePatient('Emily Davis'); closeModal('modal-select-patient');">
+                        <div class="q-name"><span>Emily Davis</span><span class="status-badge status-pending">Self-Pay</span></div>
+                        <div class="q-sub">Hospital No: G1-US-0093 &bull; 28 Y / Female &bull; Neurological Checkup</div>
                     </div>
                     <div class="queue-item" onclick="setActivePatient('Antonio Gonzales'); closeModal('modal-select-patient');">
                         <div class="q-name"><span>Antonio Gonzales</span><span class="status-badge status-completed">Corporate EHS</span></div>
-                        <div class="q-sub">Hospital No: G1-2026-0092 &bull; 52 Y / Male &bull; Annual Checkup</div>
+                        <div class="q-sub">Hospital No: G1-US-0092 &bull; 52 Y / Male &bull; Annual Checkup</div>
                     </div>
                 </div>
             </div>
@@ -3901,10 +3876,10 @@
                             <label>Assigned Patient</label>
                             <select id="edit-bed-patient" class="form-control" onchange="handleBedPatientChange(this)">
                                 <option value="">-- No Patient (Bed Empty) --</option>
-                                <option value="Juan Dela Cruz">Juan Dela Cruz (G1-2026-0090)</option>
-                                <option value="Maria Santos">Maria Santos (G1-2026-0089)</option>
-                                <option value="Elena Reyes">Elena Reyes (G1-2026-0091)</option>
-                                <option value="Antonio Gonzales">Antonio Gonzales (G1-2026-0092)</option>
+                                <option value="John Doe">John Doe (G1-US-0090)</option>
+                                <option value="Mary Smith">Mary Smith (G1-US-0091)</option>
+                                <option value="Emily Davis">Emily Davis (G1-US-0093)</option>
+                                <option value="Antonio Gonzales">Antonio Gonzales (G1-US-0092)</option>
                                 <option value="Carlos Mendoza">Carlos Mendoza (G1-2026-0098)</option>
                             </select>
                         </div>
@@ -4013,7 +3988,7 @@
                         <label>Membership / Scheme</label>
                         <select id="np-scheme" class="form-control">
                             <option value="Medicare Part B">Medicare Part B</option>
-                            <option value="HMO Gold">HMO Gold</option>
+                            <option value="Blue Cross Blue Shield">Blue Cross Blue Shield</option>
                             <option value="Self-Pay">Self-Pay</option>
                             <option value="Corporate EHS">Corporate EHS</option>
                         </select>
@@ -4043,10 +4018,10 @@
                     <div class="form-group">
                         <label>Select Patient *</label>
                         <select class="form-control" id="apt-patient">
-                            <option value="Maria Santos">Maria Santos (G1-2026-0089)</option>
-                            <option value="Juan Dela Cruz">Juan Dela Cruz (G1-2026-0090)</option>
-                            <option value="Elena Reyes">Elena Reyes (G1-2026-0091)</option>
-                            <option value="Antonio Gonzales">Antonio Gonzales (G1-2026-0092)</option>
+                            <option value="Mary Smith">Mary Smith (G1-US-0091)</option>
+                            <option value="John Doe">John Doe (G1-US-0090)</option>
+                            <option value="Emily Davis">Emily Davis (G1-US-0093)</option>
+                            <option value="Antonio Gonzales">Antonio Gonzales (G1-US-0092)</option>
                             <option value="Teresa Ramos">Teresa Ramos (G1-2026-0093)</option>
                             <option value="Rodrigo Alvarez">Rodrigo Alvarez (G1-2026-0094)</option>
                         </select>
@@ -4116,9 +4091,9 @@
                     <div class="form-group">
                         <label>Patient</label>
                         <select class="form-control">
-                            <option>Elena Reyes (G1-2026-0091)</option>
-                            <option>Maria Santos (G1-2026-0089)</option>
-                            <option>Juan Dela Cruz (G1-2026-0090)</option>
+                            <option>Emily Davis (G1-US-0093)</option>
+                            <option>Mary Smith (G1-US-0091)</option>
+                            <option>John Doe (G1-US-0090)</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -4168,7 +4143,7 @@
                         </div>
                     </div>
                     <div style="margin-bottom:16px; font-size:13px;">
-                        <p><strong>Patient Name:</strong> <span id="rcpt-patient">Maria Santos</span></p>
+                        <p><strong>Patient Name:</strong> <span id="rcpt-patient">Mary Smith</span></p>
                         <p><strong>Payment Mode:</strong> Cash / Card</p>
                     </div>
                     <table class="emr-table" style="margin-bottom:16px;">
@@ -4452,7 +4427,7 @@
                     </div>
                     <div class="form-group">
                         <label style="font-weight:700; font-size:12px;">PATIENT IDENTITY (OPTIONAL)</label>
-                        <input type="text" id="code-blue-patient-name" class="form-control" value="Juan Dela Cruz (G1-2026-0090)" />
+                        <input type="text" id="code-blue-patient-name" class="form-control" value="John Doe (G1-US-0090)" />
                     </div>
                 </div>
 
@@ -4983,7 +4958,7 @@
 
             // 1. Update Header Badges & Profiles Dynamically
             const badgeEl = document.getElementById('header-user-badge');
-            if (badgeEl) badgeEl.textContent = userBadge;
+            if (badgeEl) badgeEl.innerHTML = userBadge;
 
             const nameEl = document.getElementById('header-user-name');
             if (nameEl) nameEl.textContent = uName;
@@ -5752,7 +5727,7 @@
                                 <strong style="font-size:13px; color:#0f172a;">${p.name}</strong>
                                 <p style="font-size:11.5px; color:#64748b; margin:2px 0 0 0;">${p.patient_no} &bull; ${p.age} Y / ${p.gender} &bull; ${p.insurance_no || 'Medicare Part B'}</p>
                             </div>
-                            <button class="btn-select-pat" style="padding:4px 8px; font-size:11px;" onclick="setActivePatient(\'Juan Dela Cruz\')"><i class="fa-solid fa-check"></i> Select</button>
+                            <button class="btn-select-pat" style="padding:4px 8px; font-size:11px;" onclick="setActivePatient(\'John Doe\')"><i class="fa-solid fa-check"></i> Select</button>
                         </div>
                     `;
                     mList.appendChild(item);
@@ -6334,7 +6309,7 @@
         // CRUD: SAVE NEW APPOINTMENT
         // ==========================================
         async function saveNewAppointment() {
-            const patientName = document.getElementById('apt-patient')?.value || 'Maria Santos';
+            const patientName = document.getElementById('apt-patient')?.value || 'Mary Smith';
             const department = document.getElementById('apt-department')?.value || 'Cardiology';
             const doctor = document.getElementById('apt-doctor')?.value || 'Dr. Roberto Tan, MD';
             const date = document.getElementById('apt-date')?.value || new Date().toISOString().split('T')[0];
@@ -7404,12 +7379,12 @@
 
         // Patient Database State
         const PATIENT_RECORDS = {
-            'Juan Dela Cruz': {
-                code: 'G1-2026-0090',
-                name: 'Juan Dela Cruz',
+            'John Doe': {
+                code: 'G1-US-0090',
+                name: 'John Doe',
                 age: '45 Y',
                 gender: 'Male',
-                meta: '45 Y / Male &bull; Medicare Part B',
+                meta: '68 Y / Male &bull; Medicare Part B',
                 scheme: 'Medicare Part B',
                 bp: '120/80',
                 pulse: '76',
@@ -7423,13 +7398,13 @@
                     { name: 'Vitamin B-Complex', dose: '1 Capsule', freq: 'OD (Once Daily)', days: '30 Days' }
                 ]
             },
-            'Maria Santos': {
-                code: 'G1-2026-0089',
-                name: 'Maria Santos',
+            'Mary Smith': {
+                code: 'G1-US-0091',
+                name: 'Mary Smith',
                 age: '34 Y',
                 gender: 'Female',
-                meta: '34 Y / Female &bull; HMO Gold',
-                scheme: 'HMO Gold',
+                meta: '34 Y / Female &bull; Blue Cross Blue Shield',
+                scheme: 'Blue Cross Blue Shield',
                 bp: '115/75',
                 pulse: '72',
                 temp: '36.6',
@@ -7442,9 +7417,9 @@
                     { name: 'CoQ10 100mg', dose: '1 Softgel', freq: 'OD (Daily)', days: '30 Days' }
                 ]
             },
-            'Elena Reyes': {
-                code: 'G1-2026-0091',
-                name: 'Elena Reyes',
+            'Emily Davis': {
+                code: 'G1-US-0093',
+                name: 'Emily Davis',
                 age: '28 Y',
                 gender: 'Female',
                 meta: '28 Y / Female &bull; Self-Pay',
@@ -7461,7 +7436,7 @@
                 ]
             },
             'Antonio Gonzales': {
-                code: 'G1-2026-0092',
+                code: 'G1-US-0092',
                 name: 'Antonio Gonzales',
                 age: '52 Y',
                 gender: 'Male',
@@ -7483,17 +7458,17 @@
 
         // Ward Bed Matrix Records State
         let BED_RECORDS = [
-            { id: 'ICU-101', ward: 'Intensive Care Unit (ICU)', type: 'ICU Ventilator Bed', rate: '$ 4,500/day', status: 'occupied', patient: 'Juan Dela Cruz', code: 'G1-2026-0090', doctor: 'Dr. Roberto Tan, MD', admittedDate: '23-Aug-2026' },
+            { id: 'ICU-101', ward: 'Intensive Care Unit (ICU)', type: 'ICU Ventilator Bed', rate: '$ 4,500/day', status: 'occupied', patient: 'John Doe', code: 'G1-US-0090', doctor: 'Dr. Roberto Tan, MD', admittedDate: '23-Aug-2026' },
             { id: 'ICU-102', ward: 'Intensive Care Unit (ICU)', type: 'ICU Cardiac Bed', rate: '$ 4,500/day', status: 'occupied', patient: 'Carlos Mendoza', code: 'G1-2026-0098', doctor: 'Dr. Roberto Tan, MD', admittedDate: '24-Aug-2026' },
             { id: 'ICU-103', ward: 'Intensive Care Unit (ICU)', type: 'ICU Isolation Bed', rate: '$ 5,000/day', status: 'available', patient: '', code: '', doctor: '', admittedDate: '' },
             { id: 'ICU-104', ward: 'Intensive Care Unit (ICU)', type: 'ICU Standard Bed', rate: '$ 4,500/day', status: 'cleaning', patient: '', code: '', doctor: '', admittedDate: '' },
-            { id: 'GEN-201', ward: 'General Male Ward', type: 'Semi-Private Bed', rate: '$ 1,200/day', status: 'occupied', patient: 'Antonio Gonzales', code: 'G1-2026-0092', doctor: 'Dr. Alicia Gomez, MD', admittedDate: '22-Aug-2026' },
+            { id: 'GEN-201', ward: 'General Male Ward', type: 'Semi-Private Bed', rate: '$ 1,200/day', status: 'occupied', patient: 'Antonio Gonzales', code: 'G1-US-0092', doctor: 'Dr. Alicia Gomez, MD', admittedDate: '22-Aug-2026' },
             { id: 'GEN-202', ward: 'General Male Ward', type: 'Standard Ward Bed', rate: '$ 950/day', status: 'available', patient: '', code: '', doctor: '', admittedDate: '' },
             { id: 'GEN-203', ward: 'General Male Ward', type: 'Standard Ward Bed', rate: '$ 950/day', status: 'available', patient: '', code: '', doctor: '', admittedDate: '' },
-            { id: 'FEM-301', ward: 'General Female Ward', type: 'Semi-Private Bed', rate: '$ 1,200/day', status: 'occupied', patient: 'Maria Santos', code: 'G1-2026-0089', doctor: 'Dr. Alicia Gomez, MD', admittedDate: '24-Aug-2026' },
+            { id: 'FEM-301', ward: 'General Female Ward', type: 'Semi-Private Bed', rate: '$ 1,200/day', status: 'occupied', patient: 'Mary Smith', code: 'G1-US-0091', doctor: 'Dr. Alicia Gomez, MD', admittedDate: '24-Aug-2026' },
             { id: 'FEM-302', ward: 'General Female Ward', type: 'Standard Ward Bed', rate: '$ 950/day', status: 'available', patient: '', code: '', doctor: '', admittedDate: '' },
             { id: 'FEM-303', ward: 'General Female Ward', type: 'Standard Ward Bed', rate: '$ 950/day', status: 'cleaning', patient: '', code: '', doctor: '', admittedDate: '' },
-            { id: 'DLX-401', ward: 'Private Deluxe Suite', type: 'VIP Executive Suite', rate: '$ 6,000/day', status: 'occupied', patient: 'Elena Reyes', code: 'G1-2026-0091', doctor: 'Dr. Vincent Lim, MD', admittedDate: '24-Aug-2026' },
+            { id: 'DLX-401', ward: 'Private Deluxe Suite', type: 'VIP Executive Suite', rate: '$ 6,000/day', status: 'occupied', patient: 'Emily Davis', code: 'G1-US-0093', doctor: 'Dr. Vincent Lim, MD', admittedDate: '24-Aug-2026' },
             { id: 'DLX-402', ward: 'Private Deluxe Suite', type: 'VIP Executive Suite', rate: '$ 6,000/day', status: 'available', patient: '', code: '', doctor: '', admittedDate: '' },
             { id: 'PED-501', ward: 'Pediatric Ward', type: 'Pediatric Crib Bed', rate: '$ 1,500/day', status: 'available', patient: '', code: '', doctor: '', admittedDate: '' },
             { id: 'PED-502', ward: 'Pediatric Ward', type: 'Pediatric Junior Bed', rate: '$ 1,500/day', status: 'available', patient: '', code: '', doctor: '', admittedDate: '' }
@@ -7918,7 +7893,7 @@
             if (event) event.stopPropagation();
             openManageBed(bedId);
             if (!document.getElementById('edit-bed-patient').value) {
-                document.getElementById('edit-bed-patient').value = 'Juan Dela Cruz';
+                document.getElementById('edit-bed-patient').value = 'John Doe';
                 setBedStatusDraft('occupied');
             }
         }
@@ -7953,9 +7928,9 @@
             const pat = PATIENT_RECORDS[patientName];
             if (!pat) return;
 
-            document.getElementById('global-pat-name').textContent = pat.name;
-            document.getElementById('global-pat-code').textContent = pat.code;
-            document.getElementById('global-pat-meta').innerHTML = pat.meta;
+            if (document.getElementById('global-pat-name')) document.getElementById('global-pat-name').textContent = pat.name;
+            if (document.getElementById('global-pat-code')) document.getElementById('global-pat-code').textContent = pat.code;
+            if (document.getElementById('global-pat-meta')) document.getElementById('global-pat-meta').innerHTML = pat.meta;
 
             const emrTitle = document.getElementById('emr-patient-title');
             if (emrTitle) emrTitle.textContent = `${pat.name} (${pat.age} / ${pat.gender})`;
