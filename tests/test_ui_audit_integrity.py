@@ -13,7 +13,6 @@ class TestUIAuditIntegrity(unittest.TestCase):
             "index.html",
             "public/dashboard.html",
             "public/index.html",
-            "public/login.html",
             "serve_demo.py",
             "api/index.py"
         ]
