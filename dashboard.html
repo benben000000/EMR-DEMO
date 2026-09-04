@@ -1610,105 +1610,109 @@
         <div class="nav-menu-wrapper">
             <ul class="nav-menu" id="sidebar-nav-list">
                 <li class="nav-item active" data-target="view-dashboard" data-module="dashboard">
-                    <a onclick="switchTab('view-dashboard', this)"><i class="fa-solid fa-chart-pie"></i><span>Dashboard</span></a>
+                    <a onclick="switchTab('view-dashboard', this)"><i class="fa-solid fa-chart-pie"></i><span>Executive Dashboard</span></a>
                 </li>
-
-                <!-- Core Enterprise EMR & Clinical Modules -->
                 <li class="nav-item" data-target="view-clinical" data-module="clinical">
-                    <a onclick="switchTab('view-clinical', this)"><i class="fa-solid fa-stethoscope"></i><span>Clinical</span></a>
+                    <a onclick="switchTab('view-clinical', this)"><i class="fa-solid fa-stethoscope"></i><span>Clinical EMR (Doctor Desk)</span></a>
                 </li>
                 <li class="nav-item" data-target="view-clinicalsettings" data-module="clinicalsettings">
-                    <a onclick="switchTab('view-clinicalsettings', this)"><i class="fa-solid fa-gear"></i><span>ClinicalSettings</span></a>
+                    <a onclick="switchTab('view-clinicalsettings', this)"><i class="fa-solid fa-gear"></i><span>Clinical Settings & Templates</span></a>
                 </li>
                 <li class="nav-item" data-target="view-appointments" data-module="appointment">
-                    <a onclick="switchTab('view-appointments', this)"><i class="fa-solid fa-bell"></i><span>Appointment</span></a>
+                    <a onclick="switchTab('view-appointments', this)"><i class="fa-solid fa-calendar-check"></i><span>Appointments & Scheduling</span></a>
                 </li>
                 <li class="nav-item" data-target="view-patient-reg" data-module="patient">
-                    <a onclick="switchTab('view-patient-reg', this)"><i class="fa-solid fa-user"></i><span>Patient</span></a>
-                </li>
-                <li class="nav-item" data-target="view-procurement" data-module="procurement">
-                    <a onclick="switchTab('view-procurement', this)"><i class="fa-solid fa-clipboard-list"></i><span>Procurement</span></a>
-                </li>
-                <li class="nav-item" data-target="view-billing" data-module="billing">
-                    <a onclick="switchTab('view-billing', this)"><i class="fa-solid fa-file-invoice-dollar"></i><span>Billing</span></a>
-                </li>
-                <li class="nav-item" data-target="view-claimmgmt" data-module="claimmgmt">
-                    <a onclick="switchTab('view-claimmgmt', this)"><i class="fa-solid fa-file-shield"></i><span>ClaimMgmt</span></a>
-                </li>
-                <li class="nav-item" data-target="view-utilities" data-module="utilities">
-                    <a onclick="switchTab('view-utilities', this)"><i class="fa-solid fa-wrench"></i><span>Utilities</span></a>
-                </li>
-                <li class="nav-item" data-target="view-mktreferral" data-module="mktreferral">
-                    <a onclick="switchTab('view-mktreferral', this)"><i class="fa-solid fa-diagram-project"></i><span>MktReferral</span></a>
-                </li>
-                <li class="nav-item" data-target="view-reports" data-module="reports">
-                    <a onclick="switchTab('view-reports', this)"><i class="fa-solid fa-chart-line"></i><span>Reports</span></a>
-                </li>
-                <li class="nav-item" data-target="view-laboratory" data-module="laboratory">
-                    <a onclick="switchTab('view-laboratory', this)"><i class="fa-solid fa-flask"></i><span>Laboratory</span></a>
-                </li>
-                <li class="nav-item" data-target="view-radiology" data-module="radiology">
-                    <a onclick="switchTab('view-radiology', this)"><i class="fa-solid fa-x-ray"></i><span>Radiology</span></a>
-                </li>
-                <li class="nav-item" data-target="view-adt" data-module="adt">
-                    <a onclick="switchTab('view-adt', this)"><i class="fa-solid fa-bed"></i><span>ADT (Inpatient)</span></a>
-                </li>
-                <li class="nav-item" data-target="view-vaccination" data-module="vaccination">
-                    <a onclick="switchTab('view-vaccination', this)"><i class="fa-solid fa-syringe"></i><span>Vaccination</span></a>
-                </li>
-                <li class="nav-item" data-target="view-queue" data-module="queuemngmt">
-                    <a onclick="switchTab('view-queue', this)"><i class="fa-solid fa-users"></i><span>QueueMngmt</span></a>
-                </li>
-                <li class="nav-item" data-target="view-pharmacy" data-module="inventory">
-                    <a onclick="switchTab('view-pharmacy', this)"><i class="fa-solid fa-boxes-stacked"></i><span>Inventory</span></a>
-                </li>
-                <li class="nav-item" data-target="view-accounting" data-module="accounting">
-                    <a onclick="switchTab('view-accounting', this)"><i class="fa-solid fa-calculator"></i><span>Accounting</span></a>
+                    <a onclick="switchTab('view-patient-reg', this)"><i class="fa-solid fa-user"></i><span>Patient Master Index</span></a>
                 </li>
                 <li class="nav-item" data-target="view-emergency" data-module="emergency">
-                    <a onclick="switchTab('view-emergency', this)"><i class="fa-solid fa-truck-medical"></i><span>Emergency</span></a>
+                    <a onclick="switchTab('view-emergency', this)"><i class="fa-solid fa-truck-medical"></i><span>Emergency & Trauma Care (ER)</span></a>
                 </li>
-                <li class="nav-item" data-target="view-helpdesk" data-module="helpdesk">
-                    <a onclick="switchTab('view-helpdesk', this)"><i class="fa-solid fa-circle-question"></i><span>Helpdesk</span></a>
+                <li class="nav-item" data-target="view-adt" data-module="adt">
+                    <a onclick="switchTab('view-adt', this)"><i class="fa-solid fa-bed"></i><span>Admissions & Bed Matrix (ADT)</span></a>
                 </li>
                 <li class="nav-item" data-target="view-nursing" data-module="nursing">
-                    <a onclick="switchTab('view-nursing', this)"><i class="fa-solid fa-user-nurse"></i><span>Nursing</span></a>
+                    <a onclick="switchTab('view-nursing', this)"><i class="fa-solid fa-user-nurse"></i><span>Nursing Station & Inpatient Care</span></a>
                 </li>
-                <li class="nav-item" data-target="view-medicalrecords" data-module="medicalrecords">
-                    <a onclick="switchTab('view-medicalrecords', this)"><i class="fa-solid fa-book-medical"></i><span>MedicalRecords</span></a>
+                <li class="nav-item" data-target="view-ot" data-module="ot">
+                    <a onclick="switchTab('view-ot', this)"><i class="fa-solid fa-scalpel"></i><span>Operation Theater Management</span></a>
                 </li>
-                <li class="nav-item" data-target="view-whitelabel" data-module="settings">
-                    <a onclick="switchTab('view-whitelabel', this)"><i class="fa-solid fa-sliders"></i><span>Settings</span></a>
+                <li class="nav-item" data-target="view-laboratory" data-module="laboratory">
+                    <a onclick="switchTab('view-laboratory', this)"><i class="fa-solid fa-flask"></i><span>Laboratory Diagnostics (LIS)</span></a>
                 </li>
-                <li class="nav-item" data-target="view-systemadmin" data-module="systemadmin">
-                    <a onclick="switchTab('view-systemadmin', this)"><i class="fa-solid fa-user-shield"></i><span>SystemAdmin</span></a>
+                <li class="nav-item" data-target="view-radiology" data-module="radiology">
+                    <a onclick="switchTab('view-radiology', this)"><i class="fa-solid fa-x-ray"></i><span>Radiology & PACS Imaging</span></a>
                 </li>
                 <li class="nav-item" data-target="view-pharmacy" data-module="pharmacy">
-                    <a onclick="switchTab('view-pharmacy', this)"><i class="fa-solid fa-pills"></i><span>Pharmacy</span></a>
+                    <a onclick="switchTab('view-pharmacy', this)"><i class="fa-solid fa-pills"></i><span>Pharmacy & Dispensary</span></a>
+                </li>
+                <li class="nav-item" data-target="view-inventory" data-module="inventory">
+                    <a onclick="switchTab('view-inventory', this)"><i class="fa-solid fa-boxes-stacked"></i><span>Central Inventory & Warehouse</span></a>
                 </li>
                 <li class="nav-item" data-target="view-substore" data-module="substore">
-                    <a onclick="switchTab('view-substore', this)"><i class="fa-solid fa-store"></i><span>SubStore</span></a>
+                    <a onclick="switchTab('view-substore', this)"><i class="fa-solid fa-store"></i><span>Sub-Store Inventory</span></a>
                 </li>
-                <li class="nav-item" data-target="view-cssd" data-module="cssd">
-                    <a onclick="switchTab('view-cssd', this)"><i class="fa-solid fa-hand-sparkles"></i><span>CSSD</span></a>
-                </li>
-                <li class="nav-item" data-target="view-incentive" data-module="incentive">
-                    <a onclick="switchTab('view-incentive', this)"><i class="fa-solid fa-hand-holding-dollar"></i><span>Incentive</span></a>
-                </li>
-                <li class="nav-item" data-target="view-verification" data-module="verification">
-                    <a onclick="switchTab('view-verification', this)"><i class="fa-solid fa-clipboard-check"></i><span>Verification</span></a>
+                <li class="nav-item" data-target="view-procurement" data-module="procurement">
+                    <a onclick="switchTab('view-procurement', this)"><i class="fa-solid fa-clipboard-list"></i><span>Procurement & Purchase Orders</span></a>
                 </li>
                 <li class="nav-item" data-target="view-fixedassets" data-module="fixedassets">
-                    <a onclick="switchTab('view-fixedassets', this)"><i class="fa-solid fa-hospital-user"></i><span>FixedAssets</span></a>
+                    <a onclick="switchTab('view-fixedassets', this)"><i class="fa-solid fa-hospital-user"></i><span>Fixed Assets & Biomedical</span></a>
+                </li>
+                <li class="nav-item" data-target="view-billing" data-module="billing">
+                    <a onclick="switchTab('view-billing', this)"><i class="fa-solid fa-file-invoice-dollar"></i><span>Billing & Invoicing</span></a>
+                </li>
+                <li class="nav-item" data-target="view-accounting" data-module="accounting">
+                    <a onclick="switchTab('view-accounting', this)"><i class="fa-solid fa-calculator"></i><span>General Ledger & Accounting</span></a>
+                </li>
+                <li class="nav-item" data-target="view-claimmgmt" data-module="claimmgmt">
+                    <a onclick="switchTab('view-claimmgmt', this)"><i class="fa-solid fa-file-shield"></i><span>Insurance & Claim Management</span></a>
+                </li>
+                <li class="nav-item" data-target="view-incentive" data-module="incentive">
+                    <a onclick="switchTab('view-incentive', this)"><i class="fa-solid fa-hand-holding-dollar"></i><span>Doctor Incentives & Fee Split</span></a>
+                </li>
+                <li class="nav-item" data-target="view-verification" data-module="verification">
+                    <a onclick="switchTab('view-verification', this)"><i class="fa-solid fa-clipboard-check"></i><span>Clinical Order Verification</span></a>
+                </li>
+                <li class="nav-item" data-target="view-vaccination" data-module="vaccination">
+                    <a onclick="switchTab('view-vaccination', this)"><i class="fa-solid fa-syringe"></i><span>Vaccination & Immunization</span></a>
+                </li>
+                <li class="nav-item" data-target="view-queue" data-module="queuemngmt">
+                    <a onclick="switchTab('view-queue', this)"><i class="fa-solid fa-users"></i><span>Queue Management (Smart OPD)</span></a>
+                </li>
+                <li class="nav-item" data-target="view-cssd" data-module="cssd">
+                    <a onclick="switchTab('view-cssd', this)"><i class="fa-solid fa-hand-sparkles"></i><span>Sterilization Services (CSSD)</span></a>
+                </li>
+                <li class="nav-item" data-target="view-medicalrecords" data-module="medicalrecords">
+                    <a onclick="switchTab('view-medicalrecords', this)"><i class="fa-solid fa-book-medical"></i><span>Medical Records Department (MRD)</span></a>
+                </li>
+                <li class="nav-item" data-target="view-mktreferral" data-module="mktreferral">
+                    <a onclick="switchTab('view-mktreferral', this)"><i class="fa-solid fa-diagram-project"></i><span>Marketing & Doctor Referrals</span></a>
+                </li>
+                <li class="nav-item" data-target="view-helpdesk" data-module="helpdesk">
+                    <a onclick="switchTab('view-helpdesk', this)"><i class="fa-solid fa-circle-question"></i><span>Helpdesk & Patient Relations</span></a>
+                </li>
+                <li class="nav-item" data-target="view-reports" data-module="reports">
+                    <a onclick="switchTab('view-reports', this)"><i class="fa-solid fa-chart-line"></i><span>MIS Reports & BI Analytics</span></a>
+                </li>
+                <li class="nav-item" data-target="view-utilities" data-module="utilities">
+                    <a onclick="switchTab('view-utilities', this)"><i class="fa-solid fa-wrench"></i><span>System Utilities & Diagnostics</span></a>
+                </li>
+                <li class="nav-item" data-target="view-systemadmin" data-module="systemadmin">
+                    <a onclick="switchTab('view-systemadmin', this)"><i class="fa-solid fa-user-shield"></i><span>System Administration</span></a>
+                </li>
+                <li class="nav-item" data-target="view-whitelabel" data-module="settings">
+                    <a onclick="switchTab('view-whitelabel', this)"><i class="fa-solid fa-sliders"></i><span>Hospital Configuration & Settings</span></a>
                 </li>
                 <li class="nav-item" data-target="view-aicrm" data-module="aicrm">
-                    <a onclick="switchTab('view-aicrm', this)"><i class="fa-solid fa-robot"></i><span>AI CRM & Leads</span></a>
+                    <a onclick="switchTab('view-aicrm', this)"><i class="fa-solid fa-robot"></i><span>AI Patient CRM & Leads</span></a>
                 </li>
                 <li class="nav-item" data-target="view-patient360" data-module="patient360">
-                    <a onclick="switchTab('view-patient360', this)"><i class="fa-solid fa-id-card-clip"></i><span>Patient 360 (PIS)</span></a>
+                    <a onclick="switchTab('view-patient360', this)"><i class="fa-solid fa-id-card-clip"></i><span>Patient 360 & Health Records</span></a>
                 </li>
                 <li class="nav-item" data-target="view-ehs" data-module="ehs">
-                    <a onclick="switchTab('view-ehs', this)"><i class="fa-solid fa-heart-pulse"></i><span>Employee Health</span></a>
+                    <a onclick="switchTab('view-ehs', this)"><i class="fa-solid fa-heart-pulse"></i><span>Employee Health & Surveillance</span></a>
+                </li>
+                <li class="nav-item" data-target="view-telehealth" data-module="telehealth">
+                    <a onclick="switchTab('view-telehealth', this)"><i class="fa-solid fa-video"></i><span>Telehealth & Virtual Consult</span></a>
                 </li>
             </ul>
         </div>
@@ -1768,7 +1772,20 @@
         </header>
 
         <main class="content-area">
-            <div id="active-workspace-banner"></div>
+            <div id="active-workspace-banner">
+                <div style="background: linear-gradient(90deg, #1e293b, #253545); color:#fff; padding:12px 18px; border-radius:10px; margin-bottom:20px; display:flex; align-items:center; justify-content:space-between; border-left:4px solid var(--brand-cyan); box-shadow:0 2px 6px rgba(0,0,0,0.06);">
+                    <div style="display:flex; align-items:center; gap:12px;">
+                        <span style="font-size:22px;">🛡️</span>
+                        <div>
+                            <div style="font-size:14px; font-weight:800; color:#ffffff;">🛡️ Super Admin Active Workspace</div>
+                            <div style="font-size:12px; color:#cbd5e1; margin-top:2px;">All 35 Hospital Modules &amp; Configurations Unlocked.</div>
+                        </div>
+                    </div>
+                    <button class="btn-switch-pat" style="padding:6px 14px; font-size:12px;" onclick="openModal('modal-switch-role')">
+                        <i class="fa-solid fa-arrows-rotate"></i> Switch Role
+                    </button>
+                </div>
+            </div>
             
             <!-- 1. DASHBOARD VIEW -->
             <section id="view-dashboard" class="module-view active">
@@ -5465,7 +5482,7 @@
             // 3. Update active workspace banner
             const roleBanner = document.getElementById('active-workspace-banner');
             if (roleBanner) {
-                let roleDesc = "All 33 Hospital Modules & Configurations Unlocked.";
+                let roleDesc = "All 35 Hospital Modules & Configurations Unlocked.";
                 if (roleKey === 'accountant') roleDesc = "Financial & Accounting Tools Only (General Ledger, Invoicing, Claims, Incentives & POs). Clinical/Care modules hidden.";
                 else if (roleKey === 'doctor') roleDesc = "Clinical & Diagnostic Tools Only (Doctor Consultation, E-Prescriptions, Appointments, ER, LIS & RIS). Accounting & Store tools hidden.";
                 else if (roleKey === 'nurse') roleDesc = "Ward Inpatient Station (Nursing e-MAR, Bed Matrix, Emergency Trauma, Vaccination & CSSD). Finance tools hidden.";
