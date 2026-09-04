@@ -38,11 +38,9 @@ def load_env():
 
 load_env()
 
-DEFAULT_NEON_URL = "postgresql://neondb_owner:npg_4wtlQ8uzNOcL@ep-odd-tree-auz5d9c1-pooler.c-10.us-east-1.aws.neon.tech/neondb?channel_binding=require&sslmode=require"
-
 def get_database_url():
-    """Retrieves PostgreSQL connection string from environment or default Neon serverless."""
-    return os.environ.get("DATABASE_URL") or os.environ.get("POSTGRES_URL") or DEFAULT_NEON_URL
+    """Retrieves PostgreSQL connection string strictly from environment variables (DATABASE_URL or POSTGRES_URL)."""
+    return os.environ.get("DATABASE_URL") or os.environ.get("POSTGRES_URL") or ""
 
 
 def is_postgres(conn=None):

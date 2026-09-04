@@ -25,9 +25,10 @@ PORT = 5000
 PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
 BASE_DIR = os.path.abspath(os.path.join(PROJECT_ROOT, "Code/Websites/HospitalEMR"))
 
-# Cryptographic Secret Key for HMAC Session Tokens
-SECRET_KEY = b'global1onetech_g1_health_emr_enterprise_secret_key_2026'
-SESSION_EXPIRY_SECONDS = 86400 # 24 Hours
+# Cryptographic Secret Key for HMAC Session Tokens (Loaded from env or dynamically generated)
+_session_secret_env = os.environ.get("SESSION_SECRET") or os.environ.get("SECRET_KEY")
+SECRET_KEY = _session_secret_env.encode("utf-8") if _session_secret_env else secrets.token_bytes(32)
+SESSION_EXPIRY_SECONDS = 86400  # 24 Hours
 
 # Valid User Accounts & Roles (Clean clinical typography, zero emojis)
 USERS_DB = {

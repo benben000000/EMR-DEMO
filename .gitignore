@@ -20,6 +20,7 @@ HAMS_Requirements/
 /Code/Websites/DanpheEMR/DanpheEmrAPI.xml
 .env
 .env.*
+!.env.example
 *.db
 __pycache__/
 *.pyc

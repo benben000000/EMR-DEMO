@@ -58,6 +58,13 @@ vercel login
 vercel --prod
 ```
 
+## Environment Variables Setup
+Under **Vercel Project Settings &rarr; Environment Variables** (or in your local `.env` file):
+- `DATABASE_URL`: Your Neon Serverless PostgreSQL connection string (`postgresql://<user>:<password>@<host>/<dbname>?sslmode=require`).
+- `SESSION_SECRET`: A cryptographically secure random string for signing HMAC session tokens.
+
+*(Never commit real database credentials or secret keys to source control. See `.env.example` for template.)*
+
 ---
 
 ## Credentials on Live Site
