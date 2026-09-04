@@ -149,13 +149,13 @@ def mask_ephi(value: str, mask_type: str = "phone") -> str:
         return ""
         
     if mask_type == "phone":
-        # Keep country/prefix and last 4 digits: e.g. +63 917 *** 4567
+        # Keep country/prefix and last 4 digits: e.g. +1 555 *** 4567
         if len(val) > 7:
             return val[:7] + " *** " + val[-4:]
         return "***-****"
         
     elif mask_type == "insurance" or mask_type == "id":
-        # Keep first 2 and last 2: e.g. PH-****-90
+        # Keep first 2 and last 2: e.g. MC-****-90
         if len(val) > 4:
             return val[:3] + "****" + val[-2:]
         return "****"

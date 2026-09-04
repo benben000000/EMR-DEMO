@@ -4422,7 +4422,7 @@ APP_HTML = """<!DOCTYPE html>
                     </div>
                     <div class="form-group">
                         <label>Contact Phone</label>
-                        <input type="text" id="er-new-phone" class="form-control" placeholder="+63 9xx xxx xxxx" />
+                        <input type="text" id="er-new-phone" class="form-control" placeholder="+1 (555) 019-2834" />
                     </div>
                 </div>
 
@@ -4771,7 +4771,7 @@ APP_HTML = """<!DOCTYPE html>
                     </div>
                     <div class="form-group">
                         <label>Phone Number *</label>
-                        <input type="text" id="np-phone" class="form-control" placeholder="+63 9xx xxx xxxx" />
+                        <input type="text" id="np-phone" class="form-control" placeholder="+1 (555) 019-2834" />
                     </div>
                     <div class="form-group">
                         <label>Membership / Scheme</label>
@@ -6267,8 +6267,8 @@ APP_HTML = """<!DOCTYPE html>
                             vitals: 'BP: 120/80 • HR: 72 bpm • Temp: 36.6°C • SpO2: 99%',
                             allergies: 'NKDA (No Known Drug Allergies)',
                             blood: p.blood_group || 'O+',
-                            phone: p.phone || '+63 917 123 4567',
-                            address: p.address || 'Metro Manila',
+                            phone: p.phone || '+1 (555) 019-2834',
+                            address: p.address || 'Boston, MA',
                             scheme: p.insurance_no || 'Medicare Part B',
                             history: ['Routine Medical Evaluation', 'Baseline Lab Panel Completed'],
                             meds: ['Multivitamins 1 Tab OD']
@@ -6421,8 +6421,8 @@ APP_HTML = """<!DOCTYPE html>
                         <td><strong>${p.patient_no}</strong></td>
                         <td><strong>${p.name}</strong></td>
                         <td>${p.age} Y / ${p.gender}</td>
-                        <td>${p.phone || '+63 917 123 4567'}</td>
-                        <td>${p.address || 'Metro Manila'}</td>
+                        <td>${p.phone || '+1 (555) 019-2834'}</td>
+                        <td>${p.address || 'Boston, MA'}</td>
                         <td><span class="status-badge status-active">${p.insurance_no || 'Medicare Part B'}</span></td>
                         <td>
                             <button class="btn-primary-action" style="padding: 4px 8px; font-size: 11px; margin-right:4px;" onclick="setActivePatient('${p.name}')">
@@ -8256,10 +8256,10 @@ APP_HTML = """<!DOCTYPE html>
 
         // Emergency Department (ER Cases State)
         let ER_RECORDS = [
-            { id: 'ER-2026-001', name: 'Victor Ramos', age: '42 Y', gender: 'Male', phone: '+63 917 111 2233', level: 'Level 1 - Resuscitation', complaint: 'Acute myocardial infarction / Crushing retrosternal chest pain radiating to left jaw', bp: '85/50', hr: '120', spo2: '92%', temp: '37.2', gcs: '14/15', bay: 'Bay 01 (Crash Cart)', doctor: 'Dr. Roberto Tan, MD', nurse: 'Nurse Clara Dizon', disposition: 'Cath Lab Transfer', status: 'critical', time: '10:15 AM' },
-            { id: 'ER-2026-002', name: 'Sofia Manalo', age: '19 Y', gender: 'Female', phone: '+63 918 222 3344', level: 'Level 3 - Urgent', complaint: 'Acute lower right quadrant abdominal pain with rebound tenderness (R/O Appendicitis)', bp: '110/70', hr: '88', spo2: '99%', temp: '38.4', gcs: '15/15', bay: 'Bay 04 (Acute)', doctor: 'Dr. Edward Hernandez, MD', nurse: 'Nurse Ronald Valdez', disposition: 'STAT Ultrasound & Surgery Consult', status: 'urgent', time: '10:45 AM' },
-            { id: 'ER-2026-003', name: 'Danilo Cruz', age: '58 Y', gender: 'Male', phone: '+63 920 333 4455', level: 'Level 2 - Emergent', complaint: 'Right-sided facial droop and acute slurred speech for 45 minutes (STAT Stroke Code)', bp: '160/95', hr: '94', spo2: '98%', temp: '36.9', gcs: '13/15', bay: 'Bay 02 (Resuscitation)', doctor: 'Dr. Vincent Lim, MD', nurse: 'Nurse Clara Dizon', disposition: 'STAT Non-Contrast Brain CT', status: 'critical', time: '11:00 AM' },
-            { id: 'ER-2026-004', name: 'Grace Bautista', age: '24 Y', gender: 'Female', phone: '+63 922 444 5566', level: 'Level 4 - Less Urgent', complaint: 'Right ankle inversion injury with localized swelling after slipping on steps', bp: '118/76', hr: '78', spo2: '99%', temp: '36.6', gcs: '15/15', bay: 'Bay 06 (Observation)', doctor: 'Dr. Miguel Garcia, MD', nurse: 'Nurse Ronald Valdez', disposition: 'Ankle X-Ray & Splinting', status: 'stable', time: '11:20 AM' }
+            { id: 'ER-2026-001', name: 'Victor Ramos', age: '42 Y', gender: 'Male', phone: '+1 (555) 011-2233', level: 'Level 1 - Resuscitation', complaint: 'Acute myocardial infarction / Crushing retrosternal chest pain radiating to left jaw', bp: '85/50', hr: '120', spo2: '92%', temp: '37.2', gcs: '14/15', bay: 'Bay 01 (Crash Cart)', doctor: 'Dr. Roberto Tan, MD', nurse: 'Nurse Clara Dizon', disposition: 'Cath Lab Transfer', status: 'critical', time: '10:15 AM' },
+            { id: 'ER-2026-002', name: 'Sofia Manalo', age: '19 Y', gender: 'Female', phone: '+1 (555) 012-3344', level: 'Level 3 - Urgent', complaint: 'Acute lower right quadrant abdominal pain with rebound tenderness (R/O Appendicitis)', bp: '110/70', hr: '88', spo2: '99%', temp: '38.4', gcs: '15/15', bay: 'Bay 04 (Acute)', doctor: 'Dr. Edward Hernandez, MD', nurse: 'Nurse Ronald Valdez', disposition: 'STAT Ultrasound & Surgery Consult', status: 'urgent', time: '10:45 AM' },
+            { id: 'ER-2026-003', name: 'Danilo Cruz', age: '58 Y', gender: 'Male', phone: '+1 (555) 013-4455', level: 'Level 2 - Emergent', complaint: 'Right-sided facial droop and acute slurred speech for 45 minutes (STAT Stroke Code)', bp: '160/95', hr: '94', spo2: '98%', temp: '36.9', gcs: '13/15', bay: 'Bay 02 (Resuscitation)', doctor: 'Dr. Vincent Lim, MD', nurse: 'Nurse Clara Dizon', disposition: 'STAT Non-Contrast Brain CT', status: 'critical', time: '11:00 AM' },
+            { id: 'ER-2026-004', name: 'Grace Bautista', age: '24 Y', gender: 'Female', phone: '+1 (555) 014-5566', level: 'Level 4 - Less Urgent', complaint: 'Right ankle inversion injury with localized swelling after slipping on steps', bp: '118/76', hr: '78', spo2: '99%', temp: '36.6', gcs: '15/15', bay: 'Bay 06 (Observation)', doctor: 'Dr. Miguel Garcia, MD', nurse: 'Nurse Ronald Valdez', disposition: 'Ankle X-Ray & Splinting', status: 'stable', time: '11:20 AM' }
         ];
 
         let activeERLevelFilter = 'ALL';
@@ -8395,7 +8395,7 @@ APP_HTML = """<!DOCTYPE html>
             const name = document.getElementById('er-new-name').value.trim() || 'Emergency Patient';
             const age = document.getElementById('er-new-age').value.trim() || '35';
             const gender = document.getElementById('er-new-gender').value;
-            const phone = document.getElementById('er-new-phone').value.trim() || '+63 900 000 0000';
+            const phone = document.getElementById('er-new-phone').value.trim() || '+1 (555) 019-0000';
             const level = document.getElementById('er-new-level').value;
             const bay = document.getElementById('er-new-bay').value;
             const complaint = document.getElementById('er-new-complaint').value.trim() || 'Acute emergency triage case';
@@ -9504,6 +9504,29 @@ class G1HealthRequestHandler(http.server.BaseHTTPRequestHandler):
     def do_GET(self):
         parsed = urllib.parse.urlparse(self.path)
         path = parsed.path
+        query_params = urllib.parse.parse_qs(parsed.query)
+
+        # Handle Vercel serverless rewrites and custom proxy headers
+        rewritten_path = (
+            query_params.get("_path", [""])[0] or
+            self.headers.get("x-matched-path", "") or
+            self.headers.get("x-vercel-original-path", "") or
+            self.headers.get("x-forwarded-uri", "") or
+            self.headers.get("x-original-url", "")
+        )
+        if rewritten_path:
+            rewritten_path = rewritten_path.split("?")[0]
+            if not rewritten_path.startswith("/"):
+                rewritten_path = "/" + rewritten_path
+            if rewritten_path.startswith("/api/"):
+                path = rewritten_path
+            elif not rewritten_path.startswith("/api/index.py"):
+                path = "/api/" + rewritten_path.lstrip("/")
+
+        # If invoked directly as /api/index.py or /api/ without subpath, default to /api/state
+        if path in ["/api/index.py", "/api", "/api/"]:
+            path = "/api/state"
+
         ip_addr = self.client_address[0] if hasattr(self, 'client_address') else '127.0.0.1'
 
         # UNIVERSAL REST API GET ROUTER (HIPAA Authenticated Live SQLite Database)
@@ -9622,6 +9645,25 @@ class G1HealthRequestHandler(http.server.BaseHTTPRequestHandler):
     def do_POST(self):
         parsed = urllib.parse.urlparse(self.path)
         path = parsed.path
+        query_params = urllib.parse.parse_qs(parsed.query)
+
+        # Handle Vercel serverless rewrites and custom proxy headers
+        rewritten_path = (
+            query_params.get("_path", [""])[0] or
+            self.headers.get("x-matched-path", "") or
+            self.headers.get("x-vercel-original-path", "") or
+            self.headers.get("x-forwarded-uri", "") or
+            self.headers.get("x-original-url", "")
+        )
+        if rewritten_path:
+            rewritten_path = rewritten_path.split("?")[0]
+            if not rewritten_path.startswith("/"):
+                rewritten_path = "/" + rewritten_path
+            if rewritten_path.startswith("/api/"):
+                path = rewritten_path
+            elif not rewritten_path.startswith("/api/index.py"):
+                path = "/api/" + rewritten_path.lstrip("/")
+
         ip_addr = self.client_address[0] if hasattr(self, 'client_address') else '127.0.0.1'
 
         # UNIVERSAL REST API MUTATION ROUTER (Live SQLite Database: Add, Edit, Delete with RBAC & Audit)
@@ -9774,14 +9816,14 @@ class G1HealthRequestHandler(http.server.BaseHTTPRequestHandler):
                 matched_dept = "Cardiology" if 'chest' in msg_lower else "Emergency Department (ER)"
                 recommended_doctor = "Dr. Roberto Tan, MD" if 'chest' in msg_lower else "ER Trauma Team"
                 sentiment = "STAT High Priority"
-                ai_reply = f"Hello {patient_name}. [CRITICAL ALERT]: Your reported symptoms require STAT medical evaluation. Our Emergency Crash Bays are on alert. Please proceed immediately to our Emergency Department Ground Floor entrance or contact STAT Ambulance Dispatch at (02) 8800-EMER."
+                ai_reply = f"Hello {patient_name}. [CRITICAL ALERT]: Your reported symptoms require STAT medical evaluation. Our Emergency Crash Bays are on alert. Please proceed immediately to our Emergency Department Ground Floor entrance or contact STAT Ambulance Dispatch at 911 / (800) 555-0199."
 
             # Priority 2: Financial, Billing & Insurance Inquiries
-            elif any(w in msg_lower for w in ['philhealth', 'hmo', 'maxicare', 'intellicare', 'medicard', 'insurance', 'coverage', 'discount', 'senior', 'pwd', 'billing', 'invoice', 'how much', 'cost', 'price', 'cashier']):
+            elif any(w in msg_lower for w in ['medicare', 'medicaid', 'insurance', 'coverage', 'copay', 'deductible', 'coinsurance', 'billing', 'invoice', 'how much', 'cost', 'price', 'cashier', 'cms1500', '837p', 'blue cross', 'aetna', 'cigna', 'unitedhealthcare']):
                 matched_dept = "Billing & Insurance Claims"
                 recommended_doctor = "Mark Mendoza (Billing Officer)"
-                sentiment = "Financial & HMO Inquiry"
-                ai_reply = f"Hello {patient_name}. Our Hospital Billing Desk is fully accredited with PhilHealth Case Rates and all major HMO providers (Maxicare, Intellicare, Medicard, etc.). Senior Citizens and PWDs automatically receive statutory 20% discounts on all consultation and diagnostic services."
+                sentiment = "Financial & Insurance Inquiry"
+                ai_reply = f"Hello {patient_name}. Our Hospital Billing Desk is fully accredited with Medicare Part A & B, Medicaid, Blue Cross Blue Shield, Aetna, UnitedHealthcare, Cigna, and major commercial health plans. We provide CMS-1500 and 837P electronic claim generation with real-time 270/271 eligibility verification."
 
             # Priority 3: Clinical Specialties
             elif any(w in msg_lower for w in ['chest', 'heart', 'palpitation', 'bp', 'pressure', 'angina', 'shortness of breath', 'cardio']):

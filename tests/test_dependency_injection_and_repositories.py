@@ -60,7 +60,7 @@ def test_patient_service_with_injected_audit():
         "name": "Clara Oswald",
         "age": 28,
         "gender": "Female",
-        "phone": "+63 917 111 2222",
+        "phone": "+1 (555) 111-2222",
         "insurance_no": "HMO-CARE-01"
     }, operator="receptionist_01")
     

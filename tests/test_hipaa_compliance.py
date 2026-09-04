@@ -22,25 +22,25 @@ from serve_demo import G1HealthRequestHandler, create_session_token, verify_sess
 
 class TestHIPAACompliance(unittest.TestCase):
     def test_ephi_safe_harbor_masking(self):
-        # Phone masking
-        phone = "+63 917 123 4567"
+        # US Phone masking
+        phone = "+1 (617) 555-0199"
         masked_phone = mask_ephi(phone, "phone")
         self.assertIn("***", masked_phone)
-        self.assertTrue(masked_phone.endswith("4567"))
-        self.assertFalse("123" in masked_phone)
+        self.assertTrue(masked_phone.endswith("0199"))
+        self.assertFalse("555" in masked_phone)
 
-        # Insurance ID masking
-        ins = "PH-99281-90"
+        # US Insurance ID masking
+        ins = "MC-99281-90"
         masked_ins = mask_ephi(ins, "insurance")
         self.assertIn("****", masked_ins)
-        self.assertTrue(masked_ins.startswith("PH-"))
+        self.assertTrue(masked_ins.startswith("MC-"))
         self.assertTrue(masked_ins.endswith("90"))
 
-        # Address masking
-        addr = "123 Mabini St, Quezon City, Metro Manila"
+        # US Address masking
+        addr = "100 Healthcare Way, Suite 400, Boston, MA"
         masked_addr = mask_ephi(addr, "address")
         self.assertIn("[Restricted Address]", masked_addr)
-        self.assertNotIn("123 Mabini St", masked_addr)
+        self.assertNotIn("100 Healthcare Way", masked_addr)
 
     def test_tamper_evident_audit_checksum(self):
         secret = "hipaa_test_secret_key_2026"
@@ -92,6 +92,31 @@ class TestHIPAACompliance(unittest.TestCase):
         self.assertEqual(latest["action_name"], "TEST_HIPAA_EVENT")
         self.assertTrue("checksum" in latest)
         self.assertTrue(len(latest["checksum"]) == 64) # SHA-256 length
+
+    def test_session_inactivity_timeout_guardrail(self):
+        # 15-Minute inactivity automatic logoff (§ 164.312(a)(2)(iii))
+        secret = "hipaa_session_secret_2026"
+        token = generate_pure_hmac_token(secret, "doctor_01", "doctor", timestamp=1000)
+        
+        # Valid within 15 minutes (900 seconds)
+        valid = verify_pure_hmac_token(secret, token, max_age_seconds=900, current_time=1500)
+        self.assertIsNotNone(valid)
+        self.assertEqual(valid["username"], "doctor_01")
+
+        # Expired after 15 minutes
+        expired = verify_pure_hmac_token(secret, token, max_age_seconds=900, current_time=2000)
+        self.assertIsNone(expired)
+
+    def test_minimum_necessary_safe_harbor_query(self):
+        # Non-clinical roles receive masked ePHI
+        state = db_manager.get_full_emr_state(role="billing")
+        patients = state.get("patients", [])
+        if patients:
+            sample = patients[0]
+            if "address" in sample and sample["address"]:
+                self.assertEqual(sample["address"], "[Restricted Address]")
+            if "phone" in sample and sample["phone"]:
+                self.assertIn("***", sample["phone"])
 
 if __name__ == "__main__":
     unittest.main()

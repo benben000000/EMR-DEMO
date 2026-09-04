@@ -1791,21 +1791,21 @@
                     <div class="stat-card">
                         <div class="stat-icon"><i class="fa-solid fa-users"></i></div>
                         <div class="stat-content">
-                            <h3 id="dash-stat-patients">--</h3>
+                            <h3 id="dash-stat-patients">10</h3>
                             <p>Total Registered Patients</p>
                         </div>
                     </div>
                     <div class="stat-card cyan">
                         <div class="stat-icon"><i class="fa-solid fa-calendar-day"></i></div>
                         <div class="stat-content">
-                            <h3 id="dash-stat-appointments">--</h3>
+                            <h3 id="dash-stat-appointments">6</h3>
                             <p>Appointments Today</p>
                         </div>
                     </div>
                     <div class="stat-card teal">
                         <div class="stat-icon"><i class="fa-solid fa-bed-pulse"></i></div>
                         <div class="stat-content">
-                            <h3 id="dash-occupancy-kpi">--</h3>
+                            <h3 id="dash-occupancy-kpi">68.5%</h3>
                             <p>Inpatient Bed Occupancy</p>
                         </div>
                     </div>
@@ -3633,7 +3633,7 @@
                     </div>
                     <div class="form-group">
                         <label>Contact Phone</label>
-                        <input type="text" id="er-new-phone" class="form-control" placeholder="+63 9xx xxx xxxx" />
+                        <input type="text" id="er-new-phone" class="form-control" placeholder="+1 (555) 019-2834" />
                     </div>
                 </div>
 
@@ -3982,7 +3982,7 @@
                     </div>
                     <div class="form-group">
                         <label>Phone Number *</label>
-                        <input type="text" id="np-phone" class="form-control" placeholder="+63 9xx xxx xxxx" />
+                        <input type="text" id="np-phone" class="form-control" placeholder="+1 (555) 019-2834" />
                     </div>
                     <div class="form-group">
                         <label>Membership / Scheme</label>
@@ -5478,8 +5478,8 @@
                             vitals: 'BP: 120/80 • HR: 72 bpm • Temp: 36.6°C • SpO2: 99%',
                             allergies: 'NKDA (No Known Drug Allergies)',
                             blood: p.blood_group || 'O+',
-                            phone: p.phone || '+63 917 123 4567',
-                            address: p.address || 'Metro Manila',
+                            phone: p.phone || '+1 (555) 019-2834',
+                            address: p.address || 'Boston, MA',
                             scheme: p.insurance_no || 'Medicare Part B',
                             history: ['Routine Medical Evaluation', 'Baseline Lab Panel Completed'],
                             meds: ['Multivitamins 1 Tab OD']
@@ -5632,8 +5632,8 @@
                         <td><strong>${p.patient_no}</strong></td>
                         <td><strong>${p.name}</strong></td>
                         <td>${p.age} Y / ${p.gender}</td>
-                        <td>${p.phone || '+63 917 123 4567'}</td>
-                        <td>${p.address || 'Metro Manila'}</td>
+                        <td>${p.phone || '+1 (555) 019-2834'}</td>
+                        <td>${p.address || 'Boston, MA'}</td>
                         <td><span class="status-badge status-active">${p.insurance_no || 'Medicare Part B'}</span></td>
                         <td>
                             <button class="btn-primary-action" style="padding: 4px 8px; font-size: 11px; margin-right:4px;" onclick="setActivePatient('${p.name}')">
@@ -7467,10 +7467,10 @@
 
         // Emergency Department (ER Cases State)
         let ER_RECORDS = [
-            { id: 'ER-2026-001', name: 'Victor Ramos', age: '42 Y', gender: 'Male', phone: '+63 917 111 2233', level: 'Level 1 - Resuscitation', complaint: 'Acute myocardial infarction / Crushing retrosternal chest pain radiating to left jaw', bp: '85/50', hr: '120', spo2: '92%', temp: '37.2', gcs: '14/15', bay: 'Bay 01 (Crash Cart)', doctor: 'Dr. Roberto Tan, MD', nurse: 'Nurse Clara Dizon', disposition: 'Cath Lab Transfer', status: 'critical', time: '10:15 AM' },
-            { id: 'ER-2026-002', name: 'Sofia Manalo', age: '19 Y', gender: 'Female', phone: '+63 918 222 3344', level: 'Level 3 - Urgent', complaint: 'Acute lower right quadrant abdominal pain with rebound tenderness (R/O Appendicitis)', bp: '110/70', hr: '88', spo2: '99%', temp: '38.4', gcs: '15/15', bay: 'Bay 04 (Acute)', doctor: 'Dr. Edward Hernandez, MD', nurse: 'Nurse Ronald Valdez', disposition: 'STAT Ultrasound & Surgery Consult', status: 'urgent', time: '10:45 AM' },
-            { id: 'ER-2026-003', name: 'Danilo Cruz', age: '58 Y', gender: 'Male', phone: '+63 920 333 4455', level: 'Level 2 - Emergent', complaint: 'Right-sided facial droop and acute slurred speech for 45 minutes (STAT Stroke Code)', bp: '160/95', hr: '94', spo2: '98%', temp: '36.9', gcs: '13/15', bay: 'Bay 02 (Resuscitation)', doctor: 'Dr. Vincent Lim, MD', nurse: 'Nurse Clara Dizon', disposition: 'STAT Non-Contrast Brain CT', status: 'critical', time: '11:00 AM' },
-            { id: 'ER-2026-004', name: 'Grace Bautista', age: '24 Y', gender: 'Female', phone: '+63 922 444 5566', level: 'Level 4 - Less Urgent', complaint: 'Right ankle inversion injury with localized swelling after slipping on steps', bp: '118/76', hr: '78', spo2: '99%', temp: '36.6', gcs: '15/15', bay: 'Bay 06 (Observation)', doctor: 'Dr. Miguel Garcia, MD', nurse: 'Nurse Ronald Valdez', disposition: 'Ankle X-Ray & Splinting', status: 'stable', time: '11:20 AM' }
+            { id: 'ER-2026-001', name: 'Victor Ramos', age: '42 Y', gender: 'Male', phone: '+1 (555) 011-2233', level: 'Level 1 - Resuscitation', complaint: 'Acute myocardial infarction / Crushing retrosternal chest pain radiating to left jaw', bp: '85/50', hr: '120', spo2: '92%', temp: '37.2', gcs: '14/15', bay: 'Bay 01 (Crash Cart)', doctor: 'Dr. Roberto Tan, MD', nurse: 'Nurse Clara Dizon', disposition: 'Cath Lab Transfer', status: 'critical', time: '10:15 AM' },
+            { id: 'ER-2026-002', name: 'Sofia Manalo', age: '19 Y', gender: 'Female', phone: '+1 (555) 012-3344', level: 'Level 3 - Urgent', complaint: 'Acute lower right quadrant abdominal pain with rebound tenderness (R/O Appendicitis)', bp: '110/70', hr: '88', spo2: '99%', temp: '38.4', gcs: '15/15', bay: 'Bay 04 (Acute)', doctor: 'Dr. Edward Hernandez, MD', nurse: 'Nurse Ronald Valdez', disposition: 'STAT Ultrasound & Surgery Consult', status: 'urgent', time: '10:45 AM' },
+            { id: 'ER-2026-003', name: 'Danilo Cruz', age: '58 Y', gender: 'Male', phone: '+1 (555) 013-4455', level: 'Level 2 - Emergent', complaint: 'Right-sided facial droop and acute slurred speech for 45 minutes (STAT Stroke Code)', bp: '160/95', hr: '94', spo2: '98%', temp: '36.9', gcs: '13/15', bay: 'Bay 02 (Resuscitation)', doctor: 'Dr. Vincent Lim, MD', nurse: 'Nurse Clara Dizon', disposition: 'STAT Non-Contrast Brain CT', status: 'critical', time: '11:00 AM' },
+            { id: 'ER-2026-004', name: 'Grace Bautista', age: '24 Y', gender: 'Female', phone: '+1 (555) 014-5566', level: 'Level 4 - Less Urgent', complaint: 'Right ankle inversion injury with localized swelling after slipping on steps', bp: '118/76', hr: '78', spo2: '99%', temp: '36.6', gcs: '15/15', bay: 'Bay 06 (Observation)', doctor: 'Dr. Miguel Garcia, MD', nurse: 'Nurse Ronald Valdez', disposition: 'Ankle X-Ray & Splinting', status: 'stable', time: '11:20 AM' }
         ];
 
         let activeERLevelFilter = 'ALL';
@@ -7606,7 +7606,7 @@
             const name = document.getElementById('er-new-name').value.trim() || 'Emergency Patient';
             const age = document.getElementById('er-new-age').value.trim() || '35';
             const gender = document.getElementById('er-new-gender').value;
-            const phone = document.getElementById('er-new-phone').value.trim() || '+63 900 000 0000';
+            const phone = document.getElementById('er-new-phone').value.trim() || '+1 (555) 019-0000';
             const level = document.getElementById('er-new-level').value;
             const bay = document.getElementById('er-new-bay').value;
             const complaint = document.getElementById('er-new-complaint').value.trim() || 'Acute emergency triage case';

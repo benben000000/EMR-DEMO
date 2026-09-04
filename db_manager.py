@@ -44,9 +44,14 @@ def get_database_url():
     """Retrieves PostgreSQL connection string from environment or default Neon serverless."""
     return os.environ.get("DATABASE_URL") or os.environ.get("POSTGRES_URL") or DEFAULT_NEON_URL
 
-def is_postgres():
-    """Always returns True to ensure Neon Serverless PostgreSQL is exclusively used."""
-    return True
+import sqlite3
+
+def is_postgres(conn=None):
+    """Returns True if active connection or environment is PostgreSQL."""
+    if conn is not None:
+        return not isinstance(conn, sqlite3.Connection)
+    url = get_database_url()
+    return bool(url and ("postgres" in url or "neon.tech" in url))
 
 # SQLite Fallback Configuration
 DB_PATH = os.environ.get("EMR_DB_PATH", os.environ.get("HOSPITAL_DB_PATH", os.path.join(os.path.dirname(__file__), "hospital_emr.db")))
@@ -165,7 +170,7 @@ def resolve_table_name(table_name):
 def get_table_columns(conn, table_name):
     table_name = resolve_table_name(table_name)
     cur = conn.cursor()
-    if is_postgres():
+    if is_postgres(conn):
         cur.execute("SELECT column_name FROM information_schema.columns WHERE table_name = %s", (table_name.lower(),))
         rows = cur.fetchall()
         return [r["column_name"] if isinstance(r, dict) else r[0] for r in rows]
@@ -202,7 +207,7 @@ def insert_record(table_name, data):
     cur = conn.cursor()
     columns = list(filtered.keys())
     
-    if is_postgres():
+    if is_postgres(conn):
         if not columns:
             cur.execute(f"INSERT INTO {table_name} DEFAULT VALUES RETURNING id")
             res = cur.fetchone()
@@ -250,7 +255,7 @@ def update_record(table_name, record_id, data):
         
     cur = conn.cursor()
     id_col = "id"
-    if is_postgres():
+    if is_postgres(conn):
         set_clause = ", ".join([f"{k} = %s" for k in filtered.keys()])
         values = list(filtered.values()) + [record_id]
         sql = f"UPDATE {table_name} SET {set_clause} WHERE {id_col} = %s"
@@ -269,7 +274,7 @@ def delete_record(table_name, record_id):
     conn = get_db_connection()
     cur = conn.cursor()
     id_col = "id"
-    if is_postgres():
+    if is_postgres(conn):
         cur.execute(f"DELETE FROM {table_name} WHERE {id_col} = %s", (record_id,))
     else:
         cur.execute(f"DELETE FROM {table_name} WHERE {id_col} = ?", (record_id,))
@@ -281,7 +286,7 @@ def update_bed_record(bed_id, status, patient_name=None, diagnosis=None, doctor=
     conn = get_db_connection()
     cur = conn.cursor()
     ts = time.strftime("%Y-%m-%d %H:%M:%S")
-    if is_postgres():
+    if is_postgres(conn):
         cur.execute("""
         UPDATE adt_beds 
         SET status = %s, patient_name = %s, diagnosis = %s, attending_doctor = %s, updated_at = %s
@@ -341,7 +346,7 @@ def log_audit_event(user_id, action_name, ip_address='127.0.0.1', status='SUCCES
     det_str = str(details or '')
     checksum = hashlib.sha256(f"{user_id}|{role}|{action_name}|{entity}|{rec_str}|{ts}".encode('utf-8')).hexdigest()
     
-    if is_postgres():
+    if is_postgres(conn):
         cur.execute("""
         INSERT INTO audit_logs (timestamp, user_id, role, action_name, entity, record_id, details, ip_address, status, checksum)
         VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)

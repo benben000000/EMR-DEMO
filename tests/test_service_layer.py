@@ -48,7 +48,7 @@ def test_sqlite_container_integration():
         "name": "David Tennant",
         "age": 52,
         "gender": "Male",
-        "phone": "+63 917 999 8888",
+        "phone": "+1 (555) 999-8888",
         "insurance_no": "BBC-HMO-10"
     }, operator="sysadmin")
 
