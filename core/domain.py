@@ -5,9 +5,11 @@ Contains deterministic, side-effect-free business rules for calculations,
 validations, triage matrices, and cryptographic integrity.
 """
 
-import hmac
 import hashlib
+import hmac
 import re
+import time
+
 
 # 1. PURE FUNCTION: Calculate Patient Invoicing Breakdown (PhilHealth, Senior / PWD Discount, Net Total)
 def calculate_invoice_breakdown(gross_amount: float, discount_pct: float = 0.0, is_senior_or_pwd: bool = False, philhealth_case_rate: float = 0.0) -> dict:
@@ -16,17 +18,17 @@ def calculate_invoice_breakdown(gross_amount: float, discount_pct: float = 0.0, 
     Pure function: deterministic, no external I/O.
     """
     gross = float(max(0.0, gross_amount))
-    
+
     # Statutory 20% discount for Senior Citizens / PWDs
     effective_discount_pct = 20.0 if is_senior_or_pwd else float(max(0.0, min(100.0, discount_pct)))
     discount_amount = round(gross * (effective_discount_pct / 100.0), 2)
-    
+
     amount_after_discount = round(gross - discount_amount, 2)
-    
+
     # PhilHealth benefit coverage deduction
     philhealth_coverage = round(min(amount_after_discount, max(0.0, float(philhealth_case_rate))), 2)
     net_patient_payable = round(max(0.0, amount_after_discount - philhealth_coverage), 2)
-    
+
     return {
         "gross_amount": gross,
         "discount_percent": effective_discount_pct,
@@ -42,23 +44,23 @@ def evaluate_triage_acuity(complaint_text: str, hr: int = 75, spo2: int = 99, sy
     Returns Triage Level (1-5), Color Code, and Priority Name.
     """
     text = (complaint_text or "").lower()
-    
+
     # Level 1 - Resuscitation (Life-Threatening STAT)
     if any(k in text for k in ['unconscious', 'pulseless', 'cardiac arrest', 'severe shock', 'crushing', 'unresponsive', 'apneic']) or spo2 < 85 or hr > 160 or sys_bp < 70:
         return {"level": "Level 1", "category": "Resuscitation", "color": "#dc2626", "urgent": True, "target_mins": 0}
-    
+
     # Level 2 - Emergent (High Risk / Acute Organ Threat)
     if any(k in text for k in ['chest pain', 'stemi', 'stroke', 'slurred speech', 'facial droop', 'severe dyspnea', 'massive bleeding', 'anaphylaxis']) or spo2 < 92 or hr > 130 or sys_bp > 200 or sys_bp < 85:
         return {"level": "Level 2", "category": "Emergent", "color": "#ea580c", "urgent": True, "target_mins": 10}
-    
+
     # Level 3 - Urgent (Moderate Distress)
     if any(k in text for k in ['fracture', 'deep laceration', 'severe abdominal pain', 'asthma', 'high fever', 'dehydration']) or sys_bp > 160 or hr > 105:
         return {"level": "Level 3", "category": "Urgent", "color": "#d97706", "urgent": False, "target_mins": 30}
-    
+
     # Level 4 - Less Urgent
     if any(k in text for k in ['mild fever', 'cough', 'minor sprain', 'vomiting', 'sore throat', 'rash']):
         return {"level": "Level 4", "category": "Less Urgent", "color": "#16a34a", "urgent": False, "target_mins": 60}
-    
+
     # Level 5 - Non-Urgent (Routine)
     return {"level": "Level 5", "category": "Non-Urgent", "color": "#0284c7", "urgent": False, "target_mins": 120}
 
@@ -68,25 +70,25 @@ def validate_vitals_normalcy(systolic_bp: int, diastolic_bp: int, heart_rate: in
     Evaluates vital signs against standard clinical physiological thresholds.
     """
     abnormal_flags = []
-    
+
     if systolic_bp >= 140 or diastolic_bp >= 90:
         abnormal_flags.append("Hypertension")
     elif systolic_bp < 90 or diastolic_bp < 60:
         abnormal_flags.append("Hypotension")
-        
+
     if heart_rate > 100:
         abnormal_flags.append("Tachycardia")
     elif heart_rate < 60:
         abnormal_flags.append("Bradycardia")
-        
+
     if spo2_pct < 95:
         abnormal_flags.append("Hypoxemia")
-        
+
     if temp_c >= 38.0:
         abnormal_flags.append("Pyrexia (Fever)")
     elif temp_c < 35.5:
         abnormal_flags.append("Hypothermia")
-        
+
     return {
         "is_normal": len(abnormal_flags) == 0,
         "flags": abnormal_flags,
@@ -115,18 +117,18 @@ def verify_pure_hmac_token(secret_key: str, token_str: str, max_age_seconds: int
     """
     if not token_str or ":" not in token_str:
         return None
-        
+
     parts = token_str.split(":")
     if len(parts) != 4:
         return None
-        
+
     username, role, ts_str, signature = parts
     payload = f"{username}:{role}:{ts_str}"
     expected_sig = hmac.new(secret_key.encode("utf-8"), payload.encode("utf-8"), hashlib.sha256).hexdigest()
-    
+
     if not hmac.compare_digest(expected_sig, signature):
         return None
-        
+
     try:
         ts = int(ts_str)
         now = current_time if current_time is not None else int(time.time())
@@ -134,7 +136,7 @@ def verify_pure_hmac_token(secret_key: str, token_str: str, max_age_seconds: int
             return None
     except Exception:
         return None
-        
+
     return {"username": username, "role": role, "timestamp": ts}
 
 # 6. PURE FUNCTION: HIPAA Safe Harbor ePHI Masking (§ 164.514)
@@ -147,26 +149,26 @@ def mask_ephi(value: str, mask_type: str = "phone") -> str:
     val = value.strip()
     if not val:
         return ""
-        
+
     if mask_type == "phone":
         # Keep country/prefix and last 4 digits: e.g. +1 555 *** 4567
         if len(val) > 7:
             return val[:7] + " *** " + val[-4:]
         return "***-****"
-        
+
     elif mask_type == "insurance" or mask_type == "id":
         # Keep first 2 and last 2: e.g. MC-****-90
         if len(val) > 4:
             return val[:3] + "****" + val[-2:]
         return "****"
-        
+
     elif mask_type == "address":
         # Retain general city/region, mask exact street
         parts = [p.strip() for p in val.split(",") if p.strip()]
         if len(parts) >= 2:
             return f"[Restricted Address], {parts[-1]}"
         return "[Restricted Address]"
-        
+
     elif mask_type == "name":
         words = val.split()
         if len(words) > 1:
@@ -267,14 +269,14 @@ def check_rbac_permission(role_key: str, entity: str, action: str) -> bool:
     role = (role_key or "").strip().lower()
     ent = (entity or "").strip().lower()
     act = (action or "").strip().lower()
-    
+
     if role == "admin":
         return True
-        
+
     perms = ROLE_PERMISSIONS.get(role, {})
     if "*" in perms:
         return act in perms["*"]
-        
+
     allowed_actions = perms.get(ent, [])
     return act in allowed_actions
 
@@ -297,16 +299,16 @@ def calculate_us_claim_adjudication(
     billed = round(float(max(0.0, billed_charges)), 2)
     allowed = round(float(max(0.0, allowed_amount if allowed_amount > 0 else billed)), 2)
     contractual_adjustment = round(max(0.0, billed - allowed), 2)
-    
+
     pt_type = (payer_type or "medicare_b").lower()
-    
+
     if "medicare_b" in pt_type or "medicare" in pt_type:
         # Standard Medicare Part B 80/20 Cost-Share
         deductible_applied = round(min(allowed, max(0.0, float(remaining_deductible))), 2)
         subject_to_coinsurance = round(max(0.0, allowed - deductible_applied), 2)
         medicare_paid = round(subject_to_coinsurance * 0.80, 2)
         primary_coinsurance = round(subject_to_coinsurance * 0.20, 2)
-        
+
         # Check Secondary / Medigap Plan Crossover (COB)
         if secondary_payer and str(secondary_payer).strip().lower() not in ["none", ""]:
             secondary_paid = round(deductible_applied + primary_coinsurance, 2)
@@ -316,7 +318,7 @@ def calculate_us_claim_adjudication(
             secondary_paid = 0.0
             patient_responsibility = round(deductible_applied + primary_coinsurance, 2)
             cob_status = "Patient Self-Pay Balance"
-            
+
         return {
             "payer_system": "Medicare Part B (CMS)",
             "billed_charges": billed,
@@ -338,9 +340,9 @@ def calculate_us_claim_adjudication(
         subject_to_coinsurance = round(max(0.0, after_copay - deductible_applied), 2)
         coinsurance_due = round(subject_to_coinsurance * (float(coinsurance_pct) / 100.0), 2)
         insurance_paid = round(max(0.0, subject_to_coinsurance - coinsurance_due), 2)
-        
+
         patient_responsibility = round(copay_applied + deductible_applied + coinsurance_due, 2)
-        
+
         return {
             "payer_system": "Commercial Insurance (HMO/PPO)",
             "billed_charges": billed,
@@ -364,7 +366,7 @@ def validate_npi_checksum(npi: str) -> bool:
     clean_npi = re.sub(r"\D", "", str(npi or ""))
     if len(clean_npi) != 10:
         return False
-        
+
     full_str = "80840" + clean_npi
     digits = [int(c) for c in full_str]
     total = 0
@@ -374,7 +376,7 @@ def validate_npi_checksum(npi: str) -> bool:
             if d > 9:
                 d -= 9
         total += d
-        
+
     check_digit = (10 - (total % 10)) % 10
     return check_digit == digits[-1]
 
@@ -385,7 +387,7 @@ def simulate_edi_270_271_eligibility(policy_or_mbi: str, payer_id: str = "00431"
     """
     clean_id = (policy_or_mbi or "1EG4-TE5-MK72").strip().upper()
     is_medicare = "MEDICARE" in (payer_name or "").upper() or payer_id == "00431"
-    
+
     if is_medicare:
         return {
             "status": "Active Coverage",
@@ -444,32 +446,32 @@ def generate_edi_837p(claim: dict) -> str:
     segments = [
         f"ISA*00*          *00*          *ZZ*SUBMITTER1     *ZZ*{payer_id.ljust(15)}*{date_str[:6]}*1000*^*00501*000000001*0*P*:~",
         f"GS*HC*SUBMITTER1*{payer_id}*{date_str}*1000*1*X*005010X222A1~",
-        f"ST*837*0001*005010X222A1~",
+        "ST*837*0001*005010X222A1~",
         f"BHT*0019*00*{claim_id}*{date_str}*1000*CH~",
         f"NM1*41*2*GLOBAL 1 ONETECH HEALTH CENTER*****46*{billing_npi}~",
-        f"PER*IC*BILLING DEPT*TE*8005551212*EM*billing@global1onetech.com~",
+        "PER*IC*BILLING DEPT*TE*8005551212*EM*billing@global1onetech.com~",
         f"NM1*40*2*{payer_name}*****46*{payer_id}~",
-        f"HL*1**20*1~",
-        f"PRV*BI*PXC*207RC0000X~",
+        "HL*1**20*1~",
+        "PRV*BI*PXC*207RC0000X~",
         f"NM1*85*2*GLOBAL 1 ONETECH HEALTH*****XX*{billing_npi}~",
-        f"N3*100 HEALTHCARE WAY*SUITE 400~",
-        f"N4*BOSTON*MA*02115~",
-        f"HL*2*1*22*0~",
-        f"SBR*P*18*******MB~",
+        "N3*100 HEALTHCARE WAY*SUITE 400~",
+        "N4*BOSTON*MA*02115~",
+        "HL*2*1*22*0~",
+        "SBR*P*18*******MB~",
         f"NM1*IL*1*{patient.split()[-1]}*{patient.split()[0]}****MI*{mbi}~",
-        f"N3*123 PATIENT ST~",
-        f"N4*BOSTON*MA*02115~",
-        f"DMG*D8*19750101*M~",
+        "N3*123 PATIENT ST~",
+        "N4*BOSTON*MA*02115~",
+        "DMG*D8*19750101*M~",
         f"NM1*PR*2*{payer_name}*****PI*{payer_id}~",
         f"CLM*{claim_id}*{billed}***{pos}:B:1*Y*A*Y*Y~",
         f"HI*BK:{diag_code}~",
         f"NM1*82*1*TAN*ROBERTO***MD*XX*{rendering_npi}~",
-        f"LX*1~",
+        "LX*1~",
         f"SV1*HC:{cpt}*{billed}*UN*1***1~",
         f"DTP*472*D8*{date_str}~",
-        f"SE*26*0001~",
-        f"GE*1*1~",
-        f"IEA*1*000000001~"
+        "SE*26*0001~",
+        "GE*1*1~",
+        "IEA*1*000000001~"
     ]
     return "\n".join(segments)
 
@@ -493,27 +495,27 @@ def generate_edi_837i(claim: dict) -> str:
     segments = [
         f"ISA*00*          *00*          *ZZ*HOSPITAL1      *ZZ*{payer_id.ljust(15)}*{date_str[:6]}*1000*^*00501*000000002*0*P*:~",
         f"GS*HC*HOSPITAL1*{payer_id}*{date_str}*1000*2*X*005010X223A2~",
-        f"ST*837*0002*005010X223A2~",
+        "ST*837*0002*005010X223A2~",
         f"BHT*0019*00*{claim_id}*{date_str}*1000*CH~",
         f"NM1*41*2*GLOBAL 1 ONETECH MEDICAL CENTER*****46*{billing_npi}~",
         f"NM1*40*2*{payer_name}*****46*{payer_id}~",
-        f"HL*1**20*1~",
+        "HL*1**20*1~",
         f"NM1*85*2*GLOBAL 1 ONETECH INPATIENT FACILITY*****XX*{billing_npi}~",
-        f"N3*100 HEALTHCARE WAY~",
-        f"N4*BOSTON*MA*02115~",
-        f"HL*2*1*22*0~",
-        f"SBR*P*18*******MB~",
+        "N3*100 HEALTHCARE WAY~",
+        "N4*BOSTON*MA*02115~",
+        "HL*2*1*22*0~",
+        "SBR*P*18*******MB~",
         f"NM1*IL*1*{patient.split()[-1]}*{patient.split()[0]}****MI*{mbi}~",
         f"NM1*PR*2*{payer_name}*****PI*{payer_id}~",
         f"CLM*{claim_id}*{billed}***111:A:1*Y*A*Y*Y~",
         f"DTP*435*D8*{date_str}~",
-        f"CL1*1*1*01~",
+        "CL1*1*1*01~",
         f"HI*BK:{diag_code}*DR:{drg}~",
-        f"LX*1~",
+        "LX*1~",
         f"SV2*{rev_code}*HC:0110*{billed}*UN*3~",
         f"DTP*472*RD8*{date_str}-{date_str}~",
-        f"SE*22*0002~",
-        f"GE*1*2~",
-        f"IEA*1*000000002~"
+        "SE*22*0002~",
+        "GE*1*2~",
+        "IEA*1*000000002~"
     ]
     return "\n".join(segments)

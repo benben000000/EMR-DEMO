@@ -1,8 +1,7 @@
 # tests/test_ui_audit_integrity.py
-import sys
 import os
-import unittest
 import re
+import unittest
 
 root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 
@@ -23,7 +22,7 @@ class TestUIAuditIntegrity(unittest.TestCase):
             abs_p = os.path.join(root, rel_path)
             if not os.path.exists(abs_p):
                 continue
-            with open(abs_p, "r", encoding="utf-8") as f:
+            with open(abs_p, encoding="utf-8") as f:
                 content = f.read()
             matches = emoji_pattern.findall(content)
             self.assertEqual(
@@ -32,7 +31,7 @@ class TestUIAuditIntegrity(unittest.TestCase):
             )
 
     def test_zero_glowing_pulse_animations(self):
-        with open(os.path.join(root, "dashboard.html"), "r", encoding="utf-8") as f:
+        with open(os.path.join(root, "dashboard.html"), encoding="utf-8") as f:
             dash = f.read()
 
         # Assert no pulse-red animation or neon box-shadows
@@ -41,7 +40,7 @@ class TestUIAuditIntegrity(unittest.TestCase):
         self.assertNotIn('<span class="badge-new">NEW</span>', dash)
 
     def test_all_35_views_present_in_dashboard(self):
-        with open(os.path.join(root, "dashboard.html"), "r", encoding="utf-8") as f:
+        with open(os.path.join(root, "dashboard.html"), encoding="utf-8") as f:
             dash = f.read()
 
         expected_views = [
@@ -60,7 +59,7 @@ class TestUIAuditIntegrity(unittest.TestCase):
             self.assertIn(f'id="{v}"', dash, f"Missing view element: {v}")
 
     def test_personalization_inputs_wired(self):
-        with open(os.path.join(root, "dashboard.html"), "r", encoding="utf-8") as f:
+        with open(os.path.join(root, "dashboard.html"), encoding="utf-8") as f:
             dash = f.read()
 
         self.assertIn("cfg-brand-title", dash)

@@ -4,27 +4,27 @@ DATA ACCESS LAYER: Repository Interfaces & Loose Coupling Adapters
 Enables Dependency Injection and seamless swapping between In-Memory Mock and SQLite providers.
 """
 
-from abc import ABC, abstractmethod
-from typing import List, Dict, Any, Optional
 import sqlite3
-import os
+from abc import ABC, abstractmethod
+from typing import Any
+
 
 # 1. ABSTRACT REPOSITORY INTERFACE
 class IRepository(ABC):
     @abstractmethod
-    def get_all(self) -> List[Dict[str, Any]]:
+    def get_all(self) -> list[dict[str, Any]]:
         pass
 
     @abstractmethod
-    def get_by_id(self, record_id: Any) -> Optional[Dict[str, Any]]:
+    def get_by_id(self, record_id: Any) -> dict[str, Any] | None:
         pass
 
     @abstractmethod
-    def insert(self, data: Dict[str, Any]) -> Any:
+    def insert(self, data: dict[str, Any]) -> Any:
         pass
 
     @abstractmethod
-    def update(self, record_id: Any, data: Dict[str, Any]) -> bool:
+    def update(self, record_id: Any, data: dict[str, Any]) -> bool:
         pass
 
     @abstractmethod
@@ -34,8 +34,8 @@ class IRepository(ABC):
 
 # 2. IN-MEMORY REPOSITORY (For Unit Testing & Rapid Mocking)
 class InMemoryRepository(IRepository):
-    def __init__(self, initial_data: Optional[List[Dict[str, Any]]] = None):
-        self._storage: Dict[Any, Dict[str, Any]] = {}
+    def __init__(self, initial_data: list[dict[str, Any]] | None = None):
+        self._storage: dict[Any, dict[str, Any]] = {}
         self._auto_id = 1
         if initial_data:
             for item in initial_data:
@@ -44,14 +44,14 @@ class InMemoryRepository(IRepository):
                 if isinstance(rec_id, int) and rec_id >= self._auto_id:
                     self._auto_id = rec_id + 1
 
-    def get_all(self) -> List[Dict[str, Any]]:
+    def get_all(self) -> list[dict[str, Any]]:
         return [dict(v) for v in self._storage.values()]
 
-    def get_by_id(self, record_id: Any) -> Optional[Dict[str, Any]]:
+    def get_by_id(self, record_id: Any) -> dict[str, Any] | None:
         record = self._storage.get(record_id) or self._storage.get(str(record_id))
         return dict(record) if record else None
 
-    def insert(self, data: Dict[str, Any]) -> Any:
+    def insert(self, data: dict[str, Any]) -> Any:
         new_record = dict(data)
         if "id" not in new_record or new_record["id"] is None:
             new_id = self._auto_id
@@ -62,7 +62,7 @@ class InMemoryRepository(IRepository):
         self._storage[new_id] = new_record
         return new_id
 
-    def update(self, record_id: Any, data: Dict[str, Any]) -> bool:
+    def update(self, record_id: Any, data: dict[str, Any]) -> bool:
         key = record_id if record_id in self._storage else str(record_id)
         if key not in self._storage:
             return False
@@ -88,24 +88,24 @@ class SQLiteRepository(IRepository):
         conn.row_factory = sqlite3.Row
         return conn
 
-    def get_all(self) -> List[Dict[str, Any]]:
+    def get_all(self) -> list[dict[str, Any]]:
         conn = self._get_connection()
         id_col = "id"
         rows = conn.execute(f"SELECT * FROM {self.table_name} ORDER BY {id_col} DESC").fetchall()
         conn.close()
         return [dict(r) for r in rows]
 
-    def get_by_id(self, record_id: Any) -> Optional[Dict[str, Any]]:
+    def get_by_id(self, record_id: Any) -> dict[str, Any] | None:
         conn = self._get_connection()
         id_col = "id"
         row = conn.execute(f"SELECT * FROM {self.table_name} WHERE {id_col} = ?", (record_id,)).fetchone()
         conn.close()
         return dict(row) if row else None
 
-    def insert(self, data: Dict[str, Any]) -> Any:
+    def insert(self, data: dict[str, Any]) -> Any:
         conn = self._get_connection()
         cursor = conn.cursor()
-        columns = [k for k in data.keys() if k != 'id' or self.table_name == 'adt_beds']
+        columns = [k for k in data if k != 'id' or self.table_name == 'adt_beds']
         placeholders = ['?'] * len(columns)
         values = [data[k] for k in columns]
         sql = f"INSERT OR REPLACE INTO {self.table_name} ({', '.join(columns)}) VALUES ({', '.join(placeholders)})"
@@ -115,10 +115,10 @@ class SQLiteRepository(IRepository):
         conn.close()
         return new_id
 
-    def update(self, record_id: Any, data: Dict[str, Any]) -> bool:
+    def update(self, record_id: Any, data: dict[str, Any]) -> bool:
         conn = self._get_connection()
         cursor = conn.cursor()
-        columns = [k for k in data.keys() if k != 'id']
+        columns = [k for k in data if k != 'id']
         set_clause = ', '.join([f"{k} = ?" for k in columns])
         values = [data[k] for k in columns]
         values.append(record_id)

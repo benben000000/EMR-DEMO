@@ -1,0 +1,36 @@
+[project]
+name = "g1-health-emr"
+version = "1.0.0"
+description = "Global 1 OneTech Enterprise Hospital EMR Suite"
+requires-python = ">=3.11"
+dependencies = [
+    "psycopg2-binary>=2.9.9",
+    "playwright>=1.40.0",
+    "reportlab>=4.0.0",
+    "pytest>=8.0.0",
+]
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+exclude = [
+    ".git",
+    "__pycache__",
+    "node_modules",
+    "Code",
+    "Database",
+    "qa_artifacts",
+    "scratch",
+]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP"]
+ignore = [
+    "E501",  # Line too long (acceptable for long SQL queries and HTML strings)
+    "UP006", # Keep certain legacy typing for compatibility where needed
+    "UP035", # Keep certain typing imports where needed
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]

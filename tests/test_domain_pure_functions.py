@@ -1,16 +1,18 @@
 # tests/test_domain_pure_functions.py
-import sys
 import os
+import sys
+
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from core.domain import (
     calculate_invoice_breakdown,
     evaluate_triage_acuity,
-    validate_vitals_normalcy,
-    validate_accounting_entry,
     generate_pure_hmac_token,
-    verify_pure_hmac_token
+    validate_accounting_entry,
+    validate_vitals_normalcy,
+    verify_pure_hmac_token,
 )
+
 
 def test_calculate_invoice_breakdown_regular():
     # 10% discount on ₱1,000 with 0 PhilHealth
@@ -66,7 +68,7 @@ def test_validate_accounting_entry():
 def test_hmac_token_cryptography():
     secret = "Danphe_EMR_Super_Secret_Key_2026"
     token = generate_pure_hmac_token(secret, "doctor_tan", "doctor", 1700000000)
-    
+
     # Valid token verification
     verified = verify_pure_hmac_token(secret, token, max_age_seconds=86400, current_time=1700000500)
     assert verified is not None

@@ -5,24 +5,20 @@ Validates clinical, operational, diagnostic, supply chain, and financial handoff
 across all 34 workspaces and 7 functional domains.
 """
 
-import sys
 import os
+import sys
 import unittest
-import time
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from core.domain import (
-    calculate_us_claim_adjudication,
-    generate_edi_837p,
-    validate_npi_checksum,
-    simulate_edi_270_271_eligibility
-)
 import db_manager
+from core.domain import generate_edi_837p
+
 
 class TestDepartmentalEcosystem(unittest.TestCase):
-    def setUp(self):
-        self.state = db_manager.get_full_emr_state(role="admin")
+    @classmethod
+    def setUpClass(cls):
+        cls.state = db_manager.get_full_emr_state(role="admin")
 
     def test_domain_1_clinical_to_ancillary_diagnostics_handoff(self):
         """Clinical Doctor Desk -> Laboratory (LIS) & Radiology (RIS) orders."""
@@ -43,6 +39,7 @@ class TestDepartmentalEcosystem(unittest.TestCase):
     def test_domain_2_emergency_to_inpatient_adt_bed_matrix(self):
         """ER 5-level Triage -> Inpatient Bed Matrix transfer workflow."""
         er_cases = self.state.get("er_cases", [])
+        self.assertIsInstance(er_cases, list, "ER cases collection must be a list")
         beds = self.state.get("adt_beds", [])
         self.assertTrue(len(beds) > 0, "Inpatient ADT bed matrix must be populated")
 

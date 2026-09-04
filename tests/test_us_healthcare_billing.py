@@ -1,19 +1,19 @@
 # tests/test_us_healthcare_billing.py
-import sys
 import os
+import sys
 import unittest
-import json
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
+import db_manager
 from core.domain import (
     calculate_us_claim_adjudication,
-    validate_npi_checksum,
-    simulate_edi_270_271_eligibility,
+    generate_edi_837i,
     generate_edi_837p,
-    generate_edi_837i
+    simulate_edi_270_271_eligibility,
+    validate_npi_checksum,
 )
-import db_manager
+
 
 class TestUSHealthcareBilling(unittest.TestCase):
     def test_medicare_part_b_80_20_split(self):
@@ -145,7 +145,7 @@ class TestUSHealthcareBilling(unittest.TestCase):
         state = db_manager.get_full_emr_state()
         self.assertIn("charge_master", state)
         self.assertTrue(len(state["charge_master"]) >= 10)
-        
+
         # Check that CPT 99214 and 93000 are present
         cpts = [c["cpt_code"] for c in state["charge_master"]]
         self.assertIn("99214", cpts)

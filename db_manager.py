@@ -9,14 +9,14 @@ is set in the environment / .env file (NO hardcoded credentials in source code).
 Gracefully falls back to local SQLite when offline or for unit testing.
 """
 
-import os
-import sys
-import json
-import time
-import tempfile
 import hashlib
+import os
+import sqlite3
+import tempfile
+import time
+from datetime import date, datetime
 from decimal import Decimal
-from datetime import datetime, date
+
 
 # Dynamically load .env file if present (without hardcoding)
 def load_env():
@@ -27,7 +27,7 @@ def load_env():
     for p in env_paths:
         if os.path.exists(p):
             try:
-                with open(p, "r", encoding="utf-8") as f:
+                with open(p, encoding="utf-8") as f:
                     for line in f:
                         line = line.strip()
                         if line and not line.startswith("#") and "=" in line:
@@ -44,7 +44,6 @@ def get_database_url():
     """Retrieves PostgreSQL connection string from environment or default Neon serverless."""
     return os.environ.get("DATABASE_URL") or os.environ.get("POSTGRES_URL") or DEFAULT_NEON_URL
 
-import sqlite3
 
 def is_postgres(conn=None):
     """Returns True if active connection or environment is PostgreSQL."""
@@ -84,8 +83,9 @@ def get_db_connection():
             return conn
         except Exception as e:
             try:
-                import pg8000.dbapi
                 import urllib.parse
+
+                import pg8000.dbapi
                 parsed = urllib.parse.urlparse(url)
                 conn = pg8000.dbapi.connect(
                     user=parsed.username,
@@ -97,9 +97,9 @@ def get_db_connection():
                 )
                 conn.autocommit = True
                 return conn
-            except Exception as e2:
+            except Exception:
                 print(f"[WARN] PostgreSQL connection failed: {e}. Falling back to SQLite.")
-    
+
     # SQLite Fallback
     import sqlite3
     conn = sqlite3.connect(DB_PATH)
@@ -214,7 +214,7 @@ def insert_record(table_name, data):
     if not valid_cols:
         conn.close()
         raise ValueError(f"Table '{table_name}' does not exist.")
-    
+
     # Ensure mandatory fields have sane defaults if omitted
     now_year = datetime.now().year
     rand_id = int(time.time() * 1000) % 100000
@@ -329,17 +329,17 @@ def insert_record(table_name, data):
     filtered = {k: v for k, v in data.items() if k in valid_cols and not k.startswith('_')}
     if 'id' in filtered and table_name != 'adt_beds' and not filtered['id']:
         del filtered['id']
-        
+
     cur = conn.cursor()
     columns = list(filtered.keys())
-    
+
     if is_postgres(conn):
         if not columns:
             cur.execute(f"INSERT INTO {table_name} DEFAULT VALUES RETURNING id")
             res = cur.fetchone()
             conn.close()
             return res["id"] if isinstance(res, dict) and "id" in res else 1
-            
+
         placeholders = ["%s"] * len(columns)
         values = [filtered[k] for k in columns]
         id_clause = "RETURNING id" if table_name != "adt_beds" else ""
@@ -362,7 +362,7 @@ def insert_record(table_name, data):
             conn.close()
             invalidate_state_cache()
             return new_id
-            
+
         placeholders = ["?"] * len(columns)
         values = [filtered[k] for k in columns]
         sql = f"INSERT OR REPLACE INTO {table_name} ({', '.join(columns)}) VALUES ({', '.join(placeholders)})"
@@ -381,16 +381,16 @@ def update_record(table_name, record_id, data):
     if not filtered:
         conn.close()
         return True
-        
+
     cur = conn.cursor()
     id_col = "id"
     if is_postgres(conn):
-        set_clause = ", ".join([f"{k} = %s" for k in filtered.keys()])
+        set_clause = ", ".join([f"{k} = %s" for k in filtered])
         values = list(filtered.values()) + [record_id]
         sql = f"UPDATE {table_name} SET {set_clause} WHERE {id_col} = %s"
         cur.execute(sql, values)
     else:
-        set_clause = ", ".join([f"{k} = ?" for k in filtered.keys()])
+        set_clause = ", ".join([f"{k} = ?" for k in filtered])
         values = list(filtered.values()) + [record_id]
         sql = f"UPDATE {table_name} SET {set_clause} WHERE {id_col} = ?"
         cur.execute(sql, values)
@@ -419,13 +419,13 @@ def update_bed_record(bed_id, status, patient_name=None, diagnosis=None, doctor=
     ts = time.strftime("%Y-%m-%d %H:%M:%S")
     if is_postgres(conn):
         cur.execute("""
-        UPDATE adt_beds 
+        UPDATE adt_beds
         SET status = %s, patient_name = %s, diagnosis = %s, attending_doctor = %s, updated_at = %s
         WHERE id = %s::varchar
         """, (status, patient_name, diagnosis, doctor, ts, str(bed_id)))
     else:
         cur.execute("""
-        UPDATE adt_beds 
+        UPDATE adt_beds
         SET status = ?, patient_name = ?, diagnosis = ?, attending_doctor = ?, updated_at = ?
         WHERE id = ?
         """, (status, patient_name, diagnosis, doctor, ts, bed_id))
@@ -480,9 +480,9 @@ def get_full_emr_state(role='admin'):
     state = copy.deepcopy(raw_state)
     if role in ["billing", "accountant"] and "patients" in state:
         for p in state["patients"]:
-            if "phone" in p and p["phone"]:
+            if p.get("phone"):
                 p["phone"] = p["phone"][:7] + " *** " + p["phone"][-4:] if len(p["phone"]) > 7 else "***-****"
-            if "address" in p and p["address"]:
+            if p.get("address"):
                 p["address"] = "[Restricted Address]"
     return state
 
@@ -493,8 +493,8 @@ def log_audit_event(user_id, action_name, ip_address='127.0.0.1', status='SUCCES
     ts = time.strftime("%Y-%m-%d %H:%M:%S")
     rec_str = str(record_id or '')
     det_str = str(details or '')
-    checksum = hashlib.sha256(f"{user_id}|{role}|{action_name}|{entity}|{rec_str}|{ts}".encode('utf-8')).hexdigest()
-    
+    checksum = hashlib.sha256(f"{user_id}|{role}|{action_name}|{entity}|{rec_str}|{ts}".encode()).hexdigest()
+
     if is_postgres(conn):
         cur.execute("""
         INSERT INTO audit_logs (timestamp, user_id, role, action_name, entity, record_id, details, ip_address, status, checksum)
@@ -513,12 +513,12 @@ def init_database():
     if is_postgres():
         # Tables already verified/migrated on Neon PostgreSQL
         return True
-    
+
     # SQLite Initialization & Migrations
     import sqlite3
     conn = sqlite3.connect(DB_PATH)
     cur = conn.cursor()
-    
+
     cur.execute("""
     CREATE TABLE IF NOT EXISTS patients (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -629,11 +629,11 @@ def check_patient_duplicate(first_name="", last_name="", dob="", ssn=""):
     last_clean = (last_name or "").strip().lower()
     full_name_clean = f"{first_clean} {last_clean}".strip()
     ssn_clean = (ssn or "").strip()
-    
+
     try:
         query_pg = """
-            SELECT id, patient_no, name, phone, insurance_no, medicare_mbi 
-            FROM patients 
+            SELECT id, patient_no, name, phone, insurance_no, medicare_mbi
+            FROM patients
             WHERE (LOWER(name) = %s)
                OR (LOWER(name) LIKE %s AND %s != '')
                OR (phone = %s AND %s != '')
@@ -682,7 +682,7 @@ def check_drug_interactions(new_drug: str, current_meds=None, allergies=None):
     new_d = (new_drug or "").strip().lower()
     active_meds = [str(m).strip().lower() for m in (current_meds or [])]
     pt_allergies = [str(a).strip().lower() for a in (allergies or [])]
-    
+
     # Severe Drug-Drug Interaction Rules
     DDI_RULES = [
         {"pair": ("warfarin", "aspirin"), "severity": "HIGH / CRITICAL", "effect": "Severe hemorrhage & gastrointestinal bleeding risk"},
@@ -695,14 +695,14 @@ def check_drug_interactions(new_drug: str, current_meds=None, allergies=None):
         {"pair": ("ciprofloxacin", "theophylline"), "severity": "HIGH", "effect": "Cytochrome P450 inhibition causing theophylline toxicity and seizures"},
         {"pair": ("simvastatin", "amiodarone"), "severity": "HIGH", "effect": "Increased risk of rhabdomyolysis and acute renal failure"}
     ]
-    
+
     # Allergy Cross-Reactivity Rules
     ALLERGY_RULES = [
         {"allergen": "penicillin", "drugs": ["amoxicillin", "ampicillin", "piperacillin", "augmentin", "penicillin"], "severity": "CRITICAL / ANAPHYLAXIS"},
         {"allergen": "sulfa", "drugs": ["sulfamethoxazole", "bactrim", "sulfasalazine"], "severity": "HIGH / STEVENS-JOHNSON SYNDROME"},
         {"allergen": "nsaid", "drugs": ["aspirin", "ibuprofen", "naproxen", "ketorolac"], "severity": "HIGH / BRONCHOSPASM"}
     ]
-    
+
     for rule in DDI_RULES:
         d1, d2 = rule["pair"]
         if (d1 in new_d and any(d2 in m for m in active_meds)) or (d2 in new_d and any(d1 in m for m in active_meds)):
@@ -713,7 +713,7 @@ def check_drug_interactions(new_drug: str, current_meds=None, allergies=None):
                 "conflicting_drug": d2 if d1 in new_d else d1,
                 "clinical_impact": rule["effect"]
             })
-            
+
     for a_rule in ALLERGY_RULES:
         allergen = a_rule["allergen"]
         if any(allergen in a for a in pt_allergies):
@@ -725,7 +725,7 @@ def check_drug_interactions(new_drug: str, current_meds=None, allergies=None):
                     "allergen_match": allergen,
                     "clinical_impact": f"Known hypersensitivity reaction to {allergen.upper()} class"
                 })
-                
+
     return {
         "has_contraindication": len(contraindications) > 0,
         "count": len(contraindications),
@@ -741,7 +741,7 @@ def auto_reorder_low_stock():
     cur = conn.cursor()
     created_pos = []
     now_str = datetime.now().strftime("%Y-%m-%d")
-    
+
     try:
         cur.execute("SELECT * FROM inventory_items WHERE current_stock <= reorder_level")
         rows = cur.fetchall()
@@ -780,7 +780,7 @@ def run_system_diagnostics():
     cur.execute("SELECT 1 as ping")
     cur.fetchone()
     ping_ms = round((time.time() - start_t) * 1000, 2)
-    
+
     is_pg = is_postgres(conn)
     tables_count = 32
     p_cnt = 13
@@ -799,7 +799,7 @@ def run_system_diagnostics():
     except Exception:
         pass
     conn.close()
-    
+
     return {
         "success": True,
         "engine": "Neon Serverless PostgreSQL 18.6 (AWS us-east-1)" if is_pg else "SQLite 3 Fallback",

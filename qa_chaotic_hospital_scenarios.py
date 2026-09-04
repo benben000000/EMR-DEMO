@@ -10,15 +10,13 @@ Executes 5 extreme real-world healthcare crisis workflows:
 Verifies ACID persistence against Neon Serverless PostgreSQL and ensures 0 system crashes.
 """
 
-import os
-import sys
-import time
 import json
-import traceback
+import os
+import time
 from datetime import datetime
+
 from playwright.sync_api import sync_playwright
-import psycopg2
-from psycopg2.extras import RealDictCursor
+
 import db_manager
 
 BASE_URL = "http://127.0.0.1:5000"
@@ -56,7 +54,7 @@ class ChaoticScenarioRunner:
             if isinstance(row, dict):
                 return list(row.values())[0]
             return row[0]
-        except Exception as e:
+        except Exception:
             self.neon_conn.rollback()
             return -1
 
@@ -217,7 +215,7 @@ class ChaoticScenarioRunner:
         page.screenshot(path=os.path.join(CHAOS_SCREENSHOTS, "02_mci_mode_activated.png"))
 
         # Dispatch 4 Ambulances & Ingest 6 Critical Trauma Patients
-        surge_res = page.evaluate("""async () => {
+        page.evaluate("""async () => {
             const traumaLevels = ['Level 1 Trauma (Critical)', 'Level 1 Trauma (Hemothorax)', 'Level 2 Trauma (Fracture)', 'Level 1 Trauma (Head Injury)', 'Level 2 Blunt Trauma', 'Level 3 Minor'];
             const triageColors = ['Red', 'Red', 'Yellow', 'Red', 'Yellow', 'Green'];
             const traumaBeds = ['Trauma Bay 1', 'Trauma Bay 2', 'Resuscitation Bay', 'Trauma Bay 3', 'Acute Care 1', 'Minor Trauma 2'];
@@ -363,7 +361,7 @@ class ChaoticScenarioRunner:
         # 1. Schedule Emergent Surgical Procedure
         # 2. Run CSSD Autoclave Cycle with Biological Spore Indicator
         # 3. Simulate Quarantine Contamination Intercept
-        ot_res = page.evaluate("""async () => {
+        page.evaluate("""async () => {
             const runTag = Date.now().toString().slice(-6);
             // Schedule Surgery
             const ot = await apiFetch('/api/ot_schedules', {
@@ -439,14 +437,14 @@ class ChaoticScenarioRunner:
         start_t = time.time()
 
         initial_inv = self.get_count("billing_invoices")
-        initial_claims = self.get_count("insurance_claims")
+        self.get_count("insurance_claims")
         initial_audit = self.get_count("audit_logs")
 
         # Switch to Claim Management
         page.evaluate("switchTab('view-claimmgmt', null)")
         page.wait_for_timeout(500)
 
-        rcm_res = page.evaluate("""async () => {
+        page.evaluate("""async () => {
             const runTag = Date.now().toString().slice(-6);
             const rcmPromises = Array.from({ length: 10 }, async (_, idx) => {
                 const i = idx + 1;
@@ -502,7 +500,6 @@ class ChaoticScenarioRunner:
 
         dur = time.time() - start_t
         final_inv = self.get_count("billing_invoices")
-        final_claims = self.get_count("insurance_claims")
         final_audit = self.get_count("audit_logs")
 
         passed = (final_inv - initial_inv >= 10)

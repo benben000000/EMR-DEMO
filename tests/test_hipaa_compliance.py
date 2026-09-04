@@ -1,24 +1,19 @@
 # tests/test_hipaa_compliance.py
-import sys
 import os
+import sys
 import unittest
-import json
-import urllib.request
-import urllib.parse
-import threading
-import time
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from core.domain import (
-    mask_ephi,
-    generate_audit_checksum,
-    check_rbac_permission,
-    generate_pure_hmac_token,
-    verify_pure_hmac_token
-)
 import db_manager
-from serve_demo import G1HealthRequestHandler, create_session_token, verify_session_token
+from core.domain import (
+    check_rbac_permission,
+    generate_audit_checksum,
+    generate_pure_hmac_token,
+    mask_ephi,
+    verify_pure_hmac_token,
+)
+
 
 class TestHIPAACompliance(unittest.TestCase):
     def test_ephi_safe_harbor_masking(self):
@@ -97,7 +92,7 @@ class TestHIPAACompliance(unittest.TestCase):
         # 15-Minute inactivity automatic logoff (§ 164.312(a)(2)(iii))
         secret = "hipaa_session_secret_2026"
         token = generate_pure_hmac_token(secret, "doctor_01", "doctor", timestamp=1000)
-        
+
         # Valid within 15 minutes (900 seconds)
         valid = verify_pure_hmac_token(secret, token, max_age_seconds=900, current_time=1500)
         self.assertIsNotNone(valid)
@@ -113,9 +108,9 @@ class TestHIPAACompliance(unittest.TestCase):
         patients = state.get("patients", [])
         if patients:
             sample = patients[0]
-            if "address" in sample and sample["address"]:
+            if sample.get("address"):
                 self.assertEqual(sample["address"], "[Restricted Address]")
-            if "phone" in sample and sample["phone"]:
+            if sample.get("phone"):
                 self.assertIn("***", sample["phone"])
 
 if __name__ == "__main__":

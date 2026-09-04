@@ -25,3 +25,7 @@ __pycache__/
 *.pyc
 .vscode/
 .idea/
+.pytest_cache/
+.ruff_cache/
+Thumbs.db
+ehs.log

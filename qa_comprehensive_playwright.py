@@ -5,15 +5,13 @@ Executes end-to-end browser automation, interaction auditing, and Neon DB sync v
 across all 35 views / 34 workspaces.
 """
 
-import os
-import sys
-import time
 import json
-import traceback
+import os
+import time
 from datetime import datetime
+
 from playwright.sync_api import sync_playwright
-import psycopg2
-from psycopg2.extras import RealDictCursor
+
 import db_manager
 
 BASE_URL = "http://127.0.0.1:5000"
@@ -82,7 +80,7 @@ class QAEngine:
             cur.execute(f"SELECT COUNT(*) FROM {table_name}")
             row = cur.fetchone()
             if isinstance(row, dict):
-                return list(row.values())[0]
+                return next(iter(row.values()))
             return row[0]
         except Exception as e:
             self.neon_conn.rollback()
@@ -90,7 +88,7 @@ class QAEngine:
 
     def run(self):
         self.connect_neon()
-        
+
         with sync_playwright() as p:
             browser = p.chromium.launch(headless=True)
             context = browser.new_context(
@@ -120,7 +118,7 @@ class QAEngine:
                 "type": msg.type,
                 "text": msg.text
             }))
-            
+
             page.on("request", lambda req: self.network_calls.append({
                 "time": datetime.now().isoformat(),
                 "method": req.method,
@@ -172,13 +170,13 @@ class QAEngine:
 
         try:
             # Switch to tab using switchTab
-            switch_res = page.evaluate(f"""(vId) => {{
-                if (typeof switchTab === 'function') {{
+            switch_res = page.evaluate("""(vId) => {
+                if (typeof switchTab === 'function') {
                     switchTab(vId);
                     return true;
-                }}
+                }
                 return false;
-            }}""", view_id)
+            }""", view_id)
             page.wait_for_timeout(600)
 
             # Check visibility
@@ -196,68 +194,68 @@ class QAEngine:
             page.screenshot(path=os.path.join(SCREENSHOTS_DIR, f"{view_id}.png"))
 
             # Audit tables and row counts
-            table_info = page.evaluate(f"""(vId) => {{
+            table_info = page.evaluate("""(vId) => {
                 const el = document.getElementById(vId);
-                if (!el) return {{ tables: 0, rows: 0, tbodies: [] }};
+                if (!el) return { tables: 0, rows: 0, tbodies: [] };
                 const tables = el.querySelectorAll('table');
                 let rowCount = 0;
                 const tbodies = [];
-                tables.forEach(t => {{
+                tables.forEach(t => {
                     const tb = t.querySelector('tbody');
-                    if (tb) {{
+                    if (tb) {
                         tbodies.push(tb.id || 'unnamed_tbody');
                         rowCount += tb.querySelectorAll('tr').length;
-                    }}
-                }});
-                return {{ tables: tables.length, rows: rowCount, tbodies: tbodies }};
-            }}""", view_id)
+                    }
+                });
+                return { tables: tables.length, rows: rowCount, tbodies: tbodies };
+            }""", view_id)
 
             mod_result["tables_found"] = table_info["tables"]
             mod_result["table_rows_rendered"] = table_info["rows"]
             mod_result["tbodies"] = table_info["tbodies"]
 
             # Audit buttons inside view
-            button_info = page.evaluate(f"""(vId) => {{
+            button_info = page.evaluate("""(vId) => {
                 const el = document.getElementById(vId);
                 if (!el) return [];
                 const btns = el.querySelectorAll('button, .btn-primary-action, .btn-secondary');
                 const list = [];
-                btns.forEach((b, idx) => {{
-                    list.push({{
+                btns.forEach((b, idx) => {
+                    list.push({
                         idx: idx,
                         text: b.innerText.trim(),
                         onclick: b.getAttribute('onclick') || '',
                         id: b.id || '',
                         className: b.className || ''
-                    }});
-                }});
+                    });
+                });
                 return list;
-            }}""", view_id)
+            }""", view_id)
 
             mod_result["buttons_found"] = len(button_info)
 
             # Audit inputs inside view
-            input_count = page.evaluate(f"""(vId) => {{
+            input_count = page.evaluate("""(vId) => {
                 const el = document.getElementById(vId);
                 return el ? el.querySelectorAll('input, select, textarea').length : 0;
-            }}""", view_id)
+            }""", view_id)
             mod_result["inputs_found"] = input_count
 
             # Test Search/Filter input if present
-            search_input = page.evaluate(f"""(vId) => {{
+            search_input = page.evaluate("""(vId) => {
                 const el = document.getElementById(vId);
                 if (!el) return false;
                 const inp = el.querySelector('input[type="text"], input[type="search"]');
-                if (inp) {{
+                if (inp) {
                     inp.value = 'test';
-                    inp.dispatchEvent(new Event('input', {{ bubbles: true }}));
-                    inp.dispatchEvent(new Event('keyup', {{ bubbles: true }}));
+                    inp.dispatchEvent(new Event('input', { bubbles: true }));
+                    inp.dispatchEvent(new Event('keyup', { bubbles: true }));
                     inp.value = '';
-                    inp.dispatchEvent(new Event('input', {{ bubbles: true }}));
+                    inp.dispatchEvent(new Event('input', { bubbles: true }));
                     return true;
-                }}
+                }
                 return false;
-            }}""", view_id)
+            }""", view_id)
             if search_input:
                 mod_result["search_box_tested"] = True
 
@@ -278,21 +276,21 @@ class QAEngine:
             print(f"  [OK] Visible: {is_visible} | Tables: {table_info['tables']} (Rows: {table_info['rows']}) | Buttons: {len(button_info)} | Inputs: {input_count}")
 
         except Exception as e:
-            mod_result["critique_notes"].append(f"EXCEPTION: {str(e)}")
+            mod_result["critique_notes"].append(f"EXCEPTION: {e!s}")
             print(f"  [ERROR] Audit error on {view_id}: {e}")
 
         self.results[view_id] = mod_result
 
     def audit_interconnections(self, page):
         print("\n--- Testing Specific Interconnected Departmental Flows ---")
-        
+
         # 1. Register a new patient in Patient Registration -> Check Neon DB
         init_pat_cnt = self.get_neon_count("patients")
         print(f"[FLOW 1] Initial Patients in Neon DB: {init_pat_cnt}")
 
         test_pat_name = f"QA Test Patient {int(time.time())}"
         test_pat_phone = "+1 (555) 019-9988"
-        
+
         res = page.evaluate(f"""async () => {{
             try {{
                 const payload = {{
@@ -320,7 +318,7 @@ class QAEngine:
 
         new_pat_cnt = self.get_neon_count("patients")
         print(f"[FLOW 1 RESULT] API Response: {res} | Neon DB Count after insert: {new_pat_cnt}")
-        
+
         # 2. Test Bed State Mutation in ADT
         print("\n--- Testing Bed Status Mutation (ADT -> Housekeeping -> Clinical) ---")
         bed_res = page.evaluate("""async () => {

@@ -1,5 +1,3 @@
-import db_manager
-import core.domain as domain
 #!/usr/bin/env python3
 """
 G1 Health EMR - Complete Interactive Enterprise Suite & Demo Runner
@@ -7,17 +5,21 @@ Organization: Global 1 OneTech (https://global1onetech.com/)
 Product: G1 Health EMR Enterprise Cloud
 """
 
-import http.server
-import socketserver
-import urllib.parse
-import os
-import mimetypes
-import json
-import secrets
-import time
-import hmac
-import hashlib
 import base64
+import hashlib
+import hmac
+import http.server
+import json
+import mimetypes
+import os
+import secrets
+import socketserver
+import time
+import urllib.parse
+from datetime import datetime
+
+import db_manager
+from core import domain
 
 PORT = 5000
 PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
@@ -50,7 +52,7 @@ def create_session_token(username, role):
     ts = int(time.time())
     payload = f"{username}|{role}|{ts}"
     sig = hmac.new(SECRET_KEY, payload.encode('utf-8'), hashlib.sha256).hexdigest()
-    token = base64.urlsafe_b64encode(f"{payload}|{sig}".encode('utf-8')).decode('utf-8')
+    token = base64.urlsafe_b64encode(f"{payload}|{sig}".encode()).decode('utf-8')
     return token
 
 def verify_session_token(token, max_age=SESSION_EXPIRY_SECONDS):
@@ -338,11 +340,11 @@ LOGIN_HTML = """<!DOCTYPE html>
             .auth-container { flex-direction: column; }
             .hero-panel, .form-panel { padding: 32px; }
         }
-    
+
         /* ==========================================================================
            COMPREHENSIVE MOBILE & TABLET RESPONSIVE SYSTEM
            ========================================================================== */
-        
+
         /* Mobile Toggle Button */
         .mobile-toggle-btn {
             display: none;
@@ -535,8 +537,8 @@ LOGIN_HTML = """<!DOCTYPE html>
                 padding-bottom: 4px;
             }
         }
-    
-    
+
+
         /* Code Blue Emergency Banner */
         .code-blue-banner {
             display: none;
@@ -581,7 +583,7 @@ LOGIN_HTML = """<!DOCTYPE html>
             background: #fee2e2;
             font-weight: 700;
         }
-    
+
     </style>
 </head>
 <body>
@@ -790,11 +792,11 @@ LOGIN_HTML = """<!DOCTYPE html>
 def get_dashboard_html():
     dash_file = os.path.join(PROJECT_ROOT, "dashboard.html")
     if os.path.exists(dash_file):
-        with open(dash_file, "r", encoding="utf-8") as f:
+        with open(dash_file, encoding="utf-8") as f:
             return f.read()
     public_dash = os.path.join(PROJECT_ROOT, "public", "dashboard.html")
     if os.path.exists(public_dash):
-        with open(public_dash, "r", encoding="utf-8") as f:
+        with open(public_dash, encoding="utf-8") as f:
             return f.read()
     return "<h1>G1 Health EMR - System Initializing...</h1>"
 
@@ -961,7 +963,7 @@ class G1HealthRequestHandler(http.server.BaseHTTPRequestHandler):
         clean_path = path.lstrip("/")
         if not clean_path.endswith(".html") and clean_path not in ["dashboard", "index", "Home/Index", "home/index", "app"]:
             base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) if "api" in __file__ else PROJECT_ROOT
-            
+
             file_path = os.path.join(base_dir, clean_path)
             if not os.path.exists(file_path):
                 file_path = os.path.join(base_dir, "public", clean_path)
@@ -998,7 +1000,7 @@ class G1HealthRequestHandler(http.server.BaseHTTPRequestHandler):
             self.end_headers()
             login_file = os.path.join(PROJECT_ROOT, "index.html")
             if os.path.exists(login_file):
-                with open(login_file, "r", encoding="utf-8") as f:
+                with open(login_file, encoding="utf-8") as f:
                     self.wfile.write(f.read().encode("utf-8"))
             else:
                 self.wfile.write(LOGIN_HTML.encode("utf-8"))
@@ -1110,6 +1112,8 @@ class G1HealthRequestHandler(http.server.BaseHTTPRequestHandler):
                 self.send_header("Content-Type", "application/json; charset=utf-8")
                 self.send_security_headers(is_html=False)
                 self.end_headers()
+                self.wfile.write(json.dumps({"success": True, "eligibility": eligibility}).encode("utf-8"))
+                return
             if path == "/api/mpi/check":
                 f_name = req_data.get("first_name", "")
                 l_name = req_data.get("last_name", "")

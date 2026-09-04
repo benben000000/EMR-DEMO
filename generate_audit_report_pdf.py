@@ -15,17 +15,23 @@ Generates a publication-grade, minimal black-and-white 8-page PDF document:
   Page 8: Section 07 (Automated Test Verification Matrix, 41/41 Test Results & Certification Sign-Off)
 """
 
-import os
 import sys
-import time
-from reportlab.lib.pagesizes import letter
+
 from reportlab.lib import colors
+from reportlab.lib.pagesizes import letter
+from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 from reportlab.lib.units import inch
-from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-from reportlab.platypus import (
-    SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, PageBreak, KeepTogether, HRFlowable
-)
 from reportlab.pdfgen import canvas
+from reportlab.platypus import (
+    HRFlowable,
+    PageBreak,
+    Paragraph,
+    SimpleDocTemplate,
+    Spacer,
+    Table,
+    TableStyle,
+)
+
 
 class NumberedCanvas(canvas.Canvas):
     """Two-pass canvas to dynamically render page numbers and minimal monochrome headers/footers."""
@@ -62,7 +68,7 @@ class NumberedCanvas(canvas.Canvas):
         self.setStrokeColor(colors.HexColor("#cccccc"))
         self.setLineWidth(0.5)
         self.line(36, 32, 8.5 * inch - 36, 32)
-        
+
         self.drawString(36, 22, "GLOBAL 1 ONETECH  •  100 HEALTHCARE INNOVATION WAY, BOSTON, MA  •  HTTPS://GLOBAL1ONETECH.COM/")
         page_str = f"PAGE {self._pageNumber} OF {page_count}"
         self.drawRightString(8.5 * inch - 36, 22, page_str)
@@ -374,7 +380,7 @@ def build_pdf(output_path="G1_EMR_System_Audit_and_Benchmark.pdf"):
     story.append(Spacer(1, 8))
 
     story.append(Paragraph("<b>Costing Framework — Strategic Dual-Layer Economics:</b>", h2_style))
-    
+
     costing_data = [
         [
             Paragraph("Dimension", table_header_style),
@@ -434,7 +440,7 @@ def build_pdf(output_path="G1_EMR_System_Audit_and_Benchmark.pdf"):
         [Paragraph("Clinical", table_cell_bold), Paragraph("Telehealth Desk", table_cell_style), Paragraph("telehealth_sessions", table_cell_code), Paragraph("/api/telehealth", table_cell_code), Paragraph("WebRTC signaling, encrypted consultation stream, e-Prescription on close.", table_cell_style), Paragraph("VERIFIED", table_cell_bold)],
         [Paragraph("Clinical", table_cell_bold), Paragraph("Clinical Order Verification", table_cell_style), Paragraph("verification_alerts", table_cell_code), Paragraph("/api/verification", table_cell_code), Paragraph("Dual sign-off for Schedule II narcotics, chemotherapy, blood products.", table_cell_style), Paragraph("VERIFIED", table_cell_bold)],
         [Paragraph("Clinical", table_cell_bold), Paragraph("Vaccination & Immunization", table_cell_style), Paragraph("vaccination_records", table_cell_code), Paragraph("/api/vaccination", table_cell_code), Paragraph("CDC CVX code registry, lot number tracking, cold-chain temperature logs.", table_cell_style), Paragraph("VERIFIED", table_cell_bold)],
-        
+
         # Domain 2: Care Operations
         [Paragraph("Care Ops", table_cell_bold), Paragraph("Appointments & Scheduling", table_cell_style), Paragraph("appointments", table_cell_code), Paragraph("/api/appointments", table_cell_code), Paragraph("Multi-provider calendar, double-booking prevention, 1-click confirmation.", table_cell_style), Paragraph("VERIFIED", table_cell_bold)],
         [Paragraph("Care Ops", table_cell_bold), Paragraph("Queue Management (Smart Token)", table_cell_style), Paragraph("queue_tickets", table_cell_code), Paragraph("/api/queue", table_cell_code), Paragraph("Smart token calling, wait-time estimation, priority triage routing.", table_cell_style), Paragraph("VERIFIED", table_cell_bold)],
@@ -885,7 +891,7 @@ def build_pdf(output_path="G1_EMR_System_Audit_and_Benchmark.pdf"):
         "logging, and US healthcare standards compliance. The platform has satisfied all guardrails from development through "
         "production deployment, and is certified ready for hospital evaluation and commercial deployment."
     )
-    
+
     signatures_data = [
         [Paragraph(signoff_text, body_style)],
         [Spacer(1, 10)],

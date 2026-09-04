@@ -1,17 +1,19 @@
 # tests/test_service_layer.py
-import sys
 import os
 import sqlite3
+import sys
 import tempfile
+
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from core.services import ServiceContainer
+
 
 def test_sqlite_container_integration():
     test_db = os.path.join(tempfile.gettempdir(), "test_hospital_emr.db")
     if os.path.exists(test_db):
         os.remove(test_db)
-        
+
     conn = sqlite3.connect(test_db)
     conn.execute("""
     CREATE TABLE patients (
@@ -42,7 +44,7 @@ def test_sqlite_container_integration():
     # Instantiate DI container targeting the test database
     container = ServiceContainer(use_in_memory=False, db_path=test_db)
     patient_svc = container.get_service("patient_service")
-    
+
     # Register patient through service layer
     created = patient_svc.register_patient({
         "name": "David Tennant",

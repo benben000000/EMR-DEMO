@@ -1,6 +1,6 @@
 import json
 
-with open(r'qa_artifacts/detailed_qa_inspection_report.json', 'r', encoding='utf-8') as f:
+with open(r'qa_artifacts/detailed_qa_inspection_report.json', encoding='utf-8') as f:
     report = json.load(f)
 
 print("=== G1 HEALTH EMR PLAYWRIGHT QA AUDIT METRICS ===")
@@ -11,7 +11,7 @@ print("\n" + "="*80)
 print(f"{'Module ID':24} | {'Module Name':32} | {'Rows':4} | {'Btns':4} | {'Notes'}")
 print("="*80)
 
-for vid, v in report['view_results'].items():
+for v in report['view_results'].values():
     notes_cnt = len(v.get('critique_notes', []))
     print(f"{v['view_id']:24} | {v['view_name'][:32]:32} | {v['table_rows_rendered']:4} | {v['buttons_found']:4} | {notes_cnt} critiques")
     if notes_cnt > 0:
