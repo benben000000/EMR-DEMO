@@ -199,6 +199,7 @@ ROLE_PERMISSIONS = {
         "order_sets": ["read", "create", "update"],
         "mrd_records": ["read", "create", "update"],
         "telehealth_sessions": ["read", "create", "update"],
+        "patient_attachments": ["read", "create", "update"],
         "ehs_incidents": ["read", "create"]
     },
     "nurse": {
@@ -212,6 +213,8 @@ ROLE_PERMISSIONS = {
         "vaccination_records": ["read", "create", "update"],
         "cssd_batches": ["read", "create", "update"],
         "substore_inventory": ["read", "update"],
+        "patient_attachments": ["read", "create"],
+        "ambulance_dispatches": ["read", "create", "update"],
         "ehs_incidents": ["read", "create"]
     },
     "accountant": {
@@ -219,6 +222,7 @@ ROLE_PERMISSIONS = {
         "accounting_vouchers": ["read", "create", "update"],
         "fixed_assets": ["read", "create", "update"],
         "insurance_claims": ["read", "create", "update"],
+        "corporate_partners": ["read", "create", "update"],
         "doctor_incentives": ["read", "update"],
         "procurement_po": ["read", "update"],
         "inventory_items": ["read"],
@@ -229,6 +233,7 @@ ROLE_PERMISSIONS = {
         "billing_invoices": ["read", "create", "update"],
         "insurance_claims": ["read", "create", "update"],
         "verification_alerts": ["read", "update"],
+        "corporate_partners": ["read", "create", "update"],
         "queue_tickets": ["read", "update"]
     },
     "pharmacy": {
@@ -247,6 +252,9 @@ ROLE_PERMISSIONS = {
         "appointments": ["read", "create", "update"],
         "queue_tickets": ["read", "create", "update"],
         "helpdesk_queries": ["read", "create", "update"],
+        "ambulance_dispatches": ["read", "create", "update"],
+        "corporate_partners": ["read", "create", "update"],
+        "mkt_referrals": ["read", "create", "update"],
         "ai_crm_leads": ["read", "create", "update"]
     }
 }

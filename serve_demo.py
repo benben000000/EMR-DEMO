@@ -6165,7 +6165,7 @@ APP_HTML = """<!DOCTYPE html>
         }
 
         function handleLocalFallback(endpoint, options) {
-            const path = endpoint.replace(/^\/?api\//, '').split('?')[0].split('/')[0];
+            const path = endpoint.replace(/^\\/?api\\//, '').split('?')[0].split('/')[0];
             const method = (options.method || 'GET').toUpperCase();
             let reqData = {};
             if (options.body) {
@@ -7768,7 +7768,7 @@ APP_HTML = """<!DOCTYPE html>
                 narration: narration,
                 debit_acc: debit,
                 credit_acc: credit,
-                amount: parseFloat(amount.replace(/[^\d.]/g, '')) || 0,
+                amount: parseFloat(amount.replace(/[^\\d.]/g, '')) || 0,
                 voucher_date: new Date().toISOString().split('T')[0],
                 status: 'Posted'
             };
@@ -9540,6 +9540,44 @@ class G1HealthRequestHandler(http.server.BaseHTTPRequestHandler):
                 self.wfile.write(json.dumps({"error": "Unauthorized: Active authenticated session token required to access ePHI."}).encode("utf-8"))
                 return
 
+            if path in ["/api/audit/export", "/api/audit_logs/export"]:
+                csv_data = db_manager.get_audit_logs_csv()
+                self.send_response(200)
+                self.send_header("Content-Type", "text/csv; charset=utf-8")
+                self.send_header("Content-Disposition", "attachment; filename=\"g1_emr_audit_trail_export.csv\"")
+                self.send_security_headers(is_html=False)
+                self.end_headers()
+                self.wfile.write(csv_data.encode("utf-8"))
+                db_manager.log_audit_event(user_data['username'], "EXPORT_AUDIT_LOGS_CSV", ip_address=ip_addr, role=user_data.get('role_key', 'admin'))
+                return
+
+            if path in ["/api/reports/export"]:
+                state = db_manager.get_full_emr_state(role=user_data.get('role_key', 'admin'))
+                csv_data = "Report,Metric,Value\n"
+                csv_data += f"Census,Active Inpatients,{len([b for b in state.get('beds', []) if b.get('status') == 'OCCUPIED'])}\n"
+                csv_data += f"Census,Available Beds,{len([b for b in state.get('beds', []) if b.get('status') == 'AVAILABLE'])}\n"
+                csv_data += f"Emergency,Active ER Cases,{len(state.get('er_cases', []))}\n"
+                csv_data += f"Pharmacy,Inventory SKUs,{len(state.get('inventory', []))}\n"
+                csv_data += f"Revenue,Invoices Issued,{len(state.get('bills', []))}\n"
+                csv_data += f"Revenue,Total Billed,${sum([float(b.get('total_amount', 0)) for b in state.get('bills', [])]):.2f}\n"
+                self.send_response(200)
+                self.send_header("Content-Type", "text/csv; charset=utf-8")
+                self.send_header("Content-Disposition", "attachment; filename=\"g1_emr_operational_analytics.csv\"")
+                self.send_security_headers(is_html=False)
+                self.end_headers()
+                self.wfile.write(csv_data.encode("utf-8"))
+                db_manager.log_audit_event(user_data['username'], "EXPORT_OPERATIONAL_ANALYTICS_CSV", ip_address=ip_addr, role=user_data.get('role_key', 'admin'))
+                return
+
+            if path == "/api/system/diagnostic":
+                diag = db_manager.run_system_diagnostics()
+                self.send_response(200)
+                self.send_header("Content-Type", "application/json; charset=utf-8")
+                self.send_security_headers(is_html=False)
+                self.end_headers()
+                self.wfile.write(json.dumps(diag).encode("utf-8"))
+                return
+
             entity = path.replace("/api/", "").strip("/").split("/")[0]
             self.send_response(200)
             self.send_header("Content-Type", "application/json; charset=utf-8")
@@ -9726,7 +9764,85 @@ class G1HealthRequestHandler(http.server.BaseHTTPRequestHandler):
                 self.send_header("Content-Type", "application/json; charset=utf-8")
                 self.send_security_headers(is_html=False)
                 self.end_headers()
-                self.wfile.write(json.dumps({"success": True, "eligibility": eligibility}).encode("utf-8"))
+            if path == "/api/mpi/check":
+                f_name = req_data.get("first_name", "")
+                l_name = req_data.get("last_name", "")
+                if not f_name and req_data.get("name"):
+                    parts = str(req_data.get("name")).strip().split(None, 1)
+                    f_name = parts[0]
+                    l_name = parts[1] if len(parts) > 1 else ""
+                dob = req_data.get("dob", "")
+                ssn = req_data.get("ssn", "")
+                mpi_res = db_manager.check_patient_duplicate(f_name, l_name, dob, ssn)
+                self.send_response(200)
+                self.send_header("Content-Type", "application/json; charset=utf-8")
+                self.send_security_headers(is_html=False)
+                self.end_headers()
+                self.wfile.write(json.dumps(mpi_res).encode("utf-8"))
+                return
+
+            if path == "/api/cds/check":
+                new_drug = req_data.get("drug") or req_data.get("medicine_name") or ""
+                current_meds = req_data.get("current_medications", [])
+                allergies = req_data.get("allergies", [])
+                cds_res = db_manager.check_drug_interactions(new_drug, current_meds, allergies)
+                self.send_response(200)
+                self.send_header("Content-Type", "application/json; charset=utf-8")
+                self.send_security_headers(is_html=False)
+                self.end_headers()
+                self.wfile.write(json.dumps(cds_res).encode("utf-8"))
+                return
+
+            if path == "/api/inventory/autoreorder":
+                reorder_res = db_manager.auto_reorder_low_stock()
+                self.send_response(200)
+                self.send_header("Content-Type", "application/json; charset=utf-8")
+                self.send_security_headers(is_html=False)
+                self.end_headers()
+                self.wfile.write(json.dumps(reorder_res).encode("utf-8"))
+                db_manager.log_audit_event(user_data['username'], f"AUTO_REORDER_INVENTORY ({reorder_res.get('pos_generated')} POs created)", ip_address=ip_addr, role=user_data.get('role_key', 'admin'))
+                return
+
+            if path == "/api/system/diagnostic":
+                diag_res = db_manager.run_system_diagnostics()
+                self.send_response(200)
+                self.send_header("Content-Type", "application/json; charset=utf-8")
+                self.send_security_headers(is_html=False)
+                self.end_headers()
+                self.wfile.write(json.dumps(diag_res).encode("utf-8"))
+                return
+
+            if path == "/api/system/test-print":
+                print_type = req_data.get("type", "barcode")
+                sample_data = req_data.get("sample_data", "ACC-2026-0091")
+                now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                if print_type == "receipt":
+                    print_payload = f"GLOBAL 1 ONETECH MEDICAL CENTER\nRECEIPT: REC-{int(time.time()*1000)%100000:05d}\nDATE: {now_str}\nAMOUNT: $150.00 PAID CASH\nSTATUS: APPROVED\n"
+                else:
+                    print_payload = f"^XA^FO50,50^BY3^BCN,100,Y,N,N^FD{sample_data}^FS^XZ"
+                self.send_response(200)
+                self.send_header("Content-Type", "application/json; charset=utf-8")
+                self.send_security_headers(is_html=False)
+                self.end_headers()
+                self.wfile.write(json.dumps({"success": True, "print_type": print_type, "payload": print_payload, "status": "PRINT_SPOOLED"}).encode("utf-8"))
+                return
+
+            if path == "/api/telehealth/session":
+                sess_id = req_data.get("session_id", f"TH-ROOM-{int(time.time()*1000)%100000:05d}")
+                token = secrets.token_urlsafe(16)
+                tele_payload = {
+                    "success": True,
+                    "session_id": sess_id,
+                    "webrtc_room_url": f"https://meet.jit.si/g1_health_emr_{sess_id}",
+                    "access_token": token,
+                    "encryption": "AES-GCM-256 (DTLS-SRTP)",
+                    "hipaa_audit_id": db_manager.log_audit_event(user_data['username'], f"INITIATE_TELEHEALTH_SESSION ({sess_id})", ip_address=ip_addr, role=user_data.get('role_key', 'doctor'))
+                }
+                self.send_response(200)
+                self.send_header("Content-Type", "application/json; charset=utf-8")
+                self.send_security_headers(is_html=False)
+                self.end_headers()
+                self.wfile.write(json.dumps(tele_payload).encode("utf-8"))
                 return
 
             res_payload = {"success": True}
